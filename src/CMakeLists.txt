@@ -6,7 +6,7 @@
 cmake_minimum_required(VERSION 3.16)
 
 # project name and version
-project(vocoder VERSION 1.0)
+project(vocoder VERSION 0.0)
 
 # set cpp standard
 set(CMAKE_CXX_STANDARD 11)
