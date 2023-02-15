@@ -37,3 +37,4 @@ compile_commands.json
 
 # IDE stuff
 .vscode/
+.cache/

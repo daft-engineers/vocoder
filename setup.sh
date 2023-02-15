@@ -14,11 +14,6 @@ cd build
 cmake "$ROOT_PATH/src" -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_FLAGS="-Werror -Wall"
 cd "$ROOT_PATH"
 
-echo "Symlinking compile_commands.json"
-if [ ! -L "$ROOT_PATH/compile_commands.json" ]; then
-    ln -s "$ROOT_PATH/build/compile_commands.json" "$ROOT_PATH"
-fi
-
 echo "Done!"
 echo "To build all and run tests, do the following:
 cd build/
