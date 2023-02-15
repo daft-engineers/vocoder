@@ -31,6 +31,9 @@
 *.out
 *.app
 
-# Directories
+# temporary build material
 build/
+compile_commands.json
+
+# IDE stuff
 .vscode/
