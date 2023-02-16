@@ -31,6 +31,9 @@
 *.out
 *.app
 
-# Directories
+# temporary build material
 build/
+
+# IDE stuff
 .vscode/
+.cache/
