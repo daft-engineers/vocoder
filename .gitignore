@@ -33,7 +33,6 @@
 
 # temporary build material
 build/
-compile_commands.json
 
 # IDE stuff
 .vscode/
