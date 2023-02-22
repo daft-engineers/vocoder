@@ -44,6 +44,16 @@ cd ../src      # run vocoder
 ./vocoder
 ```
 
+## Running our validation suite
+As well as using the GoogleTest framework to provide unit and integration tests, we also use clang-tidy for static analysis and clang-format to ensure code meets style standards. To run the static analysis and style tests use:
+
+```
+chmod +x checks.sh
+./checks.sh
+```
+
+This will run static analysis and return any errors found. It will also reformat the code in-place to meet our style guidelines, which are based on the LLVM guidelines. If you would like to check if the code meet style guideline _without_ it being updated in place, then the flag `--formatting` can be passed to the script.
+
 # Social Media
 <a href="https://www.instagram.com/daftengineers/"><img src="https://user-images.githubusercontent.com/10051310/219481632-10430e66-73dc-400e-a046-dc9d7dd9f3a9.svg" height=80px></a>
 <a href="https://twitter.com/DaftEngineers"><img src="https://user-images.githubusercontent.com/10051310/219482103-8422c45f-ca60-4918-b5b8-6de79d0add22.png" height=80px></a>
