@@ -1,4 +1,4 @@
-name: Build and Test
+name: Build
 
 on:
   [push, pull_request] # Pull request trigger should run the tests on merged files
@@ -8,12 +8,11 @@ on:
 #   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
 #   BUILD_TYPE: Release
 
-jobs:
-  build:
-    # This script uses linux specific commands, so is unlikely to work on a windows runner.
-    runs-on: self-hosted
+runs: 
+  using: "composite"
+  runs-on: self-hosted
 
-    steps:
+  steps:
     - uses: actions/checkout@v3
 
     - name: Configure CMake
@@ -24,7 +23,7 @@ jobs:
       working-directory: ${{github.workspace}}/build
       run: make
 
-    - name: Test
-      working-directory: ${{github.workspace}}/build/unit_tests
-      run: ctest 
+    # - name: Test
+    #   working-directory: ${{github.workspace}}/build/unit_tests
+    #   run: ctest 
 

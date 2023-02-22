@@ -1,4 +1,4 @@
-name: Build and Test
+name: Static analysis
 
 on:
   [push, pull_request] # Pull request trigger should run the tests on merged files
@@ -9,20 +9,13 @@ on:
 #   BUILD_TYPE: Release
 
 jobs:
-  build:
+  sa:
     # This script uses linux specific commands, so is unlikely to work on a windows runner.
     runs-on: self-hosted
 
     steps:
     - uses: actions/checkout@v3
-
-    - name: Configure CMake
-      working-directory: ${{github.workspace}}
-      run: ${{github.workspace}}/setup.sh
-
-    - name: Build
-      working-directory: ${{github.workspace}}/build
-      run: make
+    - uses: daft-engineers/vocoder@v1
 
     - name: Analyse
       run: ${{github.workspace}}/checks.sh --static-analysis
