@@ -1,0 +1,37 @@
+name: Merge Request Checks
+on: [push]
+
+jobs:
+  checkout-and-setup:
+    runs-on: self-hosted
+      - name: Checkout
+        uses: actions/checkout@v3
+      
+      - name: Setup
+        run: ${{github.workspace}}/setup.sh
+
+  static-analysis:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Analyse
+        run: ${{github.workspace}}/checks.sh --static-analysis
+
+  formatting:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:
+      - name: Check Formatting
+        run: ${{github.workspace}}/checks.sh --formatting
+
+  unit-test:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        run: make
+
+      - name: Unit Tests
+        working-directory: ${{github.workspace}}/build/unit_tests
+        run: ctest
