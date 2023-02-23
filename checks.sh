@@ -2,7 +2,7 @@
 
 set -e
 
-SRC=$(find src -name "*.cc")
+SRC=$(find src \( -name "*.cc" -o -name "*.hh" \))
 UNIT=$(find unit_tests -name "*.cc")
 WRONG_EXT=$(find src unit_tests \( -name "*.cpp" -o -name "*.hpp" \))
 
