@@ -2,13 +2,12 @@
 #define VOCODER_AUDIO_HH
 
 class Audio {
-public:
-    Audio(float sample_)
-    : sample(sample_){}
+  public:
+    Audio(float sample_) : sample(sample_) {
+    }
 
-private:
+  private:
     float sample;
 };
 
-
-#endif //VOCODER_AUDIO_HH
+#endif // VOCODER_AUDIO_HH
