@@ -1,0 +1,48 @@
+name: Build, test and analyse
+
+on: [push]
+
+# Not currently using a build type
+# env:
+#   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
+#   BUILD_TYPE: Release
+jobs:
+  checkout-and-setup:
+    runs-on: self-hosted    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        run: ${{github.workspace}}/setup.sh
+
+  static-analysis:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Analyse
+        run: ${{github.workspace}}/checks.sh --static-analysis
+
+  formatting:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:
+      - name: Check Formatting
+        run: ${{github.workspace}}/checks.sh --formatting
+
+  build:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        run: make
+
+
+  unit-test:  
+    runs-on: self-hosted
+    needs: build
+    steps:      
+      - name: Unit Tests
+        working-directory: ${{github.workspace}}/build/unit_tests
+        run: ctest
+
+
