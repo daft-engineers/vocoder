@@ -1,12 +1,9 @@
 #ifndef VOCODER_AUDIO_HH
 #define VOCODER_AUDIO_HH
 
-class Audio {
-  public:
-    Audio(std::vector<float> sample_) : sample(sample_) {
-    }
+#include <vector>
 
-  private:
+struct Audio {
     std::vector<float> sample;
 };
 
