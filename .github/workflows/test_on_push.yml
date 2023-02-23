@@ -4,8 +4,7 @@ on: [push]
 jobs:
   checkout-and-setup:
     runs-on: self-hosted
-      - name: Checkout
-        uses: actions/checkout@v3
+      - uses: actions/checkout@v3
       
       - name: Setup
         run: ${{github.workspace}}/setup.sh
