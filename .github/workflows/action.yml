@@ -1,29 +1,48 @@
-name: Build
+name: Build, test and analyse
 
-on:
-  [push, pull_request] # Pull request trigger should run the tests on merged files
-   
+on: [push]
+
 # Not currently using a build type
 # env:
 #   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
 #   BUILD_TYPE: Release
+jobs:
+  checkout-and-setup:
+    runs-on: self-hosted    
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup
+        run: ${{github.workspace}}/setup.sh
 
-runs: 
-  using: "composite"
-  runs-on: self-hosted
+  static-analysis:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Analyse
+        run: ${{github.workspace}}/checks.sh --static-analysis
 
-  steps:
-    - uses: actions/checkout@v3
+  formatting:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:
+      - name: Check Formatting
+        run: ${{github.workspace}}/checks.sh --formatting
 
-    - name: Configure CMake
-      working-directory: ${{github.workspace}}
-      run: ${{github.workspace}}/setup.sh
+  build:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Build
+        working-directory: ${{github.workspace}}/build
+        run: make
 
-    - name: Build
-      working-directory: ${{github.workspace}}/build
-      run: make
 
-    # - name: Test
-    #   working-directory: ${{github.workspace}}/build/unit_tests
-    #   run: ctest 
+  unit-test:  
+    runs-on: self-hosted
+    needs: build
+    steps:      
+      - name: Unit Tests
+        working-directory: ${{github.workspace}}/build/unit_tests
+        run: ctest
+
 
