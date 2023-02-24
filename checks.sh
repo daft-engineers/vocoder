@@ -2,6 +2,14 @@
 
 set -e
 
+CURRENTVER="$(clang-format --version | grep " [0-9]*\." -o | grep "[0-9]*" -o)"
+REQVER="15"
+
+if [[ CURRENTVER -lt REQVER ]]; then
+    echo "clang-format version below $REQVER detected. Version $REQVER or greater is requred."
+    exit 1
+fi
+
 INC=$(find include -name "*.hh")
 SRC=$(find src -name "*.cc")
 UNIT=$(find unit_tests -name "*.cc")
