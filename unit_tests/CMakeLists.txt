@@ -11,7 +11,11 @@ FetchContent_MakeAvailable(googletest)
 enable_testing()
 
 add_executable(example_test example_test.cc)
-target_link_libraries(example_test GTest::gtest_main)	
+target_link_libraries(example_test GTest::gtest_main)
+
+add_executable(filter_test filter/filter_test.cc)
+target_link_libraries(filter_test GTest::gtest_main)
 
 include(GoogleTest)
 gtest_discover_tests(example_test)
+gtest_discover_tests(filter_test)
