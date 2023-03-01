@@ -5,66 +5,99 @@
 
 // Test Filter constructor
 TEST(FilterTest, Constructor) {
-BPFilter f(2, 0, UINT_MAX);
-// not sure what to test here yet
-EXPECT_EQ(0, 0);
+    BPFilter f(2, 0, UINT_MAX);
+    // not sure what to test here yet
+    EXPECT_EQ(0, 0);
 }
 
 const unsigned int sample_size = 100;
 const float threshold = 0.3;
 
-// Test filter function at a range of frequencies
-TEST(FilterTest, FrequencyResponse) {
-const unsigned int centre = 75;
-const unsigned int width = 20;
-BPFilter f(2, centre, width);
+// Test filter function is not returning all zeros
+TEST(FilterTest, EmptyReturn) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
 
-// Low freq sin
-const unsigned int low_freq = 10;
-std::vector<float> low_sin;
-// Pass freq sin
-const unsigned int pass_freq = 75;
-std::vector<float> pass_sin;
-// Low freq sin
-const unsigned int high_freq = 200;
-std::vector<float> high_sin;
+    BPFilter f(10000, centre, width);
 
-for (int i = 0; i < sample_size; i++) {
-low_sin.push_back(sin(2 * i * M_PI * low_freq));
-pass_sin.push_back(sin(2 * i * M_PI * pass_freq));
-high_sin.push_back(sin(2 * i * M_PI * high_freq));
+    // High freq sin
+    const unsigned int freq = 75;
+    std::vector<float> sin_wav;
+
+    for (int i = 0; i < sample_size; i++) {
+        sin_wav.push_back(sin(2 * i * M_PI * freq));
+    }
+
+    Audio sin_audio;
+    sin_audio.sample = sin_wav;
+
+    Audio out = f.filter(sin_audio);
+
+    bool flag = false;
+    for (int i = 0; i < sample_size; i++) {
+        if (out.sample[i] > threshold) {
+            printf("%f", out.sample[i]);
+            flag = true;
+        }
+    }
+
+    EXPECT_TRUE(flag) << "Filter returned all zeros";
+
 }
 
-Audio low_sin_audio;
-Audio pass_sin_audio;
-Audio high_sin_audio;
+// Test filter function at a frequency above the pass band
+TEST(FilterTest, HighFrequencyResponse) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
 
-low_sin_audio.sample = low_sin;
-pass_sin_audio.sample = pass_sin;
-high_sin_audio.sample = high_sin;
+    BPFilter f(10000, centre, width);
 
-// this won't work because it's one filter (break out individual tests)
-Audio low_out = f.filter(low_sin_audio);
-Audio pass_out = f.filter(pass_sin_audio);
-Audio high_out = f.filter(high_sin_audio);
+    // High freq sin
+    const unsigned int high_freq = 200;
+    std::vector<float> high_sin;
 
-auto max = 0;
-for (int i = 0; i < sample_size; i++) {
-if (low_out.sample[i] > threshold) {
-printf("Low frequency not attentuated");
-FAIL();
-}
-if (high_out.sample[i] > threshold) {
-printf("High frequency not attentuated");
-FAIL();
-}
-if (pass_out.sample[i] > max) {
-max = pass_out.sample[i];
-}
+    for (int i = 0; i < sample_size; i++) {
+        high_sin.push_back(sin(2 * i * M_PI * high_freq));
+    }
+
+    Audio high_sin_audio;
+    high_sin_audio.sample = high_sin;
+
+    Audio high_out = f.filter(high_sin_audio);
+
+    for (int i = 0; i < sample_size; i++) {
+        EXPECT_TRUE(high_out.sample[i] < threshold) << "High frequency not attentuated";
+    }
+
 }
 
-if (max < threshold) {
-printf("Pass frequency attenuated");
-FAIL();
-}
+// Test filter function at a frequency in the pass band
+TEST(FilterTest, PassFrequencyResponse) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
+
+    BPFilter f(10000, centre, width);
+
+    // High freq sin
+    const unsigned int pass_freq = 75;
+    std::vector<float> pass_sin;
+
+    for (int i = 0; i < sample_size; i++) {
+        pass_sin.push_back(sin(2 * i * M_PI * pass_freq));
+    }
+
+    Audio pass_sin_audio;
+    pass_sin_audio.sample = pass_sin;
+
+    Audio pass_out = f.filter(pass_sin_audio);
+
+    auto max = 0;
+    for (int i = 0; i < sample_size; i++) {
+        if (pass_out.sample[i] > max) {
+            max = pass_out.sample[i];
+        }
+    }
+
+    EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
+
 }
