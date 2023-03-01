@@ -16,7 +16,7 @@ elif [[ $1 == "--formatting" ]]; then
         echo "Files found ending in .cpp: $WRONG_EXT"
         exit 1
     elif [[ -n $WRONG_LOCATION ]]; then 
-	echo "Header files found in src or cc files found in include"
+	echo "Header files found in src or cc files found in include: $WRONG_LOCATION"
 	exit 1
     fi
 else
@@ -25,7 +25,7 @@ else
     if [[ -n $WRONG_EXT ]]; then
         echo "Files found ending in .cpp: $WRONG_EXT"
     elif [[ -n $WRONG_LOCATION ]]; then 
-	echo "Header files found in src or cc files found in include"
+	echo "Header files found in src or cc files found in include: $WRONG_LOCATION"
 	exit 1
     fi
 fi
