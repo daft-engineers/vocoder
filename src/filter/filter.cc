@@ -2,23 +2,19 @@
 
 class BPFilter : public Filter {
   public:
-    BPFilter(unsigned int order, unsigned int centre_freq_, unsigned int freq_range_)
+    BPFilter(unsigned int order, double sampling_rate,double centre_freq_, double freq_range_)
         : Filter(order), centre_freq(centre_freq_), freq_range(freq_range_) {
 
-        f.setup(order, centre_freq, freq_range);
+        f.setup(order, sampling_rate, centre_freq, freq_range);
     }
 
     Audio filter(Audio in_audio) override {
 
-        std::vector<float> filtered_samples;
-        filtered_samples.reserve(in_audio.sample.size());
-
+        Audio filtered_audio;
         for (auto sample : in_audio.sample) {
-            filtered_samples.push_back(f.filter(sample));
+            filtered_audio.sample.push_back(f.filter(sample));
         }
 
-        Audio filtered_audio;
-        filtered_audio.sample = filtered_samples;
         return filtered_audio;
     }
 
@@ -26,9 +22,9 @@ class BPFilter : public Filter {
     void call_back() override {
     }
 
-    Iir::Butterworth::BandPass<10> f;
-    unsigned int centre_freq{0};
-    unsigned int freq_range{UINT_MAX};
+    Iir::Butterworth::BandPass<100> f;
+    double centre_freq{0};
+    double freq_range{UINT_MAX};
     Audio input;
     Audio output;
 };
