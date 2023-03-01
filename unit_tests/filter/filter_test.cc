@@ -10,9 +10,9 @@ const float pi = 3.14;
 
 // Test Filter constructor
 TEST(FilterTest, Constructor) {
-BPFilter f(2, sampling_rate, 0, UINT_MAX);
-// not sure what to test here yet
-EXPECT_EQ(0, 0);
+    BPFilter f(2, sampling_rate, 0, UINT_MAX);
+    // not sure what to test here yet
+    EXPECT_EQ(0, 0);
 }
 
 // Test filter function is not returning all zeros
@@ -40,7 +40,6 @@ TEST(FilterTest, EmptyReturn) {
     }
 
     EXPECT_TRUE(flag) << "Filter returned all zeros";
-
 }
 
 // Test filter function at a frequency above the pass band
@@ -63,7 +62,6 @@ TEST(FilterTest, HighFrequencyResponse) {
     for (int i = 0; i < sample_size; i++) {
         EXPECT_TRUE(high_out.sample[i] < threshold) << "High frequency not attentuated";
     }
-
 }
 
 // Test filter function at a frequency in the pass band
@@ -91,5 +89,4 @@ TEST(FilterTest, PassFrequencyResponse) {
     }
 
     EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
-
 }
