@@ -26,7 +26,7 @@ class BPFilter : public Filter {
     void call_back() override {
     }
 
-    Iir::Butterworth::BandPass<2> f;
+    Iir::Butterworth::BandPass<10> f;
     unsigned int centre_freq{0};
     unsigned int freq_range{UINT_MAX};
     Audio input;
