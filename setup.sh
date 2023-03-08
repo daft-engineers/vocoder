@@ -14,6 +14,11 @@ cd build
 cmake "$ROOT_PATH" -D CMAKE_C_COMPILER=clang -D CMAKE_CXX_COMPILER=clang++ -D CMAKE_EXPORT_COMPILE_COMMANDS=ON -D CMAKE_CXX_FLAGS="-Werror -Wall"
 cd "$ROOT_PATH"
 
+echo "Linking unit tests"
+cd unit_tests
+python3 cmake_linker.py
+cd "$ROOT_PATH"
+
 echo "Done!"
 echo "To build all and run tests, do the following:
 $ cd build && make && cd unit_tests && ctest"
