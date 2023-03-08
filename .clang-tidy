@@ -1,3 +1,5 @@
 ---
 Checks:                    'clang-diagnostic-*,clang-analyzer-*,clang-analyzer-*,concurrency-*,cppcoreguidelines-*,llvm-*,modernize-*,-modernize-use-trailing-return-type,performance-*'
+WarningsAsErrors:          '*'
+
 ...

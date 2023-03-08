@@ -11,5 +11,8 @@ project(vocoder VERSION 0.0)
 # set cpp standard
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
+
+
 add_subdirectory(src)
 add_subdirectory(unit_tests)
+target_include_directories(vocoder PUBLIC include)
