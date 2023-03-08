@@ -2,6 +2,7 @@
 #include <cmath>
 #include <gtest/gtest.h>
 #include <vector>
+#include <chrono>
 
 const unsigned int sample_size = 100;
 const double sampling_rate = 2000;
@@ -89,4 +90,51 @@ TEST(FilterTest, PassFrequencyResponse) {
     }
 
     EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
+}
+
+// Test filter function at a frequency below the pass band
+TEST(FilterTest, LowFrequencyResponse) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
+
+    BPFilter f(2, sampling_rate, centre, width);
+
+    // High freq sin
+    const unsigned int low_freq = 30;
+    Audio low_sin_audio;
+
+    for (int i = 0; i < sample_size; i++) {
+        low_sin_audio.sample.push_back(sin(2 * i * pi * low_freq));
+    }
+
+    Audio low_out = f.filter(low_sin_audio);
+
+    for (int i = 0; i < sample_size; i++) {
+        EXPECT_TRUE(low_out.sample[i] < threshold) << "Low frequency not attentuated";
+    }
+}
+
+// Test filter function at a frequency below the pass band
+TEST(FilterTest, RunTimeTest) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
+    const unsigned int max_delay = 500;
+
+    BPFilter f(2, sampling_rate, centre, width);
+
+    // High freq sin
+    const unsigned int freq = 30;
+    Audio sin_audio;
+
+    for (int i = 0; i < sample_size; i++) {
+        sin_audio.sample.push_back(sin(2 * i * pi * freq));
+    }
+    std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
+
+    f.filter(sin_audio);
+
+    std::chrono::steady_clock::time_point end = std::chrono::steady_clock::now();
+
+    auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
+    EXPECT_TRUE(diff.count() < max_delay) << "Time difference = " << diff.count() << "[µs]" << std::endl;
 }
