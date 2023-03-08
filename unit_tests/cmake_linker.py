@@ -1,23 +1,23 @@
 import os
 from os.path import isfile, join
 
-ignore = ['CMakeLists.txt', 'cmake_linker.py']
-
-preamble = """include(FetchContent)
-FetchContent_Declare(
-	googletest
-        URL https://github.com/google/googletest/archive/refs/heads/main.zip
-        )
-
-# For Windows: Prevent overriding the parent project's compiler/linker settings
-set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
-FetchContent_MakeAvailable(googletest)
-
-enable_testing()
-
-include(GoogleTest)\n"""
-
 def main():
+    ignore = ['CMakeLists.txt', 'cmake_linker.py']
+
+    preamble = """include(FetchContent)
+    FetchContent_Declare(
+        googletest
+            URL https://github.com/google/googletest/archive/refs/heads/main.zip
+            )
+    
+    # For Windows: Prevent overriding the parent project's compiler/linker settings
+    set(gtest_force_shared_crt ON CACHE BOOL "" FORCE)
+    FetchContent_MakeAvailable(googletest)
+    
+    enable_testing()
+    
+    include(GoogleTest)\n"""
+    
     cwd = os.path.abspath(os.getcwd())
     testfiles = [f for f in os.listdir(cwd) if isfile(join(cwd, f)) and not f in ignore]
 
