@@ -1,3 +1,5 @@
+set -e
+
 ROOT_PATH=$(pwd)
 
 if [ -d "$ROOT_PATH/build" ]; then
