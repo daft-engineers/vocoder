@@ -5,5 +5,10 @@ FetchContent_Declare(
 )
 FetchContent_MakeAvailable(iir)
 
-add_executable(vocoder main.cc)
-target_link_libraries(vocoder iir::iir)
+find_package(Threads REQUIRED)
+find_package(ALSA REQUIRED)
+
+add_executable(vocoder main.cc callbacks.cc)
+target_link_libraries(vocoder PRIVATE iir::iir)
+target_link_libraries(vocoder PRIVATE ALSA::ALSA)
+target_link_libraries(vocoder PRIVATE Threads::Threads)
