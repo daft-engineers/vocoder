@@ -1,6 +1,5 @@
 #include "../include/callbacks.hh"
 
-
-int main () {
+int main() {
     return 0;
 }

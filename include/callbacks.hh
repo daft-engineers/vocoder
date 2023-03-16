@@ -11,7 +11,7 @@ Example usage of this functionality:
 int main () {
     alsa_callback::acb test ("hw:2,0,0");
 
-    auto cb = 
+    auto cb =
         [](std::vector<uint16_t> left, std::vector<uint16_t> right) {
             std::cout << left[0] << " : " << right[0] << "\n";
         };

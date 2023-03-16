@@ -72,7 +72,7 @@ void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>, 
     keep_listening = true;
     cb_thread = std::thread([this, &callback]() {
         while (this->keep_listening) {
-            std::vector<uint16_t> buffer {};
+            std::vector<uint16_t> buffer{};
             buffer.resize(this->frames * 2);
 
             // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions) error comes from ALSA library
@@ -87,18 +87,17 @@ void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>, 
                 std::cerr << "alsa_callback: short read, read " << errorcode << " frames\n";
             }
 
-            std::vector<uint16_t> modulator {};
+            std::vector<uint16_t> modulator{};
             modulator.resize(this->frames);
-            std::vector<uint16_t> carrier {};
+            std::vector<uint16_t> carrier{};
             carrier.resize(this->frames);
 
             bool toggle = false;
-            std::partition_copy(
-                std::begin(buffer), 
-                std::end(buffer), 
-                std::begin(modulator), 
-                std::begin(carrier), 
-                [&toggle](uint16_t){toggle = !toggle; return toggle;});
+            std::partition_copy(std::begin(buffer), std::end(buffer), std::begin(modulator), std::begin(carrier),
+                                [&toggle](uint16_t) {
+                                    toggle = !toggle;
+                                    return toggle;
+                                });
 
             callback(modulator, carrier);
         }
