@@ -7,25 +7,20 @@ Example usage of this functionality:
 ===================================================
 
 #include "../include/callbacks.hh"
-#include <numeric>
 
 int main () {
-    // Instantiate by calling the constructor.
-    alsa_callback::acb test {};
+    alsa_callback::acb test ("hw:2,0,0");
 
-    // Callback function to be registered with listen class. It must accept a single argument
-    // of a std::vector<uint16_t>. This example function calculates the average value of each
-    // vector and then prints it out.
-    auto audio_callback =
-        [](std::vector<uint16_t> vec) {
-            std::cout << std::accumulate(vec.begin(), vec.end(), decltype(vec)::value_type(0))/vec.size() << "\n";
+    auto cb = 
+        [](std::vector<uint16_t> left, std::vector<uint16_t> right) {
+            std::cout << left[0] << " : " << right[0] << "\n";
         };
 
-    // register callback with listen handler.
-    test.listen(audio_callback);
-    std::cout << "sleeping main thread for 1 sec" << std::endl;
+    std::cerr << "created class" << std::endl;
+    test.listen(cb);
+    std::cerr << "sleeping for 1 sec\n";
     std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::cout << "sleeping finished" << std::endl;
+    std::cerr << "sleeping finished\n";
     test.stop();
 }
 
@@ -37,6 +32,7 @@ int main () {
 #include <cstdint>
 #include <functional>
 #include <iostream>
+#include <string>
 #include <sys/types.h>
 #include <thread>
 #include <vector>
@@ -45,8 +41,8 @@ namespace alsa_callback {
 
 class acb {
   public:
-    acb();
-    void listen(const std::function<void(std::vector<uint16_t>)> &callback);
+    acb(const std::string &device_name);
+    void listen(const std::function<void(std::vector<uint16_t>, std::vector<uint16_t>)> &callback);
     void stop();
 
   private:

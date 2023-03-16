@@ -1,7 +1,12 @@
 #include "../include/callbacks.hh"
+#include <algorithm>
+#include <cstddef>
+#include <cstdint>
+#include <sys/types.h>
+#include <vector>
 
-alsa_callback::acb::acb() {
-    int errorcode = snd_pcm_open(&handle, "default", SND_PCM_STREAM_CAPTURE, 0);
+alsa_callback::acb::acb(const std::string &device_name) {
+    int errorcode = snd_pcm_open(&handle, device_name.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     int dir = 0; // *_near() functions use this to say if the chosen value was above or below the requested value
     unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 
@@ -44,6 +49,18 @@ alsa_callback::acb::acb() {
         std::quick_exit(1);
     }
 
+#ifndef NDEBUG
+    std::cout << "alsa_callback: set sample rate to: " << sample_rate << "Hz\n";
+    std::cout << "alsa_callback: set period size to: " << frames << " bytes (channels * samples bytes)\n";
+
+    unsigned int period_time = 0;
+    errorcode = snd_pcm_hw_params_get_period_time(params, &period_time, &dir);
+    if (errorcode < 0) {
+        std::cerr << "alsa_callback: unable to get period time: " << snd_strerror(errorcode) << "\n";
+    }
+    std::cout << "alsa_callback: period time is: " << period_time << "us\n";
+#endif
+
     errorcode = snd_pcm_hw_params(handle, params);
     if (errorcode < 0) {
         std::cerr << "alsa_callback: unable to set hw paramters: " << snd_strerror(errorcode) << "\n";
@@ -51,15 +68,15 @@ alsa_callback::acb::acb() {
     }
 }
 
-void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>)> &callback) {
+void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>, std::vector<uint16_t>)> &callback) {
     keep_listening = true;
     cb_thread = std::thread([this, &callback]() {
         while (this->keep_listening) {
-            std::vector<uint16_t> buffer{};
+            std::vector<uint16_t> buffer {};
             buffer.resize(this->frames * 2);
 
             // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions) error comes from ALSA library
-            int errorcode = snd_pcm_readi(this->handle, &buffer[0], this->frames);
+            int errorcode = snd_pcm_readi(this->handle, buffer.data(), this->frames);
 
             if (errorcode == -EPIPE) {
                 std::cerr << "alsa_callback: Overrun occurred\n";
@@ -69,7 +86,21 @@ void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>)>
             } else if (errorcode != (int)this->frames) {
                 std::cerr << "alsa_callback: short read, read " << errorcode << " frames\n";
             }
-            callback(buffer);
+
+            std::vector<uint16_t> modulator {};
+            modulator.resize(this->frames);
+            std::vector<uint16_t> carrier {};
+            carrier.resize(this->frames);
+
+            bool toggle = false;
+            std::partition_copy(
+                std::begin(buffer), 
+                std::end(buffer), 
+                std::begin(modulator), 
+                std::begin(carrier), 
+                [&toggle](uint16_t){toggle = !toggle; return toggle;});
+
+            callback(modulator, carrier);
         }
     });
 }
