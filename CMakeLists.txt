@@ -12,6 +12,18 @@ project(vocoder VERSION 0.0)
 set(CMAKE_CXX_STANDARD 11)
 set(CMAKE_CXX_STANDARD_REQUIRED True)
 
+# set build type
+set(CMAKE_BUILD_TYPE Debug)
+
+include(FetchContent)
+FetchContent_Declare(
+    iir
+    URL https://github.com/berndporr/iir1/archive/refs/heads/master.zip
+)
+FetchContent_MakeAvailable(iir)
+
+find_package(Threads REQUIRED)
+find_package(ALSA REQUIRED)
 
 add_subdirectory(src)
 add_subdirectory(unit_tests)

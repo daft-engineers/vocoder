@@ -33,6 +33,7 @@
 
 # temporary build material
 build/
+/unit_tests/CMakeLists.txt
 
 # IDE stuff
 .vscode/
