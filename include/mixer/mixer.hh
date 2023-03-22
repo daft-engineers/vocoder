@@ -7,7 +7,6 @@
 #include <array>
 #include <cstddef>
 #include <functional>
-#include <iostream>
 #include <memory>
 #include <mutex>
 
@@ -29,16 +28,10 @@ template <std::size_t num_banks> class Mixer {
         : input_pipes(&input_pipes), output_pipe(&output_pipe) {
     }
 
-    ~Mixer() {
+    void stop() {
         run_thread = false;
         thread.join();
     }
-
-    // explicitly disable all other contructors
-    Mixer(const Mixer &) = delete;
-    Mixer &operator=(const Mixer &) = delete;
-    Mixer(Mixer &&) = delete;
-    Mixer &operator=(Mixer &&) = delete;
 
     static Audio sum(std::array<Audio, num_banks> audio_packets) {
         Audio output_packet;
@@ -59,39 +52,22 @@ template <std::size_t num_banks> class Mixer {
         thread = std::thread([this]() {
             while (run_thread) {
                 std::array<Audio, num_banks> audio_packets;
-
-                std::cerr << "run: starting run loop\n";
-
                 for (int bank = 0; bank < num_banks; bank++) {
                     auto *pipe = &((*input_pipes)[bank]);
 
                     std::unique_lock<std::mutex> lk(pipe->cond_m);
-                    pipe->cond.wait(lk, [&pipe] { return pipe->queue.empty(); });
+                    pipe->cond.wait(lk, [&pipe] { return pipe->queue.empty() == false; });
+
                     audio_packets[bank] = pipe->queue.front();
                     pipe->queue.pop();
                 }
 
-                std::cerr << "run: extracted data from banks\n";
-                for (auto packet : audio_packets) {
-                    for (auto sample : packet) {
-                        std::cerr << sample << ", ";
-                    }
-                    std::cerr << "\n";
-                }
-
                 Audio output_packet = sum(audio_packets);
-                std::cerr << "run: summed values ";
-                for (auto x : output_packet)
-                    std::cerr << x << ", ";
-                std::cerr << "\n";
-
                 {
                     std::lock_guard<std::mutex> lk(output_pipe->cond_m);
                     output_pipe->queue.push(output_packet);
                 }
                 output_pipe->cond.notify_all();
-
-                std::cerr << "run: send value to output pipe\n";
             }
         });
     }

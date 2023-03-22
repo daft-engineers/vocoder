@@ -18,19 +18,17 @@ TEST(MixerTests, Summation) {
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(MixerTests, Initialise) {
+TEST(MixerTests, Integration) {
     // set up mixer with 2 inputs
-    std::cerr << "setup: create vars\n";
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
+    {}
     mixer::Mixer<2> mixer(inputs, output);
 
     // start mixer
-    std::cerr << "setup: start mixer\n";
     mixer.run();
 
     // provide input
-    std::cerr << "setup: create threads\n";
     std::thread input_thread1{[&inputs] {
         auto *pipe = &inputs[0];
         Audio sample{{10, 1, 34, 29, 98}};
@@ -40,7 +38,6 @@ TEST(MixerTests, Initialise) {
             pipe->queue.push(sample);
         }
         pipe->cond.notify_all();
-        std::cerr << "thread1: data pushed\n";
     }};
 
     std::thread input_thread2{[&inputs] {
@@ -52,26 +49,21 @@ TEST(MixerTests, Initialise) {
             pipe->queue.push(sample);
         }
         pipe->cond.notify_all();
-        std::cerr << "thread2: data pushed\n";
     }};
 
     // listen for output
     std::thread output_thread{[&output] {
         Audio expected{{33, 40, 117, 67, 126}};
         std::unique_lock<std::mutex> lk(output.cond_m);
-        output.cond.wait(lk, [&output] {
-            std::cerr << "output thread: in output wait" << output.queue.size() << "\n";
-            return output.queue.empty() == false;
-        });
+        output.cond.wait(lk, [&output] { return output.queue.empty() == false; });
         ASSERT_EQ(output.queue.front(), expected);
-        std::cerr << "output thread: assert ran\n";
     }};
 
-    std::cerr << "setup: wait for threads to join\n";
+    mixer.stop();
     input_thread1.join();
     input_thread2.join();
-    std::cerr << "setup: waiting for output thread only\n";
     output_thread.join();
+    std::cerr << "all threads joined\n";
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
