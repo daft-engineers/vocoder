@@ -114,7 +114,7 @@ TEST(FilterTest, LowFrequencyResponse) {
     }
 }
 
-// Test filter function at a frequency below the pass band
+// Test filter function runs in less than 0.5ms
 TEST(FilterTest, RunTimeTest) {
     const unsigned int centre = 75;
     const unsigned int width = 20;

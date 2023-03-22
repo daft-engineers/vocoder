@@ -8,6 +8,19 @@ class BPFilter : public Filter {
         f.setup(order, sampling_rate, centre_freq, freq_range);
     }
 
+    void call_back(std::vector<unsigned short> buffer_in) override {
+        std::unique_lock<std::mutex> lk(cond_filter_m);
+
+        while (running) {
+            cond_filter.wait(lk, []{return buffer_in.empty() == false;})
+            input.sample = buffer_in;
+            output = filter(input);
+
+            cond_filter_out.notify_all();
+        }
+    }
+
+  private:
     Audio filter(Audio in_audio) override {
 
         Audio filtered_audio;
@@ -18,14 +31,13 @@ class BPFilter : public Filter {
         return filtered_audio;
     }
 
-  private:
-    void call_back() override {
-    }
-
     static const int default_order = 100;
     Iir::Butterworth::BandPass<default_order> f;
     double centre_freq{0};
     double freq_range{UINT_MAX};
     Audio input;
     Audio output;
+    std::condition_variable cond_filter;
+    std::condition_variable cond_filter_out;
+    std::mutex cond_filter_m;
 };

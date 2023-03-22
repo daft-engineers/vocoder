@@ -5,6 +5,8 @@
 #include "../audio/audio.hh"
 #include <limits.h>
 #include <stdio.h>
+#include <thread>
+#include <condition_variable>
 
 class Filter
 {
@@ -27,7 +29,7 @@ public:
     virtual Audio filter(Audio in_audio) = 0;
 
 private:
-    virtual void call_back() = 0;
+    virtual void call_back(std::vector<unsigned short> buffer_in) = 0;
 
     //IIr::Butterworth::BandPass<order> f;
     //int num_of_taps;
