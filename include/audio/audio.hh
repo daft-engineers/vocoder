@@ -3,8 +3,10 @@
 
 #include <vector>
 
-struct Audio {
-    std::vector<float> sample;
-};
+using Audio= std::vector<float>;
+
+// struct Audio {
+    // std::vector<float> sample;
+// };
 
 #endif // AUDIO_AUDIO_HH
