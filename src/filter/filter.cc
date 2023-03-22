@@ -1,4 +1,4 @@
-#include "filter.hh"
+#include <filter.hh>
 
 class BPFilter : public Filter {
   public:
