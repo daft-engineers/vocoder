@@ -1,4 +1,3 @@
-#include "../src/filter.cc"
 #include "../include/filter/filter.hh"
 #include <cmath>
 #include <gtest/gtest.h>

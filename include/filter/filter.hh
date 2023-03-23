@@ -10,34 +10,27 @@
 #include <condition_variable>
 #include <memory>
 
-class Filter
-{
+class BPFilter{
 public:
-    Filter(unsigned int order_)
-            : order(order_){
-        if (order_ < 1){
-            printf("Invalid filter parameters.");
-            std::exit(-1);
-        }
-    }
+    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_, Pipe<Audio> &output_);
 
-    virtual ~Filter() = default;
-
-    //placeholder
-    int setup(){
-        return order;
-    }
-
-    virtual void run() = 0;
-
+    void run();
+    void stop();
+    Audio filter(Audio in_audio);
 
 private:
 
-    virtual Audio filter(Audio in_audio) = 0;
+    static const int default_order{100};
+    Iir::Butterworth::BandPass<default_order> f;
+    double centre_freq{0};
+    double freq_range{UINT_MAX};
 
-    //IIr::Butterworth::BandPass<order> f;
-    //int num_of_taps;
-    unsigned int order;
+    Pipe<Audio> *input;
+    Pipe<Audio> *output;
+
+    std::thread filter_thread;
+    bool running{false};
+
 };
 
 #endif

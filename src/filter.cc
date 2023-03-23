@@ -1,57 +1,42 @@
 #include "../include/filter/filter.hh"
 
-class BPFilter : public Filter {
-  public:
-    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_, Pipe<Audio> &output_)
-        : Filter(order), centre_freq(centre_freq_), freq_range(freq_range_), input(&input_), output(&output_) {
 
-        f.setup(order, sampling_rate, centre_freq, freq_range);
-    }
+BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_, Pipe<Audio> &output_)
+        :  centre_freq(centre_freq_), freq_range(freq_range_), input(&input_), output(&output_) {
 
-    void run() override {
-        filter_thread = std::thread([this]() {
-            std::unique_lock<std::mutex> lk(input->cond_m);
-            running = true;
-            while (running) {
-                input->cond.wait(lk, [this] { return input->queue.empty() == false; });
+    f.setup(order, sampling_rate, centre_freq, freq_range);
+}
 
-                Audio audio_out = filter(input->queue.front());
-                input->queue.pop();
+void BPFilter::run() {
+    filter_thread = std::thread([this]() {
+        std::unique_lock<std::mutex> lk(input->cond_m);
+        running = true;
+        while (running) {
+            input->cond.wait(lk, [this] { return input->queue.empty() == false; });
 
-                {
-                    std::lock_guard<std::mutex> out_lk(output->cond_m);
-                    output->queue.push(audio_out);
-                }
-                output->cond.notify_all();
+            Audio audio_out = filter(input->queue.front());
+            input->queue.pop();
+
+            {
+                std::lock_guard<std::mutex> out_lk(output->cond_m);
+                output->queue.push(audio_out);
             }
-        });
-    }
-
-    void stop() {
-        running = false;
-        filter_thread.join();
-    }
-
-  private:
-    Audio filter(Audio in_audio) override {
-
-        Audio filtered_audio;
-        for (auto sample : in_audio) {
-            filtered_audio.push_back(f.filter(sample));
+            output->cond.notify_all();
         }
+    });
+}
 
-        return filtered_audio;
+void BPFilter::stop() {
+    running = false;
+    filter_thread.join();
+}
+
+Audio BPFilter::filter(Audio in_audio) {
+
+    Audio filtered_audio;
+    for (auto sample : in_audio) {
+        filtered_audio.push_back(f.filter(sample));
     }
 
-    static const int default_order = 100;
-    Iir::Butterworth::BandPass<default_order> f;
-    double centre_freq{0};
-    double freq_range{UINT_MAX};
-
-    Pipe<Audio> *input;
-    Pipe<Audio> *output;
-
-    std::thread filter_thread;
-    bool running{false};
-
-};
+    return filtered_audio;
+}
