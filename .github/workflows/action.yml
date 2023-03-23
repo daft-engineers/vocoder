@@ -61,6 +61,7 @@ jobs:
 
   tidy-up:
     runs-on: self-hosted
+    if: always()
     needs: [unit-test, formatting, static-analysis]
     steps:
       - name: Delete everything
