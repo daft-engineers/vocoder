@@ -28,7 +28,7 @@ public:
         return order;
     }
 
-    virtual void call_back() = 0;
+    virtual void run() = 0;
 
 
 private:

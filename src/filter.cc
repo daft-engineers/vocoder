@@ -8,11 +8,7 @@ class BPFilter : public Filter {
         f.setup(order, sampling_rate, centre_freq, freq_range);
     }
 
-    ~BPFilter() {
-        stop();
-    }
-
-    void call_back() override {
+    void run() override {
         filter_thread = std::thread([this]() {
             std::unique_lock<std::mutex> lk(input->cond_m);
             running = true;
@@ -23,7 +19,7 @@ class BPFilter : public Filter {
                 input->queue.pop();
 
                 {
-                    std::unique_lock <std::mutex> out_lk(output->cond_m);
+                    std::lock_guard<std::mutex> out_lk(output->cond_m);
                     output->queue.push(audio_out);
                 }
                 output->cond.notify_all();

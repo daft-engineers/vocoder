@@ -140,7 +140,7 @@ TEST(FilterTest, RunTimeTest) {
     EXPECT_TRUE(diff.count() < max_delay) << "Time difference = " << diff.count() << "[µs]" << std::endl;
 }*/
 
-TEST(FilterTest, CallbackTest) {
+TEST(FilterTest, PassFreqTest) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
 
@@ -149,7 +149,7 @@ TEST(FilterTest, CallbackTest) {
 
     BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
 
-    f.call_back();
+    f.run();
 
     std::thread input_thread{[&in_pipe] {
         // Pass freq sin
@@ -183,7 +183,11 @@ TEST(FilterTest, CallbackTest) {
         EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
     }};
 
-    input_thread.join();
-    output_thread.join();
+    std::cerr << "Exiting" << std::endl;
     f.stop();
+    std::cerr << "Filter stopped" << std::endl;
+    input_thread.join();
+    std::cerr << "Input stopped" << std::endl;
+    output_thread.join();
+    std::cerr << "Output stopped" << std::endl;
 }
