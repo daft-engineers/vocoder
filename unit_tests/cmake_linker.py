@@ -27,10 +27,7 @@ def main():
         for test in testfiles:
             cmake.write(f"\nadd_executable({test[:-3]} {test})\n")
             cmake.write(f"target_link_libraries({test[:-3]} GTest::gtest_main)\n")
-            cmake.write(f"target_link_libraries({test[:-3]} iir::iir_static)\n")
-            cmake.write(f"target_link_libraries({test[:-3]} Threads::Threads)\n")
-            cmake.write(f"target_link_libraries({test[:-3]} ALSA::ALSA)\n")
-            cmake.write(f"target_link_libraries({test[:-3]} alsa_callbacks)\n")
+            cmake.write(f"target_link_libraries({test[:-3]} vocoder_functionality)\n")
             cmake.write(f"gtest_discover_tests({test[:-3]})\n\n")
 
 
