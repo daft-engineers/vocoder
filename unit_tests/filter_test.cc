@@ -9,33 +9,28 @@ const double sampling_rate = 2000;
 const float threshold = 30;
 const float pi = 3.14;
 
-// Test Filter constructor
-/*TEST(FilterTest, Constructor) {
-    BPFilter f(2, sampling_rate, 0, UINT_MAX);
-    // not sure what to test here yet
-    EXPECT_EQ(0, 0);
-}
-
 // Test filter function is not returning all zeros
 TEST(FilterTest, EmptyReturn) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
+    Pipe<Audio> in_pipe;
+    Pipe<Audio> out_pipe;
 
-    BPFilter f(2, sampling_rate, centre, width);
+    BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
 
     // High freq sin
     const unsigned int freq = 75;
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.sample.push_back(sin(2 * i * pi * freq));
+        sin_audio.push_back(100 * sin(2 * i * pi * freq));
     }
 
     Audio out = f.filter(sin_audio);
 
     bool flag = false;
     for (int i = 0; i < sample_size; i++) {
-        if (out.sample[i] > threshold) {
+        if (out[i] > threshold) {
             flag = true;
         }
     }
@@ -47,21 +42,24 @@ TEST(FilterTest, EmptyReturn) {
 TEST(FilterTest, HighFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
+    Pipe<Audio> in;
+    Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width);
+    BPFilter f(2, sampling_rate, centre, width, in, out);
 
     // High freq sin
     const unsigned int high_freq = 200;
     Audio high_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        high_sin_audio.sample.push_back(sin(2 * i * pi * high_freq));
+        high_sin_audio.push_back(100 * (sin(2 * i * pi * high_freq) + 1));
     }
 
     Audio high_out = f.filter(high_sin_audio);
 
     for (int i = 0; i < sample_size; i++) {
-        EXPECT_TRUE(high_out.sample[i] < threshold) << "High frequency not attentuated";
+        std::cerr << "High frequency at amplitude: " << high_out[i] << std::endl;
+        EXPECT_TRUE(high_out[i] < threshold) << "High frequency not attentuated";
     }
 }
 
@@ -69,23 +67,25 @@ TEST(FilterTest, HighFrequencyResponse) {
 TEST(FilterTest, PassFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
+    Pipe<Audio> in;
+    Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width);
+    BPFilter f(2, sampling_rate, centre, width, in, out);
 
     // High freq sin
     const unsigned int pass_freq = 75;
     Audio pass_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        pass_sin_audio.sample.push_back(sin(2 * i * pi * pass_freq));
+        pass_sin_audio.push_back(100 * sin(2 * i * pi * pass_freq));
     }
 
     Audio pass_out = f.filter(pass_sin_audio);
 
     float max = 0;
     for (int i = 0; i < sample_size; i++) {
-        if (pass_out.sample[i] > max) {
-            max = pass_out.sample[i];
+        if (pass_out[i] > max) {
+            max = pass_out[i];
         }
     }
 
@@ -96,21 +96,24 @@ TEST(FilterTest, PassFrequencyResponse) {
 TEST(FilterTest, LowFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
+    Pipe<Audio> in;
+    Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width);
+    BPFilter f(2, sampling_rate, centre, width, in, out);
 
     // High freq sin
     const unsigned int low_freq = 30;
     Audio low_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        low_sin_audio.sample.push_back(sin(2 * i * pi * low_freq));
+        low_sin_audio.push_back(100 * (sin(2 * i * pi * low_freq) + 1));
     }
 
     Audio low_out = f.filter(low_sin_audio);
 
     for (int i = 0; i < sample_size; i++) {
-        EXPECT_TRUE(low_out.sample[i] < threshold) << "Low frequency not attentuated";
+        std::cerr << "Low frequency at amplitude: " << low_out[i] << std::endl;
+        EXPECT_TRUE(low_out[i] < threshold) << "Low frequency not attentuated";
     }
 }
 
@@ -119,15 +122,17 @@ TEST(FilterTest, RunTimeTest) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
     const unsigned int max_delay = 500;
+    Pipe<Audio> in;
+    Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width);
+    BPFilter f(2, sampling_rate, centre, width, in, out);
 
     // High freq sin
     const unsigned int freq = 30;
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.sample.push_back(sin(2 * i * pi * freq));
+        sin_audio.push_back(100 * sin(2 * i * pi * freq));
     }
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
@@ -137,9 +142,9 @@ TEST(FilterTest, RunTimeTest) {
 
     auto diff = std::chrono::duration_cast<std::chrono::microseconds>(end - begin);
     EXPECT_TRUE(diff.count() < max_delay) << "Time difference = " << diff.count() << "[µs]" << std::endl;
-}*/
+}
 
-TEST(FilterTest, PassFreqTest) {
+TEST(FilterTest, ThreadAndMessaging) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
 

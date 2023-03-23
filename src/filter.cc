@@ -35,7 +35,13 @@ Audio BPFilter::filter(Audio in_audio) {
 
     Audio filtered_audio;
     for (auto sample : in_audio) {
-        filtered_audio.push_back(f.filter(sample));
+        float buf = f.filter(sample);
+        if (buf < 0) {
+            filtered_audio.push_back(0);
+        }
+        else {
+            filtered_audio.push_back(buf);
+        }
     }
 
     return filtered_audio;
