@@ -1,23 +1,34 @@
-#include <filter.hh>
+#include "../include/filter/filter.hh"
 
 class BPFilter : public Filter {
   public:
-    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_)
-        : Filter(order), centre_freq(centre_freq_), freq_range(freq_range_) {
+    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_, Pipe<Audio> &output_)
+        : Filter(order), centre_freq(centre_freq_), freq_range(freq_range_), input(&input_), output(&output_) {
 
         f.setup(order, sampling_rate, centre_freq, freq_range);
     }
 
-    void call_back(std::vector<unsigned short> buffer_in) override {
-        std::unique_lock<std::mutex> lk(cond_filter_m);
+    ~BPFilter() {
+        stop();
+    }
 
-        while (running) {
-            cond_filter.wait(lk, []{return buffer_in.empty() == false;})
-            input.sample = buffer_in;
-            output = filter(input);
+    void call_back() override {
+        filter_thread = std::thread([this]() {
+            std::unique_lock<std::mutex> lk(input->cond_m);
+            running = true;
+            while (running) {
+                input->cond.wait(lk, [this] { return input->queue.empty() == false; });
 
-            cond_filter_out.notify_all();
-        }
+                Audio audio_out = filter(input->queue.front());
+                input->queue.pop();
+
+                {
+                    std::unique_lock <std::mutex> out_lk(output->cond_m);
+                    output->queue.push(audio_out);
+                }
+                output->cond.notify_all();
+            }
+        });
     }
 
   private:
@@ -31,13 +42,20 @@ class BPFilter : public Filter {
         return filtered_audio;
     }
 
+    void stop() {
+        running = false;
+        filter_thread.join();
+    }
+
     static const int default_order = 100;
     Iir::Butterworth::BandPass<default_order> f;
     double centre_freq{0};
     double freq_range{UINT_MAX};
-    Audio input;
-    Audio output;
-    std::condition_variable cond_filter;
-    std::condition_variable cond_filter_out;
-    std::mutex cond_filter_m;
+
+    Pipe<Audio> *input;
+    Pipe<Audio> *output;
+
+    std::thread filter_thread;
+    bool running{false};
+
 };

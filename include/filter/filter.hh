@@ -3,10 +3,12 @@
 
 #include <Iir.h>
 #include "../audio/audio.hh"
+#include "../pipe.hh"
 #include <limits.h>
 #include <stdio.h>
 #include <thread>
 #include <condition_variable>
+#include <memory>
 
 class Filter
 {
@@ -26,10 +28,12 @@ public:
         return order;
     }
 
-    virtual Audio filter(Audio in_audio) = 0;
+    virtual void call_back() = 0;
+
 
 private:
-    virtual void call_back(std::vector<unsigned short> buffer_in) = 0;
+
+    virtual Audio filter(Audio in_audio) = 0;
 
     //IIr::Butterworth::BandPass<order> f;
     //int num_of_taps;
