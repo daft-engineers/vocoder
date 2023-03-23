@@ -1,25 +1,25 @@
-#ifndef FILTER_H
-#define FILTER_H
+#ifndef FILTER_FILTER_HH
+#define FILTER_FILTER_HH
 
-#include <Iir.h>
 #include "../audio/audio.hh"
 #include "../pipe.hh"
-#include <limits.h>
-#include <stdio.h>
-#include <thread>
+#include <Iir.h>
+#include <climits>
 #include <condition_variable>
+#include <cstdio>
 #include <memory>
+#include <thread>
 
-class BPFilter{
-public:
-    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_, Pipe<Audio> &output_);
+class BPFilter {
+  public:
+    BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
+             Pipe<Audio> &output_);
 
     void run();
     void stop();
-    Audio filter(Audio in_audio);
+    Audio filter(const Audio &in_audio);
 
-private:
-
+  private:
     static const int default_order{12};
     Iir::Butterworth::BandPass<default_order> f;
     double centre_freq{0};
@@ -30,7 +30,6 @@ private:
 
     std::thread filter_thread;
     bool running{false};
-
 };
 
 #endif

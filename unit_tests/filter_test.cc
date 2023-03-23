@@ -1,8 +1,8 @@
 #include "../include/filter/filter.hh"
+#include <chrono>
 #include <cmath>
 #include <gtest/gtest.h>
 #include <vector>
-#include <chrono>
 
 const unsigned int sample_size = 100;
 const double sampling_rate = 2000;
@@ -112,7 +112,7 @@ TEST(FilterTest, LowFrequencyResponse) {
     Audio low_out = f.filter(low_sin_audio);
 
     for (int i = 0; i < sample_size; i++) {
-        //std::cerr << "Low frequency at amplitude: " << low_out[i] << std::endl;
+        // std::cerr << "Low frequency at amplitude: " << low_out[i] << std::endl;
         EXPECT_TRUE(low_out[i] < threshold) << "Low frequency not attentuated";
     }
 }
@@ -166,7 +166,7 @@ TEST(FilterTest, ThreadAndMessaging) {
 
         auto *in = &in_pipe;
         {
-            std::lock_guard <std::mutex> lk(in->cond_m);
+            std::lock_guard<std::mutex> lk(in->cond_m);
             in->queue.push(pass_sin_audio);
         }
         in->cond.notify_all();
