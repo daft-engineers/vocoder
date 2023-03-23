@@ -31,20 +31,20 @@ class BPFilter : public Filter {
         });
     }
 
+    void stop() {
+        running = false;
+        filter_thread.join();
+    }
+
   private:
     Audio filter(Audio in_audio) override {
 
         Audio filtered_audio;
-        for (auto sample : in_audio.sample) {
-            filtered_audio.sample.push_back(f.filter(sample));
+        for (auto sample : in_audio) {
+            filtered_audio.push_back(f.filter(sample));
         }
 
         return filtered_audio;
-    }
-
-    void stop() {
-        running = false;
-        filter_thread.join();
     }
 
     static const int default_order = 100;

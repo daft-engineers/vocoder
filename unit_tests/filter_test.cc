@@ -7,7 +7,7 @@
 
 const unsigned int sample_size = 100;
 const double sampling_rate = 2000;
-const float threshold = 0.3;
+const float threshold = 30;
 const float pi = 3.14;
 
 // Test Filter constructor
@@ -157,7 +157,7 @@ TEST(FilterTest, CallbackTest) {
         Audio pass_sin_audio;
 
         for (int i = 0; i < sample_size; i++) {
-            pass_sin_audio.sample.push_back(sin(2 * i * pi * pass_freq));
+            pass_sin_audio.push_back(100 * sin(2 * i * pi * pass_freq));
         }
 
         auto *in = &in_pipe;
@@ -170,22 +170,20 @@ TEST(FilterTest, CallbackTest) {
 
     // listen for output
     std::thread output_thread{[&out_pipe] {
-        Audio expected{{33, 40, 117, 67, 126}};
         std::unique_lock<std::mutex> lk(out_pipe.cond_m);
         out_pipe.cond.wait(lk, [&out_pipe] { return out_pipe.queue.empty() == false; });
 
         Audio pass_out = out_pipe.queue.front();
-        float max = 0;
+        unsigned short max = 0;
         for (int i = 0; i < sample_size; i++) {
-            if (pass_out.sample[i] > max) {
-                max = pass_out.sample[i];
+            if (pass_out[i] > max) {
+                max = pass_out[i];
             }
         }
         EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
     }};
-    while (true) {
-        EXPECT_TRUE(false) << in_pipe.queue.empty();
-    }
+
     input_thread.join();
     output_thread.join();
+    f.stop();
 }
