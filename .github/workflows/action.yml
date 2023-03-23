@@ -7,6 +7,9 @@ on: [push]
 #   # Customize the CMake build type here (Release, Debug, RelWithDebInfo, etc.)
 #   BUILD_TYPE: Release
 
+env:
+  path: ${{github.workspace}}/${{github.ref}}
+
 concurrency:
   group: ci-${{ github.ref }}
   cancel-in-progress: true
@@ -16,41 +19,49 @@ jobs:
     runs-on: self-hosted    
     steps:
       - uses: actions/checkout@v3
+        with:
+          path: ${{github.ref}}
       - name: Setup
-        run: ${{github.workspace}}/setup.sh
+        run: ${{env.path}}/setup.sh
 
   static-analysis:
     runs-on: self-hosted
     needs: checkout-and-setup
     steps:      
       - name: Analyse
-        run: ${{github.workspace}}/checks.sh --static-analysis
+        run: ${{env.path}}/checks.sh --static-analysis
 
   formatting:
     runs-on: self-hosted
     needs: checkout-and-setup
     steps:
       - name: Check Formatting
-        run: ${{github.workspace}}/checks.sh --formatting
+        run: ${{env.path}}/checks.sh --formatting
 
   build:
     runs-on: self-hosted
     needs: checkout-and-setup
     steps:      
       - name: Build executable
-        working-directory: ${{github.workspace}}/build/src
+        working-directory: ${{env.path}}/build/src
         run: make -j 3
 
       - name: Build unit tests
-        working-directory: ${{github.workspace}}/build/unit_tests
+        working-directory: ${{env.path}}/build/unit_tests
         run: make -j 3
-
-
 
   unit-test:  
     runs-on: self-hosted
     needs: build
     steps:      
       - name: Unit Tests
-        working-directory: ${{github.workspace}}/build/unit_tests
+        working-directory: ${{env.path}}/build/unit_tests
         run: ctest --timeout 1 --output-on-failure --repeat until-fail:20
+
+  tidy-up:
+    runs-on: self-hosted
+    needs: [unit-test, formatting, static-analysis]
+    steps:
+      - name: Delete everything
+        working-directory: ${{github.workspace}}
+        run: rm -r ${{env.path}}
