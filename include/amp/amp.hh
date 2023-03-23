@@ -5,10 +5,7 @@
 
 class Amplifer{
 public:
-Audio amplify(Audio sample, float amount){
- Audio a; //placeholder
- return a;
-}
+Audio amplify(Audio sample, float amount);
 };
 
 

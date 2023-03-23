@@ -5,7 +5,7 @@
 TEST(AmpTest, NonEmptyReturn) {
     int scale = 1;
     Audio onevalue;
-    onevalue.sample.push_back(0);
+    onevalue.push_back(0);
     Amplifer a;
 
     Audio out = a.amplify(onevalue, scale);
@@ -29,13 +29,13 @@ TEST(AmpTest, NoAmplification) {
     int scale = 1;
     Audio somevalues;
     for (int i = 0; i<100; i++){
-        somevalues.sample.push_back(i);
+        somevalues.push_back(i);
     }
     Amplifer a;
 
     Audio out = a.amplify(somevalues, scale);
 
-    EXPECT_EQ(somevalues.sample.size(), out.sample.size());
+    EXPECT_EQ(somevalues.size(), out.size());
     EXPECT_EQ(somevalues,out);
 
 }
@@ -45,14 +45,14 @@ TEST(AmpTest, HalfAmplification) {
     Audio somevalues;
     Audio somehalfvalues;
     for (int i = 0; i<100; i++){
-        somevalues.sample.push_back(i);
-        somehalfvalues.sample.push_back(i*2);
+        somevalues.push_back(i);
+        somehalfvalues.push_back(i/2);
     }
     Amplifer a;
 
     Audio out = a.amplify(somevalues, scale);
 
-    EXPECT_EQ(somevalues.sample.size(), out.sample.size());
+    EXPECT_EQ(somevalues.size(), out.size());
     EXPECT_EQ(somehalfvalues,out);
 
 }
@@ -62,14 +62,14 @@ TEST(AmpTest, DoubleAmplification) {
     Audio somevalues;
     Audio somedoublevalues;
     for (int i = 0; i<100; i++){
-        somevalues.sample.push_back(i);
-        somedoublevalues.sample.push_back(i/2);
+        somevalues.push_back(i);
+        somedoublevalues.push_back(i*2);
     }
     Amplifer a;
 
     Audio out = a.amplify(somevalues, scale);
 
-    EXPECT_EQ(somevalues.sample.size(), out.sample.size());
+    EXPECT_EQ(somevalues.size(), out.size());
     EXPECT_EQ(somedoublevalues,out);
 
 }
