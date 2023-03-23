@@ -39,11 +39,11 @@ jobs:
     steps:      
       - name: Build executable
         working-directory: ${{github.workspace}}/build/src
-        run: make -j 2
+        run: make -j 3
 
       - name: Build unit tests
         working-directory: ${{github.workspace}}/build/unit_tests
-        run: make -j 2
+        run: make -j 3
 
 
 
