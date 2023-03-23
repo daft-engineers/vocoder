@@ -10,15 +10,21 @@ To build just the vocoder itself you will need:
     - CMake 3.16+
     - C++11 compiler
     - Debian
+    - ALSA
 - Hardware
     - Raspberry Pi 3 (or newer)
     - Codec Zero
 
 Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from [their website](https://apt.llvm.org/) can be used.
 
-You will need to add clang and the appropriate tools to your PATH if you want the automated setup script to work. This can be done with:
+We recommend the following to get started from scratch (requires 1GB+ of storage):
 
 ```
+sudo apt update
+sudo apt install wget gpg build-essential cmake libasound2-dev
+wget https://apt.llvm.org/llvm.sh
+chmod +x llvm.sh
+sudo ./llvm.sh 15 all
 sudo ln -s /usr/lib/llvm-15/bin/clang{,++,-format,-tidy} /usr/local/bin
 ```
 
