@@ -22,6 +22,7 @@ jobs:
         with:
           path: ${{github.ref}}
       - name: Setup
+        working-directory: ${{env.path}}
         run: ${{env.path}}/setup.sh
 
   static-analysis:
