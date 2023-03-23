@@ -20,7 +20,7 @@ public:
 
 private:
 
-    static const int default_order{100};
+    static const int default_order{12};
     Iir::Butterworth::BandPass<default_order> f;
     double centre_freq{0};
     double freq_range{UINT_MAX};

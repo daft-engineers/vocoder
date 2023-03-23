@@ -23,7 +23,7 @@ TEST(FilterTest, EmptyReturn) {
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.push_back(100 * sin(2 * i * pi * freq));
+        sin_audio.push_back(100 * (sin(2 * i * pi * freq) + 1));
     }
 
     Audio out = f.filter(sin_audio);
@@ -77,7 +77,7 @@ TEST(FilterTest, PassFrequencyResponse) {
     Audio pass_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        pass_sin_audio.push_back(100 * sin(2 * i * pi * pass_freq));
+        pass_sin_audio.push_back(100 * (sin(2 * i * pi * pass_freq) + 1));
     }
 
     Audio pass_out = f.filter(pass_sin_audio);
@@ -112,7 +112,7 @@ TEST(FilterTest, LowFrequencyResponse) {
     Audio low_out = f.filter(low_sin_audio);
 
     for (int i = 0; i < sample_size; i++) {
-        std::cerr << "Low frequency at amplitude: " << low_out[i] << std::endl;
+        //std::cerr << "Low frequency at amplitude: " << low_out[i] << std::endl;
         EXPECT_TRUE(low_out[i] < threshold) << "Low frequency not attentuated";
     }
 }
@@ -132,7 +132,7 @@ TEST(FilterTest, RunTimeTest) {
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.push_back(100 * sin(2 * i * pi * freq));
+        sin_audio.push_back(100 * (sin(2 * i * pi * freq) + 1));
     }
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
@@ -161,7 +161,7 @@ TEST(FilterTest, ThreadAndMessaging) {
         Audio pass_sin_audio;
 
         for (int i = 0; i < sample_size; i++) {
-            pass_sin_audio.push_back(100 * sin(2 * i * pi * pass_freq));
+            pass_sin_audio.push_back(100 * (sin(2 * i * pi * pass_freq) + 1));
         }
 
         auto *in = &in_pipe;

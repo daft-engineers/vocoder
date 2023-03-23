@@ -35,8 +35,9 @@ Audio BPFilter::filter(Audio in_audio) {
 
     Audio filtered_audio;
     for (auto sample : in_audio) {
-        float buf = f.filter(sample);
-        if (buf < 0) {
+        signed short buf = f.filter(sample);
+        std::cerr << buf << std::endl;
+        if (buf <= 0) {
             filtered_audio.push_back(0);
         }
         else {
