@@ -28,10 +28,12 @@ template <std::size_t num_banks> class Mixer {
         : input_pipes(input_pipes), output_pipe(output_pipe) {
     }
 
-    void stop() {
-        run_thread = false;
-        thread.join();
-    }
+    // explicitly disable copy and move constructors since that will mess
+    // with threading logic. if these are needed it can be reviewed later
+    Mixer(const Mixer&) = delete;
+    Mixer& operator=(const Mixer&) = delete;
+    Mixer(Mixer&&) = delete;
+    Mixer& operator=(Mixer&&) = delete;
 
     static Audio sum(std::array<Audio, num_banks> audio_packets) {
         Audio output_packet;
@@ -70,6 +72,15 @@ template <std::size_t num_banks> class Mixer {
                 output_pipe.cond.notify_all();
             }
         });
+    }
+
+    void stop() {
+        run_thread = false;
+    }
+
+    ~Mixer() {
+        run_thread = false;
+        thread.join();
     }
 };
 

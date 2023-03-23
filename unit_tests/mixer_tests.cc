@@ -1,5 +1,6 @@
 #include "../include/mixer/mixer.hh"
 #include <array>
+#include <condition_variable>
 #include <gtest/gtest.h>
 #include <mutex>
 #include <thread>
@@ -20,13 +21,19 @@ TEST(MixerTests, Summation) {
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(MixerTests, Integration) {
     // set up mixer with 2 inputs
+    std::cerr << "running test\n";
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
-    {}
     mixer::Mixer<2> mixer(inputs, output);
+
+    // thread sync stuff
+    std::condition_variable input_sync;
+    std::mutex input_sync_mutex;
+    bool input_sync_ready = false;
 
     // start mixer
     mixer.run();
+    std::cerr << "mixer started\n";
 
     // provide input
     std::thread input_thread1{[&inputs] {
@@ -40,9 +47,14 @@ TEST(MixerTests, Integration) {
         pipe->cond.notify_all();
     }};
 
-    std::thread input_thread2{[&inputs] {
+    std::thread input_thread2{[&inputs, &input_sync, &input_sync_mutex, &input_sync_ready] {
         auto *pipe = &inputs[1];
         Audio sample{{23, 39, 83, 38, 28}};
+        
+        std::cerr << "thread waiting\n";
+        std::unique_lock<std::mutex> lk(input_sync_mutex);
+        input_sync.wait(lk, [&input_sync_ready]{return input_sync_ready;});
+        std::cerr << "input thread running\n";
 
         {
             std::lock_guard<std::mutex> lk(pipe->cond_m);
@@ -59,7 +71,16 @@ TEST(MixerTests, Integration) {
         ASSERT_EQ(output.queue.front(), expected);
     }};
 
+    // stop mixer thread, then release lock on input data
     mixer.stop();
+    std::cerr << "mixer thread stop requested\n";
+    {
+        std::lock_guard<std::mutex> lk(input_sync_mutex);
+        input_sync_ready = true;
+    }
+    input_sync.notify_all();
+    std::cerr << "thread notified\n";
+
     input_thread1.join();
     input_thread2.join();
     output_thread.join();
