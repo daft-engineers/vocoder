@@ -6,14 +6,19 @@
 #include <Iir.h>
 #include <climits>
 #include <condition_variable>
-#include <cstdio>
-#include <memory>
 #include <thread>
 
 class BPFilter {
   public:
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
              Pipe<Audio> &output_);
+
+    ~BPFilter();
+
+    BPFilter(const BPFilter &) = delete;
+    BPFilter &operator=(const BPFilter &) = delete;
+    BPFilter(BPFilter &&) = delete;
+    BPFilter &operator=(BPFilter &&) = delete;
 
     void run();
     void stop();
@@ -25,11 +30,12 @@ class BPFilter {
     double centre_freq{0};
     double freq_range{UINT_MAX};
 
-    Pipe<Audio> *input;
-    Pipe<Audio> *output;
+    Pipe<Audio> &input;
+    Pipe<Audio> &output;
 
     std::thread filter_thread;
     bool running{false};
+    bool thread_alive{false};
 };
 
 #endif

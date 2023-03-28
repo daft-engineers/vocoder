@@ -153,9 +153,14 @@ TEST(FilterTest, ThreadAndMessaging) {
 
     BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
 
+    // thread sync stuff
+    std::condition_variable input_sync;
+    std::mutex input_sync_mutex;
+    bool input_sync_ready = false;
+
     f.run();
 
-    std::thread input_thread{[&in_pipe] {
+    std::thread input_thread{[&in_pipe, &input_sync, &input_sync_mutex, &input_sync_ready] {
         // Pass freq sin
         const unsigned int pass_freq = 75;
         Audio pass_sin_audio;
@@ -163,6 +168,9 @@ TEST(FilterTest, ThreadAndMessaging) {
         for (int i = 0; i < sample_size; i++) {
             pass_sin_audio.push_back(100 * (sin(2 * i * pi * pass_freq) + 1));
         }
+
+        std::unique_lock<std::mutex> lk(input_sync_mutex);
+        input_sync.wait(lk, [&input_sync_ready] { return input_sync_ready; });
 
         auto *in = &in_pipe;
         {
@@ -189,6 +197,12 @@ TEST(FilterTest, ThreadAndMessaging) {
 
     std::cerr << "Exiting" << std::endl;
     f.stop();
+    {
+        std::lock_guard<std::mutex> lk(input_sync_mutex);
+        input_sync_ready = true;
+    }
+    input_sync.notify_all();
+
     std::cerr << "Filter stopped" << std::endl;
     input_thread.join();
     std::cerr << "Input stopped" << std::endl;
