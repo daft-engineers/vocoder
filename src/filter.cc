@@ -19,10 +19,12 @@ void BPFilter::run() {
         running = true;
         thread_alive = true;
         while (running) {
+            lk.lock();
             input.cond.wait(lk, [this] { return input.queue.empty() == false; });
 
             Audio audio_out = filter(input.queue.front());
             input.queue.pop();
+            lk.unlock();
 
             {
                 std::lock_guard<std::mutex> out_lk(output.cond_m);
