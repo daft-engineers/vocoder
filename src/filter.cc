@@ -16,6 +16,7 @@ BPFilter::~BPFilter() {
 void BPFilter::run() {
     filter_thread = std::thread([this]() {
         std::unique_lock<std::mutex> lk(input.cond_m);
+        lk.unlock();
         running = true;
         thread_alive = true;
         while (running) {
