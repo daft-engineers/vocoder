@@ -27,25 +27,19 @@ template <std::size_t num_samples> class RMS {
     std::thread thread;
 
   public:
-
-  
-
-    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe)
-            : input_pipe(input_pipe), output_pipe(output_pipe) {
-        }
+    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe) : input_pipe(input_pipe), output_pipe(output_pipe) {
+    }
 
     void insert(Audio packet) {
         std::for_each(packet.begin(), packet.end(), [this](const uint16_t item) {
             // this assumes that the 0 point for the signal is max(uint16)/2, precicely in the middle of the range
-            
-            int64_t centred = item - UINT16_MAX/2;
-            uint32_t squared = centred * centred; 
+
+            int64_t centred = item - UINT16_MAX / 2;
+            uint32_t squared = centred * centred;
             sample_buffer[sample_buffer_index] = squared;
             sample_buffer_index = (sample_buffer_index + 1) % num_samples;
         });
     }
-
-    
 
     void stop() {
         run_thread = false;
@@ -79,9 +73,8 @@ template <std::size_t num_samples> class RMS {
             }
         });
     }
-
 };
 
-}
+} // namespace rms
 
 #endif // RMS_RMS_HH
