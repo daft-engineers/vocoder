@@ -7,7 +7,6 @@ BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double 
     f.setup(order, sampling_rate, centre_freq, freq_range);
 }
 BPFilter::~BPFilter() {
-    running = false;
     if (thread_alive) {
         filter_thread.join();
     }
@@ -17,11 +16,12 @@ void BPFilter::run() {
     filter_thread = std::thread([this]() {
         std::unique_lock<std::mutex> lk(input.cond_m);
         lk.unlock();
-        running = true;
         thread_alive = true;
-        while (running) {
+        while (true) {
             lk.lock();
-            input.cond.wait(lk, [this] { return input.queue.empty() == false; });
+            if(!input.cond.wait_for(lk, timeout, [this] { return input.queue.empty() == false; })){
+                return false;
+            }
 
             Audio audio_out = filter(input.queue.front());
             input.queue.pop();
@@ -33,11 +33,8 @@ void BPFilter::run() {
             }
             output.cond.notify_all();
         }
+        return true;
     });
-}
-
-void BPFilter::stop() {
-    running = false;
 }
 
 Audio BPFilter::filter(const Audio &in_audio) {

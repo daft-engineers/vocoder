@@ -19,16 +19,27 @@ TEST(MixerTests, Summation) {
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(MixerTests, Timeout) {
+    // set up mixer with 2 inputs
+    Pipe<Audio> output{};
+    std::array<Pipe<Audio>, 2> inputs{};
+    {
+        mixer::Mixer<2> mixer(inputs, output);
+
+        // start mixer
+        mixer.run();
+    } // mixer goes out of scope so destructor is called
+
+    ASSERT_TRUE(true); // when run with a timeout this will fail if it doesn't reach this point
+}
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(MixerTests, Integration) {
     // set up mixer with 2 inputs
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
     mixer::Mixer<2> mixer(inputs, output);
-
-    // thread sync stuff
-    std::condition_variable input_sync;
-    std::mutex input_sync_mutex;
-    bool input_sync_ready = false;
 
     // start mixer
     mixer.run();
@@ -45,12 +56,9 @@ TEST(MixerTests, Integration) {
         pipe->cond.notify_all();
     }};
 
-    std::thread input_thread2{[&inputs, &input_sync, &input_sync_mutex, &input_sync_ready] {
+    std::thread input_thread2{[&inputs] {
         auto *pipe = &inputs[1];
         Audio sample{{23, 39, 83, 38, 28}};
-
-        std::unique_lock<std::mutex> lk(input_sync_mutex);
-        input_sync.wait(lk, [&input_sync_ready] { return input_sync_ready; });
 
         {
             std::lock_guard<std::mutex> lk(pipe->cond_m);
@@ -66,14 +74,6 @@ TEST(MixerTests, Integration) {
         output.cond.wait(lk, [&output] { return output.queue.empty() == false; });
         ASSERT_EQ(output.queue.front(), expected);
     }};
-
-    // stop mixer thread, then release lock on input data
-    mixer.stop();
-    {
-        std::lock_guard<std::mutex> lk(input_sync_mutex);
-        input_sync_ready = true;
-    }
-    input_sync.notify_all();
 
     input_thread1.join();
     input_thread2.join();

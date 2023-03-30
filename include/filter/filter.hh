@@ -21,7 +21,6 @@ class BPFilter {
     BPFilter &operator=(BPFilter &&) = delete;
 
     void run();
-    void stop();
     Audio filter(const Audio &in_audio);
 
   private:
@@ -34,8 +33,8 @@ class BPFilter {
     Pipe<Audio> &output;
 
     std::thread filter_thread;
-    bool running{false};
     bool thread_alive{false};
+    const std::chrono::milliseconds timeout{1};
 };
 
 #endif

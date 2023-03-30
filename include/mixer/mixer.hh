@@ -5,6 +5,7 @@
 #include "../pipe.hh"
 #include <algorithm>
 #include <array>
+#include <chrono>
 #include <cstddef>
 #include <functional>
 #include <memory>
@@ -22,6 +23,7 @@ template <std::size_t num_banks> class Mixer {
 
     bool run_thread{};
     std::thread thread;
+    const std::chrono::milliseconds timeout {1};
 
   public:
     Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes, Pipe<Audio> &output_pipe)
@@ -49,16 +51,17 @@ template <std::size_t num_banks> class Mixer {
         return output_packet;
     }
 
-    void run() {
-        run_thread = true;
+    void run() { 
         thread = std::thread([this]() {
-            while (run_thread) {
+            while (true) {
                 std::array<Audio, num_banks> audio_packets;
                 for (int bank = 0; bank < num_banks; bank++) {
                     auto &pipe = input_pipes[bank];
 
                     std::unique_lock<std::mutex> lk(pipe.cond_m);
-                    pipe.cond.wait(lk, [&pipe] { return pipe.queue.empty() == false; });
+                    if(!pipe.cond.wait_for(lk, timeout, [&pipe] { return pipe.queue.empty() == false; })) {
+                        return false;
+                    }
 
                     audio_packets[bank] = pipe.queue.front();
                     pipe.queue.pop();
@@ -71,15 +74,11 @@ template <std::size_t num_banks> class Mixer {
                 }
                 output_pipe.cond.notify_all();
             }
+            return true;
         });
     }
 
-    void stop() {
-        run_thread = false;
-    }
-
     ~Mixer() {
-        run_thread = false;
         thread.join();
     }
 };
