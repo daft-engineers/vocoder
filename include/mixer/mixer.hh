@@ -23,7 +23,7 @@ template <std::size_t num_banks> class Mixer {
 
     bool run_thread{};
     std::thread thread;
-    const std::chrono::milliseconds timeout {1};
+    const std::chrono::milliseconds timeout{1};
 
   public:
     Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes, Pipe<Audio> &output_pipe)
@@ -51,7 +51,7 @@ template <std::size_t num_banks> class Mixer {
         return output_packet;
     }
 
-    void run() { 
+    void run() {
         thread = std::thread([this]() {
             while (true) {
                 std::array<Audio, num_banks> audio_packets;
@@ -59,7 +59,7 @@ template <std::size_t num_banks> class Mixer {
                     auto &pipe = input_pipes[bank];
 
                     std::unique_lock<std::mutex> lk(pipe.cond_m);
-                    if(!pipe.cond.wait_for(lk, timeout, [&pipe] { return pipe.queue.empty() == false; })) {
+                    if (!pipe.cond.wait_for(lk, timeout, [&pipe] { return pipe.queue.empty() == false; })) {
                         return false;
                     }
 

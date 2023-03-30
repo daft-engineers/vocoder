@@ -1,6 +1,5 @@
 #include "../include/filter/filter.hh"
 #include <chrono>
-#include <cmath>
 #include <gtest/gtest.h>
 #include <vector>
 

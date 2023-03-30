@@ -19,7 +19,7 @@ void BPFilter::run() {
         thread_alive = true;
         while (true) {
             lk.lock();
-            if(!input.cond.wait_for(lk, timeout, [this] { return input.queue.empty() == false; })){
+            if (!input.cond.wait_for(lk, timeout, [this] { return input.queue.empty() == false; })) {
                 return false;
             }
 
