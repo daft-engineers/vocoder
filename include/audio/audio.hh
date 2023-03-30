@@ -4,6 +4,6 @@
 #include <cstdint>
 #include <vector>
 
-using Audio = std::vector<uint16_t>;
+using Audio = std::vector<int16_t>;
 
 #endif // AUDIO_AUDIO_HH
