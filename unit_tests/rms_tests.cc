@@ -20,12 +20,12 @@ TEST(RMSTests, buffer) {
     // check that rms is 0 at the beginning
     ASSERT_EQ(rms.calc(), 0);
 
-    audio[0] = UINT16_MAX / 2 + 16;
+    audio[0] = 16;
     rms.insert(audio);
     // buffer should now be 16, 0, 0, 0 giving rms of 8
     ASSERT_EQ(rms.calc(), 8);
 
-    audio[0] = UINT16_MAX / 2 - 16;
+    audio[0] = -16;
     rms.insert(audio);
     // buffer should now be 16, 16, 0, 0 giving rms of 8r2
     ASSERT_EQ(rms.calc(), 8 * std::sqrt(2));
@@ -37,7 +37,7 @@ TEST(RMSTests, buffer) {
 
     // insertions to the buffer from here should roll back to the front
 
-    audio[0] = UINT16_MAX / 2;
+    audio[0] = 0;
 
     for (int i = 0; i < 4; i++) {
         rms.insert(audio);
@@ -58,7 +58,7 @@ TEST(RMSTests, Integration) {
 
     std::thread input_thread{[&input] {
         auto *pipe = &input;
-        Audio sample{UINT16_MAX / 2 + 16, UINT16_MAX / 2 + 0, UINT16_MAX / 2 + 0, UINT16_MAX / 2 + 0};
+        Audio sample{16, 0, 0, 0};
 
         {
             std::lock_guard<std::mutex> lk(pipe->cond_m);

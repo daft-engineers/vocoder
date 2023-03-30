@@ -31,11 +31,10 @@ template <std::size_t num_samples> class RMS {
     }
 
     void insert(Audio packet) {
-        std::for_each(packet.begin(), packet.end(), [this](const uint16_t item) {
+        std::for_each(packet.begin(), packet.end(), [this](const int16_t item) {
             // this assumes that the 0 point for the signal is max(uint16)/2, precicely in the middle of the range
 
-            int64_t centred = item - UINT16_MAX / 2;
-            uint32_t squared = centred * centred;
+            uint32_t squared = item * item;
             sample_buffer[sample_buffer_index] = squared;
             sample_buffer_index = (sample_buffer_index + 1) % num_samples;
         });
