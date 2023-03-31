@@ -6,6 +6,7 @@
 
 #include "../include/rms/rms.hh"
 #include <gtest/gtest.h>
+#include <cmath>
 #include <mutex>
 #include <thread>
 
@@ -22,17 +23,17 @@ TEST(RMSTests, buffer) {
 
     audio[0] = 16;
     rms.insert(audio);
-    // buffer should now be 16, 0, 0, 0 giving rms of 8
+    // buffer should now be 256, 0, 0, 0 giving rms of 8
     ASSERT_EQ(rms.calc(), 8);
 
     audio[0] = -16;
     rms.insert(audio);
-    // buffer should now be 16, 16, 0, 0 giving rms of 8r2
+    // buffer should now be 256, 256, 0, 0 giving rms of 8r2
     ASSERT_EQ(rms.calc(), 8 * std::sqrt(2));
 
     rms.insert(audio);
     rms.insert(audio);
-    // buffer should now be 16, 16, 16, 16 giving rms of 16
+    // buffer should now be 256, 256, 256, 256 giving rms of 16
     ASSERT_EQ(rms.calc(), 16);
 
     // insertions to the buffer from here should roll back to the front
@@ -73,10 +74,8 @@ TEST(RMSTests, Integration) {
         ASSERT_EQ(output.queue.front(), 8.0f);
     }};
 
-    rms.stop();
     input_thread.join();
     output_thread.join();
-    std::cerr << "all threads joined\n";
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

@@ -20,10 +20,11 @@ template <std::size_t num_samples> class RMS {
     Pipe<Audio> &input_pipe;
     Pipe<double> &output_pipe;
 
-    std::array<uint32_t, num_samples> sample_buffer = {0};
+    std::array<uint32_t, num_samples> squared_sample_buffer = {0};
     int sample_buffer_index = 0;
 
-    bool run_thread{};
+    const std::chrono::milliseconds timeout{1};
+    bool thread_alive{false};
     std::thread thread;
 
   public:
@@ -32,32 +33,28 @@ template <std::size_t num_samples> class RMS {
 
     void insert(Audio packet) {
         std::for_each(packet.begin(), packet.end(), [this](const int16_t item) {
-            // this assumes that the 0 point for the signal is max(uint16)/2, precicely in the middle of the range
-
+            // this assumes that the 0 point for the signal is 0
             uint32_t squared = item * item;
-            sample_buffer[sample_buffer_index] = squared;
+            squared_sample_buffer[sample_buffer_index] = squared;
             sample_buffer_index = (sample_buffer_index + 1) % num_samples;
         });
     }
 
-    void stop() {
-        run_thread = false;
-        thread.join();
-    }
-
     double calc() {
-        uint64_t total = std::accumulate(std::begin(sample_buffer), std::end(sample_buffer), 0);
+        uint64_t total = std::accumulate(std::begin(squared_sample_buffer), std::end(squared_sample_buffer), 0);
         double output = std::sqrt(total / num_samples);
         return output;
     }
 
     void run() {
-        run_thread = true;
         thread = std::thread([this]() {
-            while (run_thread) {
+            thread_alive = true;
+            while (true) {
                 {
                     std::unique_lock<std::mutex> lk(input_pipe.cond_m);
-                    input_pipe.cond.wait(lk, [this] { return input_pipe.queue.empty() == false; });
+                    if (!input_pipe.cond.wait_for(lk, timeout, [this] { return input_pipe.queue.empty() == false; })){
+                        return false;
+                    }
 
                     insert(input_pipe.queue.front());
                     input_pipe.queue.pop();
@@ -70,10 +67,15 @@ template <std::size_t num_samples> class RMS {
                 }
                 output_pipe.cond.notify_all();
             }
+            return true;
         });
     }
+    ~RMS() {
+        if (thread_alive){
+            thread.join();
+        }
+    }
 };
-
 } // namespace rms
 
 #endif // RMS_RMS_HH
