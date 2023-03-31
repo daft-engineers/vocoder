@@ -5,7 +5,7 @@ Audio Amplifier::amplify(Audio &sample, double amount) {
     Audio processed;
     for (auto point : sample) {
 
-        processed.push_back((int)(point * amount));
+        processed.push_back((int16_t)(point * amount));
     }
     return processed;
 }

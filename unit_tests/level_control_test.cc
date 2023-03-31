@@ -102,7 +102,7 @@ TEST(AmpTest, ThreadAndMessaging) {
     std::mutex scale_sync_mutex;
     bool scale_sync_ready = false;
 
-    int single_sample = 2;
+    int16_t single_sample = 2;
     Audio amp_in;
     amp_in.push_back(single_sample);
     double scale_factor = 0.5;
