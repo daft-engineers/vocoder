@@ -5,8 +5,8 @@
  */
 
 #include "../include/rms/rms.hh"
-#include <gtest/gtest.h>
 #include <cmath>
+#include <gtest/gtest.h>
 #include <mutex>
 #include <thread>
 

@@ -52,7 +52,7 @@ template <std::size_t num_samples> class RMS {
             while (true) {
                 {
                     std::unique_lock<std::mutex> lk(input_pipe.cond_m);
-                    if (!input_pipe.cond.wait_for(lk, timeout, [this] { return input_pipe.queue.empty() == false; })){
+                    if (!input_pipe.cond.wait_for(lk, timeout, [this] { return input_pipe.queue.empty() == false; })) {
                         return false;
                     }
 
@@ -71,10 +71,15 @@ template <std::size_t num_samples> class RMS {
         });
     }
     ~RMS() {
-        if (thread_alive){
+        if (thread_alive) {
             thread.join();
         }
     }
+
+    RMS(const RMS &) = delete;
+    RMS &operator=(const RMS &) = delete;
+    RMS(RMS &&) = delete;
+    RMS &operator=(RMS &&) = delete;
 };
 } // namespace rms
 
