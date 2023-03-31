@@ -12,6 +12,9 @@
 
 // This is a unit test, magic numbers are called test data here
 // NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(RMSTests, buffer) {
     Pipe<Audio> input{};
     Pipe<double> output{};
@@ -58,14 +61,14 @@ TEST(RMSTests, Integration) {
     rms.run();
 
     std::thread input_thread{[&input] {
-        auto *pipe = &input;
+        auto &pipe = input;
         Audio sample{16, 0, 0, 0};
 
         {
-            std::lock_guard<std::mutex> lk(pipe->cond_m);
-            pipe->queue.push(sample);
+            std::lock_guard<std::mutex> lk(pipe.cond_m);
+            pipe.queue.push(sample);
         }
-        pipe->cond.notify_all();
+        pipe.cond.notify_all();
     }};
 
     std::thread output_thread{[&output] {
