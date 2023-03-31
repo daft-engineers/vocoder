@@ -1,6 +1,11 @@
 #include "../include/amp/amp.hh"
 #include <gtest/gtest.h>
 
+// This is a unit test, magic numbers are called test data here
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, NonEmptyReturn) {
     const int scale = 1;
     Audio onevalue;
@@ -16,6 +21,8 @@ TEST(AmpTest, NonEmptyReturn) {
     EXPECT_NE(empty, out);
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, EmptyReturn) {
     const int scale = 1;
     Audio novalue;
@@ -31,6 +38,8 @@ TEST(AmpTest, EmptyReturn) {
     EXPECT_EQ(empty, out);
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, NoAmplification) {
     const int scale = 1;
     Audio somevalues;
@@ -48,6 +57,8 @@ TEST(AmpTest, NoAmplification) {
     EXPECT_EQ(somevalues, out);
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, HalfAmplification) {
     const double scale = 0.5;
     Audio somevalues;
@@ -67,6 +78,8 @@ TEST(AmpTest, HalfAmplification) {
     EXPECT_EQ(somehalfvalues, out);
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, DoubleAmplification) {
     double scale = 2;
     Audio somevalues;
@@ -86,21 +99,14 @@ TEST(AmpTest, DoubleAmplification) {
     EXPECT_EQ(somedoublevalues, out);
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, ThreadAndMessaging) {
     Pipe<Audio> in_pipe;
     Pipe<double> scale_pipe;
     Pipe<Audio> out_pipe;
 
     Amplifier a(in_pipe, scale_pipe, out_pipe);
-
-    // thread sync stuff
-    std::condition_variable input_sync;
-    std::mutex input_sync_mutex;
-    bool input_sync_ready = false;
-
-    std::condition_variable scale_sync;
-    std::mutex scale_sync_mutex;
-    bool scale_sync_ready = false;
 
     int16_t single_sample = 2;
     Audio amp_in;
@@ -111,10 +117,7 @@ TEST(AmpTest, ThreadAndMessaging) {
 
     a.run();
 
-    std::thread input_thread{[&in_pipe, &input_sync, &input_sync_mutex, &input_sync_ready, &amp_in] {
-        std::unique_lock<std::mutex> lk(input_sync_mutex);
-        input_sync.wait(lk, [&input_sync_ready] { return input_sync_ready; });
-
+    std::thread input_thread{[&in_pipe, &amp_in] {
         auto *in = &in_pipe;
         {
             std::lock_guard<std::mutex> lk(in->cond_m);
@@ -123,10 +126,7 @@ TEST(AmpTest, ThreadAndMessaging) {
         in->cond.notify_all();
     }};
 
-    std::thread scale_thread{[&scale_pipe, &scale_sync, &scale_sync_mutex, &scale_sync_ready, scale_factor] {
-        std::unique_lock<std::mutex> lk(scale_sync_mutex);
-        scale_sync.wait(lk, [&scale_sync_ready] { return scale_sync_ready; });
-
+    std::thread scale_thread{[&scale_pipe, scale_factor] {
         auto *scale = &scale_pipe;
         {
             std::lock_guard<std::mutex> lk(scale->cond_m);
@@ -144,19 +144,6 @@ TEST(AmpTest, ThreadAndMessaging) {
         EXPECT_EQ(amp_out, amp_processed_out) << "Amp scales correctly";
     }};
 
-    std::cerr << "Exiting" << std::endl;
-    a.stop();
-    {
-        std::lock_guard<std::mutex> lk(input_sync_mutex);
-        input_sync_ready = true;
-    }
-    input_sync.notify_all();
-    {
-        std::lock_guard<std::mutex> lk(scale_sync_mutex);
-        scale_sync_ready = true;
-    }
-    scale_sync.notify_all();
-
     std::cerr << "Amp stopped" << std::endl;
     input_thread.join();
     std::cerr << "Input stopped" << std::endl;
@@ -165,3 +152,4 @@ TEST(AmpTest, ThreadAndMessaging) {
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
 }
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

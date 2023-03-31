@@ -14,7 +14,6 @@ class Amplifier {
     Amplifier &operator=(Amplifier &&) = delete;
 
     void run();
-    void stop();
     Audio amplify(Audio &sample, double amount);
 
   private:
@@ -23,8 +22,8 @@ class Amplifier {
     Pipe<Audio> &output;
 
     std::thread amplifier_thread;
-    bool running{false};
     bool thread_alive{false};
+    const std::chrono::milliseconds timeout{1};
 };
 
 #endif // AMP_AMP_HH

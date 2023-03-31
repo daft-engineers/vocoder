@@ -15,7 +15,6 @@ Amplifier::Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &o
 }
 
 Amplifier::~Amplifier() {
-    running = false;
     if (thread_alive) {
         amplifier_thread.join();
     }
@@ -27,13 +26,16 @@ void Amplifier::run() {
         std::unique_lock<std::mutex> scaling_lk(scaling.cond_m);
         input_lk.unlock();
         scaling_lk.unlock();
-        running = true;
         thread_alive = true;
-        while (running) {
+        while (true) {
             input_lk.lock();
             scaling_lk.lock();
-            input.cond.wait(input_lk, [this] { return input.queue.empty() == false; });
-            scaling.cond.wait(scaling_lk, [this] { return scaling.queue.empty() == false; });
+            if (!input.cond.wait_for(input_lk, timeout, [this] { return input.queue.empty() == false; })) {
+                return false;
+            }
+            if (!scaling.cond.wait_for(scaling_lk, timeout, [this] { return scaling.queue.empty() == false; })) {
+                return false;
+            }
 
             Audio audio_out = amplify(input.queue.front(), scaling.queue.front());
             input.queue.pop();
@@ -46,9 +48,6 @@ void Amplifier::run() {
             }
             output.cond.notify_all();
         }
+        return true;
     });
-}
-
-void Amplifier::stop() {
-    running = false;
 }
