@@ -1,8 +1,10 @@
 #include "../include/filter/filter.hh"
 #include <chrono>
-#include <cmath>
 #include <gtest/gtest.h>
 #include <vector>
+
+// This is a unit test, magic numbers are called test data here
+// NOLINTBEGIN(cppcoreguidelines-avoid-magic-numbers)
 
 const unsigned int sample_size = 100;
 const double sampling_rate = 2000;
@@ -10,6 +12,8 @@ const float threshold = 30;
 const float pi = 3.14;
 
 // Test filter function is not returning all zeros
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, EmptyReturn) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -23,7 +27,7 @@ TEST(FilterTest, EmptyReturn) {
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.push_back(100 * (sin(2 * i * pi * freq) + 1));
+        sin_audio.push_back(100 * (std::sin(2. * i * pi * freq) + 1));
     }
 
     Audio out = f.filter(sin_audio);
@@ -39,6 +43,8 @@ TEST(FilterTest, EmptyReturn) {
 }
 
 // Test filter function at a frequency above the pass band
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, HighFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -52,7 +58,7 @@ TEST(FilterTest, HighFrequencyResponse) {
     Audio high_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        high_sin_audio.push_back(100 * (sin(2 * i * pi * high_freq) + 1));
+        high_sin_audio.push_back(100 * (std::sin(2. * i * pi * high_freq) + 1));
     }
 
     Audio high_out = f.filter(high_sin_audio);
@@ -64,6 +70,8 @@ TEST(FilterTest, HighFrequencyResponse) {
 }
 
 // Test filter function at a frequency in the pass band
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, PassFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -77,7 +85,7 @@ TEST(FilterTest, PassFrequencyResponse) {
     Audio pass_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        pass_sin_audio.push_back(100 * (sin(2 * i * pi * pass_freq) + 1));
+        pass_sin_audio.push_back(100 * (std::sin(2. * i * pi * pass_freq) + 1));
     }
 
     Audio pass_out = f.filter(pass_sin_audio);
@@ -93,6 +101,8 @@ TEST(FilterTest, PassFrequencyResponse) {
 }
 
 // Test filter function at a frequency below the pass band
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, LowFrequencyResponse) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -106,7 +116,7 @@ TEST(FilterTest, LowFrequencyResponse) {
     Audio low_sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        low_sin_audio.push_back(100 * (sin(2 * i * pi * low_freq) + 1));
+        low_sin_audio.push_back(100 * (std::sin(2. * i * pi * low_freq) + 1));
     }
 
     Audio low_out = f.filter(low_sin_audio);
@@ -118,6 +128,8 @@ TEST(FilterTest, LowFrequencyResponse) {
 }
 
 // Test filter function runs in less than 0.5ms
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, RunTimeTest) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -132,7 +144,7 @@ TEST(FilterTest, RunTimeTest) {
     Audio sin_audio;
 
     for (int i = 0; i < sample_size; i++) {
-        sin_audio.push_back(100 * (sin(2 * i * pi * freq) + 1));
+        sin_audio.push_back(100 * (std::sin(2. * i * pi * freq) + 1));
     }
     std::chrono::steady_clock::time_point begin = std::chrono::steady_clock::now();
 
@@ -144,6 +156,8 @@ TEST(FilterTest, RunTimeTest) {
     EXPECT_TRUE(diff.count() < max_delay) << "Time difference = " << diff.count() << "[µs]" << std::endl;
 }
 
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(FilterTest, ThreadAndMessaging) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
@@ -153,24 +167,16 @@ TEST(FilterTest, ThreadAndMessaging) {
 
     BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
 
-    // thread sync stuff
-    std::condition_variable input_sync;
-    std::mutex input_sync_mutex;
-    bool input_sync_ready = false;
-
     f.run();
 
-    std::thread input_thread{[&in_pipe, &input_sync, &input_sync_mutex, &input_sync_ready] {
+    std::thread input_thread{[&in_pipe] {
         // Pass freq sin
         const unsigned int pass_freq = 75;
         Audio pass_sin_audio;
 
         for (int i = 0; i < sample_size; i++) {
-            pass_sin_audio.push_back(100 * (sin(2 * i * pi * pass_freq) + 1));
+            pass_sin_audio.push_back(100 * (std::sin(2. * i * pi * pass_freq) + 1));
         }
-
-        std::unique_lock<std::mutex> lk(input_sync_mutex);
-        input_sync.wait(lk, [&input_sync_ready] { return input_sync_ready; });
 
         auto *in = &in_pipe;
         {
@@ -195,17 +201,11 @@ TEST(FilterTest, ThreadAndMessaging) {
         EXPECT_TRUE(max > threshold) << "Pass frequency attentuated";
     }};
 
-    std::cerr << "Exiting" << std::endl;
-    f.stop();
-    {
-        std::lock_guard<std::mutex> lk(input_sync_mutex);
-        input_sync_ready = true;
-    }
-    input_sync.notify_all();
-
     std::cerr << "Filter stopped" << std::endl;
     input_thread.join();
     std::cerr << "Input stopped" << std::endl;
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
 }
+
+// NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
