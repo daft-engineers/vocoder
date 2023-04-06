@@ -51,6 +51,13 @@ jobs:
         working-directory: ${{env.path}}/build/unit_tests
         run: make -j 3
 
+  docs:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:
+      - name: Make Docs
+        run: ${{env.path}}/docs.sh
+
   unit-test:  
     runs-on: self-hosted
     needs: build

@@ -30,6 +30,8 @@ sudo ln -s /usr/lib/llvm-15/bin/clang{,++,-format,-tidy} /usr/local/bin
 
 Python 3 is required to automatically build and link unit tests. Python 3 comes preinstalled on most Linux distributions, and is available as a package on all others.
 
+To build the doxygen documentation, doxygen and graphviz are required.
+
 # Getting started (using Clang)
 
 Once you have installed the prerequisites and configured your hardware you should clone the repository and run the setup script.
