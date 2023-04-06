@@ -51,7 +51,7 @@ jobs:
         working-directory: ${{env.path}}/build/unit_tests
         run: make -j 3
 
-  docs:
+  generate-docs:
     runs-on: self-hosted
     needs: checkout-and-setup
     steps:
