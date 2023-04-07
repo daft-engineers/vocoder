@@ -5,7 +5,7 @@ Audio Amplifier::amplify(Audio &sample, double amount) {
     Audio processed;
     for (auto point : sample) {
 
-        processed.push_back((int16_t)(point * amount));
+        processed.push_back(static_cast<int>(trunc(point * amount)));
     }
     return processed;
 }
@@ -48,6 +48,5 @@ void Amplifier::run() {
             }
             output.cond.notify_all();
         }
-        return true;
     });
 }

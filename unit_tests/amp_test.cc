@@ -6,23 +6,6 @@
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(AmpTest, NonEmptyReturn) {
-    const int scale = 1;
-    Audio onevalue;
-    onevalue.push_back(0);
-    Pipe<Audio> in_pipe;
-    Pipe<double> scale_pipe;
-    Pipe<Audio> out_pipe;
-
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
-    Audio out = a.amplify(onevalue, scale);
-
-    Audio empty;
-    EXPECT_NE(empty, out);
-}
-
-// TEST macro violates guidelines
-// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, EmptyReturn) {
     const int scale = 1;
     Audio novalue;
@@ -40,64 +23,30 @@ TEST(AmpTest, EmptyReturn) {
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(AmpTest, NoAmplification) {
+TEST(AmpTest, Amplification) {
     const int scale = 1;
-    Audio somevalues;
-    for (int i = 0; i < 100; i++) {
-        somevalues.push_back(i);
-    }
-    Pipe<Audio> in_pipe;
-    Pipe<double> scale_pipe;
-    Pipe<Audio> out_pipe;
-
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
-    Audio out = a.amplify(somevalues, scale);
-
-    EXPECT_EQ(somevalues.size(), out.size());
-    EXPECT_EQ(somevalues, out);
-}
-
-// TEST macro violates guidelines
-// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(AmpTest, HalfAmplification) {
-    const double scale = 0.5;
+    const double scalehalf = 0.5;
+    const int scaledouble = 2;
     Audio somevalues;
     Audio somehalfvalues;
-    for (int i = 0; i < 100; i++) {
-        somevalues.push_back(i);
-        somehalfvalues.push_back(i / 2);
-    }
-    Pipe<Audio> in_pipe;
-    Pipe<double> scale_pipe;
-    Pipe<Audio> out_pipe;
-
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
-    Audio out = a.amplify(somevalues, scale);
-
-    EXPECT_EQ(somevalues.size(), out.size());
-    EXPECT_EQ(somehalfvalues, out);
-}
-
-// TEST macro violates guidelines
-// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(AmpTest, DoubleAmplification) {
-    double scale = 2;
-    Audio somevalues;
     Audio somedoublevalues;
     for (int i = 0; i < 100; i++) {
         somevalues.push_back(i);
-        somedoublevalues.push_back(i * 2);
+        somehalfvalues.push_back(i/2);
+        somedoublevalues.push_back(i*2);
     }
-    Pipe<Audio> in_pipe;
-    Pipe<double> scale_pipe;
-    Pipe<Audio> out_pipe;
-
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
-    Audio out = a.amplify(somevalues, scale);
+    Audio out = Amplifier::amplify(somevalues, scale);
+    Audio outhalf = Amplifier::amplify(somevalues, scalehalf);
+    Audio outdouble = Amplifier::amplify(somevalues, scaledouble);
 
     EXPECT_EQ(somevalues.size(), out.size());
-    EXPECT_EQ(somedoublevalues, out);
+    EXPECT_EQ(somevalues, out);
+    EXPECT_EQ(somehalfvalues, outhalf);
+    EXPECT_EQ(somedoublevalues, outdouble);
+
+
 }
+
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)

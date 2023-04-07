@@ -14,7 +14,7 @@ class Amplifier {
     Amplifier &operator=(Amplifier &&) = delete;
 
     void run();
-    Audio amplify(Audio &sample, double amount);
+    static Audio amplify(Audio &sample, double amount);
 
   private:
     Pipe<Audio> &input;
