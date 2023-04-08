@@ -57,6 +57,7 @@ jobs:
     if: github.ref != 'refs/heads/gh-pages'
     steps:
       - name: Make Docs
+        working-directory: ${{env.path}}
         run: ${{env.path}}/docs.sh
 
   unit-test:  
