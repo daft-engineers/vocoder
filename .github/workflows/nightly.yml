@@ -1,0 +1,41 @@
+name: Nightly tests
+on:
+  schedule:
+    - cron: '0 4 * * *'
+
+
+env:
+  path: ${{github.workspace}}/nightly-${{github.ref_name}}
+
+concurrency:
+  group: nightly-${{ github.ref_name }}
+  cancel-in-progress: true
+
+jobs:
+  checkout-and-setup:
+    runs-on: self-hosted    
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          path: ${{github.ref_name}}
+      - name: Setup
+        working-directory: ${{env.path}}
+        run: ${{env.path}}/setup.sh
+
+  build-and-test:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    steps:      
+      - name: Build all
+        working-directory: ${{env.path}}/build/unit_tests
+        run: make -j 4
+        run: ctest --timeout 1 --output-on-failure --repeat until-fail:1000 -j 2
+
+  tidy-up:
+    runs-on: self-hosted
+    if: always()
+    needs: build-and-test
+    steps:
+      - name: Delete everything
+        working-directory: ${{github.workspace}}
+        run: rm -r ${{env.path}}
