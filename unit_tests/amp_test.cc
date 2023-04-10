@@ -59,21 +59,21 @@ TEST(AmpTest, ThreadAndMessaging) {
     a.run();
 
     std::thread input_thread{[&in_pipe, &amp_in] {
-        auto *in = &in_pipe;
+        auto &in = in_pipe;
         {
-            std::lock_guard<std::mutex> lk(in->cond_m);
-            in->queue.push(amp_in);
+            std::lock_guard<std::mutex> lk(in.cond_m);
+            in.queue.push(amp_in);
         }
-        in->cond.notify_all();
+        in.cond.notify_all();
     }};
 
     std::thread scale_thread{[&scale_pipe, scale_factor] {
-        auto *scale = &scale_pipe;
+        auto &scale = scale_pipe;
         {
-            std::lock_guard<std::mutex> lk(scale->cond_m);
-            scale->queue.push(scale_factor);
+            std::lock_guard<std::mutex> lk(scale.cond_m);
+            scale.queue.push(scale_factor);
         }
-        scale->cond.notify_all();
+        scale.cond.notify_all();
     }};
 
     // listen for output

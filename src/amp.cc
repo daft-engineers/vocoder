@@ -40,6 +40,7 @@ void Amplifier::run() {
 
             Audio audio_out = amplify(input.queue.front(), scaling.queue.front());
             input.queue.pop();
+            scaling.queue.pop();
             input_lk.unlock();
             scaling_lk.unlock();
 
