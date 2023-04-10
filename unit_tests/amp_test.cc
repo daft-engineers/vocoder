@@ -9,13 +9,8 @@
 TEST(AmpTest, EmptyReturn) {
     const int scale = 1;
     Audio novalue;
-    Pipe<Audio> in_pipe;
-    Pipe<double> scale_pipe;
-    Pipe<Audio> out_pipe;
 
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
-
-    Audio out = a.amplify(novalue, scale);
+    Audio out = Amplifier::amplify(novalue, scale);
 
     Audio empty;
     EXPECT_EQ(empty, out);
@@ -32,8 +27,8 @@ TEST(AmpTest, Amplification) {
     Audio somedoublevalues;
     for (int i = 0; i < 100; i++) {
         somevalues.push_back(i);
-        somehalfvalues.push_back(i/2);
-        somedoublevalues.push_back(i*2);
+        somehalfvalues.push_back(i / 2);
+        somedoublevalues.push_back(i * 2);
     }
     Audio out = Amplifier::amplify(somevalues, scale);
     Audio outhalf = Amplifier::amplify(somevalues, scalehalf);
@@ -43,10 +38,7 @@ TEST(AmpTest, Amplification) {
     EXPECT_EQ(somevalues, out);
     EXPECT_EQ(somehalfvalues, outhalf);
     EXPECT_EQ(somedoublevalues, outdouble);
-
-
 }
-
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
@@ -55,7 +47,7 @@ TEST(AmpTest, ThreadAndMessaging) {
     Pipe<double> scale_pipe;
     Pipe<Audio> out_pipe;
 
-    Amplifier a(in_pipe, scale_pipe, out_pipe);
+    Amplifier a(in_pipe, scale_pipe, out_pipe, std::chrono::milliseconds(100));
 
     int16_t single_sample = 2;
     Audio amp_in;
@@ -90,7 +82,7 @@ TEST(AmpTest, ThreadAndMessaging) {
         out_pipe.cond.wait(lk, [&out_pipe] { return out_pipe.queue.empty() == false; });
         Audio amp_processed_out;
         amp_processed_out = out_pipe.queue.front();
-        EXPECT_EQ(amp_out, amp_processed_out) << "Amp scales correctly";
+        EXPECT_EQ(amp_out, amp_processed_out) << "Amp responds to inputs correctly";
     }};
 
     std::cerr << "Amp stopped" << std::endl;

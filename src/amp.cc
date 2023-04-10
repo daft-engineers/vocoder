@@ -5,13 +5,14 @@ Audio Amplifier::amplify(Audio &sample, double amount) {
     Audio processed;
     for (auto point : sample) {
 
-        processed.push_back(static_cast<int>(trunc(point * amount)));
+        processed.push_back(static_cast<int16_t>(trunc(point * amount)));
     }
     return processed;
 }
 
-Amplifier::Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_)
-    : input(input_), scaling(scaling_), output(output_) {
+Amplifier::Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_,
+                     std::chrono::milliseconds timeout_)
+    : input(input_), scaling(scaling_), output(output_), timeout(timeout_) {
 }
 
 Amplifier::~Amplifier() {

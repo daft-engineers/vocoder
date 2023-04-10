@@ -6,7 +6,7 @@
 
 class Amplifier {
   public:
-    Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_);
+    Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
     ~Amplifier();
     Amplifier(const Amplifier &) = delete;
     Amplifier &operator=(const Amplifier &) = delete;
@@ -23,7 +23,7 @@ class Amplifier {
 
     std::thread amplifier_thread;
     bool thread_alive{false};
-    const std::chrono::milliseconds timeout{1};
+    const std::chrono::milliseconds timeout;
 };
 
 #endif // AMP_AMP_HH
