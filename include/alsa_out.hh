@@ -16,13 +16,12 @@ class AlsaOut {
     AlsaOut(const std::string &device_name, Pipe<Audio> &input_);
     ~AlsaOut();
     void run();
-    void stop();
 
   private:
 
     Pipe<Audio> &input;
     std::thread alsa_out_thread;
-    const std::chrono::milliseconds timeout{1};
+    const std::chrono::milliseconds timeout{100};
 
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};
