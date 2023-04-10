@@ -8,7 +8,6 @@
 alsa_callback::acb::acb(const std::string &device_name) {
     int errorcode = snd_pcm_open(&handle, device_name.c_str(), SND_PCM_STREAM_CAPTURE, 0);
     int dir = 0; // *_near() functions use this to say if the chosen value was above or below the requested value
-    unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 
     if (errorcode < 0) {
         std::cerr << "alsa_callback: unable to open pcm device: " << snd_strerror(errorcode) << "\n";
