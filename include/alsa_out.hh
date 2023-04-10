@@ -1,21 +1,20 @@
 #ifndef ALSA_OUT_HH
 #define ALSA_OUT_HH
 
+#include "audio/audio.hh"
+#include "pipe.hh"
 #include <alsa/asoundlib.h>
 #include <alsa/error.h>
 #include <alsa/pcm.h>
 #include <cstdint>
-#include <functional>
 #include <iostream>
-#include <string>
-#include <sys/types.h>
 #include <thread>
-#include <vector>
-#include "../include/audio/audio.hh"
 
-class alsa_out {
+
+class AlsaOut {
   public:
-    alsa_out(const std::string &device_name);
+    AlsaOut(const std::string &device_name, Pipe<Audio> &input_);
+    ~AlsaOut();
     void run();
     void stop();
 
