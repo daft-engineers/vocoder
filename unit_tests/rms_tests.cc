@@ -18,7 +18,7 @@
 TEST(RMSTests, buffer) {
     Pipe<Audio> input{};
     Pipe<double> output{};
-    rms::RMS<4> rms(input, output);
+    rms::RMS<4> rms(input, output, std::chrono::milliseconds(100));
     Audio audio{0};
 
     // check that rms is 0 at the beginning
@@ -56,7 +56,7 @@ TEST(RMSTests, buffer) {
 TEST(RMSTests, Integration) {
     Pipe<Audio> input{};
     Pipe<double> output{};
-    rms::RMS<4> rms(input, output);
+    rms::RMS<4> rms(input, output, std::chrono::milliseconds(100));
 
     rms.run();
 

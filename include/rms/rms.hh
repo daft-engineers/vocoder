@@ -23,12 +23,12 @@ template <std::size_t num_samples> class RMS {
     std::array<uint32_t, num_samples> squared_sample_buffer = {0};
     int sample_buffer_index = 0;
 
-    const std::chrono::milliseconds timeout{1};
+    const std::chrono::milliseconds timeout;
     bool thread_alive{false};
     std::thread thread;
 
   public:
-    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe) : input_pipe(input_pipe), output_pipe(output_pipe) {
+    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout) : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     }
 
     void insert(Audio packet) {

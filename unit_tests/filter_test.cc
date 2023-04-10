@@ -20,7 +20,7 @@ TEST(FilterTest, EmptyReturn) {
     Pipe<Audio> in_pipe;
     Pipe<Audio> out_pipe;
 
-    BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
+    BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe, std::chrono::milliseconds(100));
 
     // High freq sin
     const unsigned int freq = 75;
@@ -51,7 +51,7 @@ TEST(FilterTest, HighFrequencyResponse) {
     Pipe<Audio> in;
     Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width, in, out);
+    BPFilter f(2, sampling_rate, centre, width, in, out, std::chrono::milliseconds(100));
 
     // High freq sin
     const unsigned int high_freq = 200;
@@ -78,7 +78,7 @@ TEST(FilterTest, PassFrequencyResponse) {
     Pipe<Audio> in;
     Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width, in, out);
+    BPFilter f(2, sampling_rate, centre, width, in, out, std::chrono::milliseconds(100));
 
     // High freq sin
     const unsigned int pass_freq = 75;
@@ -109,7 +109,7 @@ TEST(FilterTest, LowFrequencyResponse) {
     Pipe<Audio> in;
     Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width, in, out);
+    BPFilter f(2, sampling_rate, centre, width, in, out, std::chrono::milliseconds(100));
 
     // High freq sin
     const unsigned int low_freq = 30;
@@ -137,7 +137,7 @@ TEST(FilterTest, RunTimeTest) {
     Pipe<Audio> in;
     Pipe<Audio> out;
 
-    BPFilter f(2, sampling_rate, centre, width, in, out);
+    BPFilter f(2, sampling_rate, centre, width, in, out, std::chrono::milliseconds(100));
 
     // High freq sin
     const unsigned int freq = 30;
@@ -165,7 +165,7 @@ TEST(FilterTest, ThreadAndMessaging) {
     Pipe<Audio> in_pipe;
     Pipe<Audio> out_pipe;
 
-    BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe);
+    BPFilter f(2, sampling_rate, centre, width, in_pipe, out_pipe, std::chrono::milliseconds(100));
 
     f.run();
 

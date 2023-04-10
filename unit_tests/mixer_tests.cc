@@ -24,7 +24,7 @@ TEST(MixerTests, Timeout) {
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
     {
-        mixer::Mixer<2> mixer(inputs, output);
+        mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
 
         // start mixer
         mixer.run();
@@ -39,7 +39,7 @@ TEST(MixerTests, Integration) {
     // set up mixer with 2 inputs
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
-    mixer::Mixer<2> mixer(inputs, output);
+    mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
 
     // start mixer
     mixer.run();

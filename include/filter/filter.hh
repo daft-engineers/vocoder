@@ -11,7 +11,7 @@
 class BPFilter {
   public:
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
-             Pipe<Audio> &output_);
+             Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
 
     ~BPFilter();
 
@@ -34,7 +34,7 @@ class BPFilter {
 
     std::thread filter_thread;
     bool thread_alive{false};
-    const std::chrono::milliseconds timeout{1};
+    const std::chrono::milliseconds timeout;
 };
 
 #endif
