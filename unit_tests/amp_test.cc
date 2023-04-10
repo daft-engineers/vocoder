@@ -53,36 +53,49 @@ TEST(AmpTest, ThreadAndMessaging) {
     Audio amp_in;
     amp_in.push_back(single_sample);
     double scale_factor = 0.5;
+    int scale_factor_double = 2;
+    Audio some_values;
+    Audio some_double_values;
+    for (int i = 0; i < 100; i++) {
+        some_values.push_back(i);
+        some_double_values.push_back(i * 2);
+    }
     Audio amp_out;
     amp_out.push_back(single_sample * scale_factor);
 
     a.run();
 
-    std::thread input_thread{[&in_pipe, &amp_in] {
+    std::thread input_thread{[&in_pipe, &amp_in, &some_values] {
         auto &in = in_pipe;
         {
             std::lock_guard<std::mutex> lk(in.cond_m);
             in.queue.push(amp_in);
+            in.queue.push(some_values);
         }
         in.cond.notify_all();
     }};
 
-    std::thread scale_thread{[&scale_pipe, scale_factor] {
+    std::thread scale_thread{[&scale_pipe, scale_factor, scale_factor_double] {
         auto &scale = scale_pipe;
         {
             std::lock_guard<std::mutex> lk(scale.cond_m);
             scale.queue.push(scale_factor);
+            scale.queue.push(scale_factor_double);
         }
         scale.cond.notify_all();
     }};
 
     // listen for output
-    std::thread output_thread{[&out_pipe, &amp_out] {
+    std::thread output_thread{[&out_pipe, &amp_out, &some_double_values] {
         std::unique_lock<std::mutex> lk(out_pipe.cond_m);
         out_pipe.cond.wait(lk, [&out_pipe] { return out_pipe.queue.empty() == false; });
         Audio amp_processed_out;
         amp_processed_out = out_pipe.queue.front();
-        EXPECT_EQ(amp_out, amp_processed_out) << "Amp responds to inputs correctly";
+        out_pipe.queue.pop();
+        EXPECT_EQ(amp_out, amp_processed_out) << "Amp responds to input correctly";
+        out_pipe.cond.wait(lk, [&out_pipe] { return out_pipe.queue.empty() == false; });
+        amp_processed_out = out_pipe.queue.front();
+        EXPECT_EQ(some_double_values, amp_processed_out) << "Amp responds to input correctly";
     }};
 
     std::cerr << "Amp stopped" << std::endl;
