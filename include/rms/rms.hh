@@ -70,16 +70,11 @@ template <std::size_t num_samples> class RMS {
             return true;
         });
     }
-    ~RMS() {
+    void stop() {
         if (thread_alive) {
             thread.join();
         }
     }
-
-    RMS(const RMS &) = delete;
-    RMS &operator=(const RMS &) = delete;
-    RMS(RMS &&) = delete;
-    RMS &operator=(RMS &&) = delete;
 };
 } // namespace rms
 

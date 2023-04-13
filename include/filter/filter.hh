@@ -13,12 +13,7 @@ class BPFilter {
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
              Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
 
-    ~BPFilter();
-
-    BPFilter(const BPFilter &) = delete;
-    BPFilter &operator=(const BPFilter &) = delete;
-    BPFilter(BPFilter &&) = delete;
-    BPFilter &operator=(BPFilter &&) = delete;
+    void stop();
 
     void run();
     Audio filter(const Audio &in_audio);

@@ -1,7 +1,7 @@
 #include "../include/alsa_out.hh"
 
-AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_)
-    : input(input_) {
+AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_) : input(input_) {
+    // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions) error comes from ALSA library
     int errorcode = snd_pcm_open(&handle, device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0);
     int dir = 0; // *_near() functions use this to say if the chosen value was above or below the requested value
     unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
@@ -73,7 +73,7 @@ AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_)
     }
 }
 
-AlsaOut::~AlsaOut() {
+void AlsaOut::stop() {
     alsa_out_thread.join();
 }
 
@@ -88,22 +88,21 @@ void AlsaOut::run() {
                 return false;
             }
 
-            //Output audio
+            // Output audio
             Audio audio_out = input.queue.front();
             input.queue.pop();
             lk.unlock();
-
-            int rc = snd_pcm_writei(handle, static_cast<void*>(audio_out.data()), frames);
+            // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
+            int rc = snd_pcm_writei(handle, static_cast<void *>(audio_out.data()), frames);
             if (rc == -EPIPE) {
-            /* EPIPE means underrun */
-            std::cerr << "underrun occurred\n";
-            snd_pcm_prepare(handle);
+                /* EPIPE means underrun */
+                std::cerr << "underrun occurred\n";
+                snd_pcm_prepare(handle);
             } else if (rc < 0) {
-            std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
-            }  else if (rc != (int)frames) {
-            std::cerr << "short write, write " << rc << "\n";
+                std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
+            } else if (rc != (int)frames) {
+                std::cerr << "short write, write " << rc << "\n";
             }
-
         }
     });
 }

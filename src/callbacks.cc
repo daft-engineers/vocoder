@@ -103,6 +103,10 @@ void alsa_callback::acb::listen(const std::function<void(std::vector<uint16_t>, 
     });
 }
 
+unsigned int alsa_callback::acb::getSR() {
+    return sample_rate;
+}
+
 void alsa_callback::acb::stop() {
     keep_listening = false;
     cb_thread.join();

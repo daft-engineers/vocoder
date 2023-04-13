@@ -7,13 +7,9 @@
 class Amplifier {
   public:
     Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
-    ~Amplifier();
-    Amplifier(const Amplifier &) = delete;
-    Amplifier &operator=(const Amplifier &) = delete;
-    Amplifier(Amplifier &&) = delete;
-    Amplifier &operator=(Amplifier &&) = delete;
 
     void run();
+    void stop();
     static Audio amplify(Audio &sample, double amount);
 
   private:

@@ -44,9 +44,10 @@ class acb {
     acb(const std::string &device_name);
     void listen(const std::function<void(std::vector<uint16_t>, std::vector<uint16_t>)> &callback);
     void stop();
-    unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    unsigned int getSR();
 
-private:
+  private:
+    unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
     std::thread cb_thread;
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};

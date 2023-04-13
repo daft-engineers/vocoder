@@ -1,36 +1,35 @@
-#include "../include/filter/filter.hh"
 #include "../include/alsa_out.hh"
-#include "../include/callbacks.hh"
-#include "../include/rms/rms.hh"
 #include "../include/amp/amp.hh"
-#include "../include/mixer/mixer.hh"
-#include "../include/alsa_out.hh"
-#include "../include/pipe.hh"
 #include "../include/audio/audio.hh"
+#include "../include/callbacks.hh"
+#include "../include/filter/filter.hh"
+#include "../include/mixer/mixer.hh"
+#include "../include/pipe.hh"
+#include "../include/rms/rms.hh"
 
-int main () {
+int main() {
 
-
-    alsa_callback::acb alsa_in ("hw:2,0,0");
+    alsa_callback::acb alsa_in("hw:2,0,0");
 
     const int num_filters = 4;
-    std::array<BPFilter, num_filters> carrier_bank{};
-    std::array<BPFilter, num_filters> modulator_bank{};
-    int width = 10000 / num_filters;
+    const std::chrono::milliseconds timeout(100);
+    std::vector<BPFilter> carrier_bank;
+    std::vector<BPFilter> modulator_bank;
+    int width = 10000 / num_filters; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
     int centre = width / 2;
 
-    std::array<rms::RMS<1000000>, num_filters> power_meter_bank{};
+    std::vector<rms::RMS<1000000>> power_meter_bank; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
 
-    std::array<Amplifier, num_filters> amp_bank{};
+    std::vector<Amplifier> amp_bank;
 
-    std::array<Pipe<Audio>, num_filters> carrier_in_pipes{};
-    std::array<Pipe<Audio>, num_filters> modulator_in_pipes{};
-    std::array<Pipe<Audio>, num_filters> carrier_out_pipes{};
-    std::array<Pipe<Audio>, num_filters> modulator_out_pipes{};
+    std::array<Pipe<Audio>, num_filters> carrier_in_pipes;
+    std::array<Pipe<Audio>, num_filters> modulator_in_pipes;
+    std::array<Pipe<Audio>, num_filters> carrier_out_pipes;
+    std::array<Pipe<Audio>, num_filters> modulator_out_pipes;
 
-    std::array<Pipe<double>, num_filters> power_out_pipes{};
+    std::array<Pipe<double>, num_filters> power_out_pipes;
 
-    std::array<Pipe<Audio>, num_filters> amp_out_pipes{};
+    std::array<Pipe<Audio>, num_filters> amp_out_pipes;
 
     Pipe<Audio> mixer_out_pipe;
     mixer::Mixer<num_filters> mix(amp_out_pipes, mixer_out_pipe);
@@ -40,39 +39,39 @@ int main () {
     // Wire stuff together here
     for (int i = 0; i < num_filters; i++) {
         // Filters
-        carrier_bank[i] = BPFilter(2, alsa_in.sample_rate, centre, width, carrier_in_pipes[i], carrier_out_pipes[i]);
-        modulator_bank[i] = BPFilter(2, alsa_in.sample_rate, centre, width, modulator_in_pipes[i], modulator_out_pipes[i]);
+        carrier_bank.emplace_back(2, alsa_in.getSR(), centre, width, carrier_in_pipes.at(i), carrier_out_pipes.at(i));
+        modulator_bank.emplace_back(2, alsa_in.getSR(), centre, width, modulator_in_pipes.at(i),
+                                    modulator_out_pipes.at(i));
         centre += width;
-        carrier_bank[i].run();
-        modulator_bank[i].run();
+        carrier_bank.at(i).run();
+        modulator_bank.at(i).run();
 
         // Power Meter
-        power_meter_bank[i] = rms::RMS<1000000>(modulator_out_pipes[i], power_out_pipes[i]);
-        power_meter_bank[i].run();
+        power_meter_bank.emplace_back(modulator_out_pipes.at(i), power_out_pipes.at(i));
+        power_meter_bank.at(i).run();
 
         // Amp
-        amp_bank[i] = Amplifier(carrier_out_pipes[i], power_out_pipes[i], amp_out_pipes[i]);
-        amp_bank[i].run();
+        amp_bank.emplace_back(carrier_out_pipes.at(i), power_out_pipes.at(i), amp_out_pipes.at(i), timeout);
+        amp_bank.at(i).run();
     }
 
-    auto cb =
-            [num_filters](std::vector<uint16_t> carrier, std::vector<uint16_t> modulator) {
-                for (int i = 0; i < num_filters; i++) {
-                    Pipe<Audio> &carr_in = carrier_in_pipes[i];
-                    {
-                        std::lock_guard<std::mutex> lk(carr_in.cond_m);
-                        carr_in.queue.push(centre_zero(carrier));
-                    }
+    auto cb = [&carrier_in_pipes, &modulator_in_pipes](std::vector<uint16_t> carrier, std::vector<uint16_t> modulator) {
+        for (int i = 0; i < num_filters; i++) {
+            Pipe<Audio> &carr_in = carrier_in_pipes.at(i);
+            {
+                std::lock_guard<std::mutex> lk(carr_in.cond_m);
+                carr_in.queue.push(centre_zero(carrier));
+            }
 
-                    Pipe<Audio> &mod_in = modulator_in_pipes[i];
-                    {
-                        std::lock_guard<std::mutex> lk(mod_in.cond_m);
-                        mod_in.queue.push(centre_zero(carrier));
-                    }
-                }
-            };
+            Pipe<Audio> &mod_in = modulator_in_pipes.at(i);
+            {
+                std::lock_guard<std::mutex> lk(mod_in.cond_m);
+                mod_in.queue.push(centre_zero(modulator));
+            }
+        }
+    };
 
-    mixer.run();
+    mix.run();
     alsa_in.listen(cb);
     alsa_in.stop();
 }

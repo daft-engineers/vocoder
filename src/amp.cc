@@ -15,7 +15,7 @@ Amplifier::Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &o
     : input(input_), scaling(scaling_), output(output_), timeout(timeout_) {
 }
 
-Amplifier::~Amplifier() {
+void Amplifier::stop() {
     if (thread_alive) {
         amplifier_thread.join();
     }
