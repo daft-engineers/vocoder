@@ -73,5 +73,5 @@ int main() {
 
     mix.run();
     alsa_in.listen(cb);
-    alsa_in.stop();
+    //alsa_in.stop();
 }
