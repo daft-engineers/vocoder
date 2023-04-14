@@ -81,4 +81,5 @@ int main() {
 
     std::cerr << "Called listen\n";
     //alsa_in.stop();
+    while (true) {};
 }
