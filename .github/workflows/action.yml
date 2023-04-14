@@ -54,7 +54,7 @@ jobs:
   generate-docs:
     runs-on: self-hosted
     needs: checkout-and-setup
-    if: github.ref != 'refs/heads/gh-pages'
+    if: github.ref == 'refs/heads/main'
     steps:
       - name: Make Docs
         working-directory: ${{env.path}}
