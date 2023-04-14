@@ -30,7 +30,7 @@ sudo ln -s /usr/lib/llvm-15/bin/clang{,++,-format,-tidy} /usr/local/bin
 
 Python 3 is required to automatically build and link unit tests. Python 3 comes preinstalled on most Linux distributions, and is available as a package on all others.
 
-To build the doxygen documentation, doxygen and graphviz are required.
+To build the doxygen documentation, the `doxygen` and `graphviz` packages are required.
 
 # Getting started (using Clang)
 
@@ -69,6 +69,16 @@ This will run static analysis and return any errors found. It will also reformat
 <a href="https://twitter.com/DaftEngineers"><img src="https://user-images.githubusercontent.com/10051310/219482103-8422c45f-ca60-4918-b5b8-6de79d0add22.png" height=80px></a>
 <a href="https://www.youtube.com/@daftengineers"><img src="https://user-images.githubusercontent.com/10051310/219484585-2eb87c95-5951-428b-b3a1-7ac846e40f65.png" height=80px></a>
 <a href="https://www.tiktok.com/@daftengineers"><img src="https://user-images.githubusercontent.com/10051310/220791551-141ee0cc-34ef-47b8-bbcb-701461f88851.png" height=80px></a>
+
+# Documentation
+
+Documentation for main can be [found here](https://daft-engineers.github.io/vocoder/).
+
+If you want to generate the documentation for yourself, from the root of the project, the command 
+```$
+doxygen doxyfile
+```
+generates the documentation, and then the page can be opened by navigating to `docs/` and opening `index.html`
 
 # Program Design
 ## Sequence Diagram
