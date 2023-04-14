@@ -11,7 +11,7 @@ int main() {
 
     alsa_callback::acb alsa_in("hw:2,0,0");
 
-    const int num_filters = 4;
+    const int num_filters = 1;
     const std::chrono::milliseconds timeout(100);
     std::vector<BPFilter> carrier_bank;
     std::vector<BPFilter> modulator_bank;
