@@ -59,7 +59,7 @@ int main() {
 
     std::cerr << "Past for loop\n";
 
-    auto cb = [&carrier_in_pipes, &modulator_in_pipes](std::vector<uint16_t> carrier, std::vector<uint16_t> modulator) {
+    auto cb = [&carrier_in_pipes, &modulator_in_pipes](std::vector<uint16_t> modulator, std::vector<uint16_t> carrier) {
         for (int i = 0; i < num_filters; i++) {
             Pipe<Audio> &carr_in = carrier_in_pipes.at(i);
             {
