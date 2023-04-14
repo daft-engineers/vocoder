@@ -23,11 +23,11 @@ template <std::size_t num_banks> class Mixer {
 
     bool run_thread{};
     std::thread thread;
-    const std::chrono::milliseconds timeout{1};
+    const std::chrono::milliseconds timeout;
 
   public:
-    Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes, Pipe<Audio> &output_pipe)
-        : input_pipes(input_pipes), output_pipe(output_pipe) {
+    Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes_, Pipe<Audio> &output_pipe_, std::chrono::milliseconds timeout_)
+        : input_pipes(input_pipes_), output_pipe(output_pipe_), timeout(timeout_) {
     }
 
     // explicitly disable copy and move constructors since that will mess
