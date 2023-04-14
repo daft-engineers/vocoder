@@ -36,6 +36,8 @@ int main() {
 
     AlsaOut alsa_out("hw:2,0,0", mixer_out_pipe);
 
+    std::cerr << "Sets up everything until for loop\n";
+
     // Wire stuff together here
     for (int i = 0; i < num_filters; i++) {
         // Filters
@@ -55,6 +57,8 @@ int main() {
         amp_bank.at(i).run();
     }
 
+    std::cerr << "Past for loop\n";
+
     auto cb = [&carrier_in_pipes, &modulator_in_pipes](std::vector<uint16_t> carrier, std::vector<uint16_t> modulator) {
         for (int i = 0; i < num_filters; i++) {
             Pipe<Audio> &carr_in = carrier_in_pipes.at(i);
@@ -72,6 +76,9 @@ int main() {
     };
 
     mix.run();
+    std::cerr << "Called mixer\n";
     alsa_in.listen(cb);
+
+    std::cerr << "Called listen\n";
     //alsa_in.stop();
 }
