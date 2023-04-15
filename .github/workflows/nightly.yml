@@ -37,7 +37,7 @@ jobs:
       - uses: actions/upload-artifact@v3
         with:
           name: logs
-          path: ${{env.path}}/build/unit_tests/output.log
+          path: ${{env.path}}/build/unit_tests/test.log
 
   tidy-up:
     runs-on: self-hosted
