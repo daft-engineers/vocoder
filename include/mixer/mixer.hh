@@ -26,7 +26,8 @@ template <std::size_t num_banks> class Mixer {
     const std::chrono::milliseconds timeout;
 
   public:
-    Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes_, Pipe<Audio> &output_pipe_, std::chrono::milliseconds timeout_)
+    Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes_, Pipe<Audio> &output_pipe_,
+          std::chrono::milliseconds timeout_)
         : input_pipes(input_pipes_), output_pipe(output_pipe_), timeout(timeout_) {
     }
 

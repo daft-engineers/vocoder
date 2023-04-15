@@ -51,6 +51,15 @@ jobs:
         working-directory: ${{env.path}}/build/unit_tests
         run: make -j 3
 
+  generate-docs:
+    runs-on: self-hosted
+    needs: checkout-and-setup
+    if: github.ref == 'refs/heads/main'
+    steps:
+      - name: Make Docs
+        working-directory: ${{env.path}}
+        run: ${{env.path}}/docs.sh
+
   unit-test:  
     runs-on: self-hosted
     needs: build
