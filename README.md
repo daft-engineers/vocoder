@@ -76,7 +76,7 @@ Documentation for main can be [found here](https://daft-engineers.github.io/voco
 
 If you want to generate the documentation for yourself, from the root of the project, the command 
 ```$
-doxygen doxyfile
+doxygen Doxyfile
 ```
 generates the documentation, and then the page can be opened by navigating to `docs/` and opening `index.html`
 
