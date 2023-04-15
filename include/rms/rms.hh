@@ -42,8 +42,11 @@ template <std::size_t num_samples> class RMS {
     }
 
     double calc() {
-        uint64_t total = std::accumulate(std::begin(squared_sample_buffer), std::end(squared_sample_buffer), 0);
-        double output = std::sqrt(total / num_samples);
+        uint64_t total = 0;
+        for (auto &n : squared_sample_buffer) {
+            total += n;
+        }
+        double output = std::sqrt(total / num_samples) / INT16_MAX;
         return output;
     }
 

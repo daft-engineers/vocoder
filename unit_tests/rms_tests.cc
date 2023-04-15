@@ -27,17 +27,17 @@ TEST(RMSTests, buffer) {
     audio[0] = 16;
     rms.insert(audio);
     // buffer should now be 256, 0, 0, 0 giving rms of 8
-    ASSERT_EQ(rms.calc(), 8);
+    ASSERT_EQ(rms.calc(), 8.0 / INT16_MAX);
 
     audio[0] = -16;
     rms.insert(audio);
     // buffer should now be 256, 256, 0, 0 giving rms of 8r2
-    ASSERT_EQ(rms.calc(), 8 * std::sqrt(2));
+    ASSERT_EQ(rms.calc(), 8.0 * std::sqrt(2) / INT16_MAX);
 
     rms.insert(audio);
     rms.insert(audio);
     // buffer should now be 256, 256, 256, 256 giving rms of 16
-    ASSERT_EQ(rms.calc(), 16);
+    ASSERT_EQ(rms.calc(), 16.0 / INT16_MAX);
 
     // insertions to the buffer from here should roll back to the front
 
@@ -49,6 +49,13 @@ TEST(RMSTests, buffer) {
 
     // buffer should now be 0, 0, 0, 0, giving rms of 0
     ASSERT_EQ(rms.calc(), 0);
+
+    Audio sample{INT16_MAX, INT16_MAX, INT16_MAX, INT16_MAX};
+
+    rms.insert(sample);
+
+    // buffer should now be 0, 0, 0, 0, giving rms of 0
+    ASSERT_EQ(rms.calc(), 1);
 }
 
 // TEST macro violates guidelines
@@ -74,7 +81,7 @@ TEST(RMSTests, Integration) {
     std::thread output_thread{[&output] {
         std::unique_lock<std::mutex> lk(output.cond_m);
         output.cond.wait(lk, [&output] { return output.queue.empty() == false; });
-        ASSERT_EQ(output.queue.front(), 8.0f);
+        ASSERT_EQ(output.queue.front(), 8.0 / INT16_MAX);
     }};
 
     input_thread.join();
