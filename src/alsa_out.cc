@@ -1,4 +1,6 @@
 #include "../include/alsa_out.hh"
+#include <cstdint>
+#include <queue>
 
 AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_) : input(input_) {
     // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions) error comes from ALSA library
@@ -87,28 +89,36 @@ void AlsaOut::run() {
             if (!input.cond.wait_for(lk, timeout, [this] { return input.queue.empty() == false; })) {
                 return false;
             }
-
-            // Output audio
-            Audio audio_out = input.queue.front();
-            // std::cerr << input.queue.size() << std::endl;
-            input.queue.pop();
             lk.unlock();
-            Audio new_audio;
-            for (auto sample : audio_out) {
-                new_audio.push_back(sample);
-                new_audio.push_back(sample);
+
+            while (!input.queue.empty()){
+                lk.lock();
+                // Output audio
+                Audio audio_out = input.queue.front();
+                // std::cerr << input.queue.size() << std::endl;
+                input.queue.pop();
+                lk.unlock();
+                Audio new_audio;
+                for (auto sample : audio_out) {
+                    new_audio.push_back(sample);
+                    new_audio.push_back(sample);
+                }
+                // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
+                int rc = snd_pcm_writei(handle, new_audio.data(), frames);
+                if (rc == -EPIPE) {
+                    /* EPIPE means underrun */
+                    //std::cerr << "Audio size : " << new_audio.size() << "\tFrames : " << frames << "\n";
+                    std::cerr << "underrun occurred: " << input.queue.size() << "\n";
+                    snd_pcm_prepare(handle);
+                    std::queue<std::vector<int16_t>> empty;
+                    std::swap( input.queue, empty );
+                } else if (rc < 0) {
+                    std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
+                } else if (rc != (int)frames) {
+                    std::cerr << "short write, write " << rc << "\n";
+                }
             }
-            // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
-            int rc = snd_pcm_writei(handle, new_audio.data(), frames);
-            if (rc == -EPIPE) {
-                /* EPIPE means underrun */
-                std::cerr << "underrun occurred\n";
-                snd_pcm_prepare(handle);
-            } else if (rc < 0) {
-                std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
-            } else if (rc != (int)frames) {
-                std::cerr << "short write, write " << rc << "\n";
-            }
+            
         }
     });
 }

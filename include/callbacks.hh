@@ -52,7 +52,7 @@ class acb {
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};
     bool keep_listening{false};
-    snd_pcm_uframes_t frames = 32; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    snd_pcm_uframes_t frames = 64; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 
 } // namespace alsa_callback
