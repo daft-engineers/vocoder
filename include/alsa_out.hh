@@ -6,13 +6,14 @@
 #include <alsa/asoundlib.h>
 #include <alsa/error.h>
 #include <alsa/pcm.h>
+#include <chrono>
 #include <cstdint>
 #include <iostream>
 #include <thread>
 
 class AlsaOut {
   public:
-    AlsaOut(const std::string &device_name, Pipe<Audio> &input_);
+    AlsaOut(const std::string &device_name, Pipe<Audio> &input_, std::chrono::milliseconds timeout_);
 
     void run();
     void stop();
@@ -20,11 +21,11 @@ class AlsaOut {
   private:
     Pipe<Audio> &input;
     std::thread alsa_out_thread;
-    const std::chrono::milliseconds timeout{100};
+    const std::chrono::milliseconds timeout;
 
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};
-    snd_pcm_uframes_t frames = 32; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    snd_pcm_uframes_t frames = 128; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 
 /* Use the newer ALSA API */

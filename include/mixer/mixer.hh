@@ -10,6 +10,9 @@
 #include <functional>
 #include <memory>
 #include <mutex>
+#include <iostream>
+#include <pthread.h>
+#include <cstring>
 
 namespace mixer {
 
@@ -47,21 +50,30 @@ template <std::size_t num_banks> class Mixer {
     void run() {
         thread = std::thread([this]() {
             while (true) {
+                //std::cerr << "Starting while loop" << std::endl;
                 std::array<Audio, num_banks> audio_packets;
                 for (int bank = 0; bank < num_banks; bank++) {
+                    //std::cerr << "Starting for loop" << std::endl;
                     auto &pipe = input_pipes[bank];
 
-                    std::unique_lock<std::mutex> lk(pipe.cond_m);
-                    if (!pipe.cond.wait_for(lk, timeout, [&pipe] { return pipe.queue.empty() == false; })) {
-                        return false;
-                    }
+                    {
+                        std::unique_lock<std::mutex> lk(pipe.cond_m);
+                        if (!pipe.cond.wait_for(lk, timeout, [&pipe] { return pipe.queue.empty() == false; })) {
+                            std::cerr << "Mixer dead" << std::endl;
+                            std::quick_exit(-1);
+                            return false;
+                        }
+                        //std::cerr << "Past wait" << std::endl;
 
-                    audio_packets[bank] = pipe.queue.front();
-                    pipe.queue.pop();
+                        audio_packets[bank] = pipe.queue.front();
+                        //std::cerr << "Hello" << audio_packets[0][0] << std::endl;
+                        pipe.queue.pop();
+                    }
                 }
 
                 Audio output_packet = sum(audio_packets);
                 {
+                    //std::cerr << output_packet[0] << std::endl;
                     std::lock_guard<std::mutex> lk(output_pipe.cond_m);
                     output_pipe.queue.push(output_packet);
                 }
@@ -69,6 +81,15 @@ template <std::size_t num_banks> class Mixer {
             }
             return true;
         });
+        sched_param sch;
+        int policy;
+        pthread_getschedparam(thread.native_handle(), &policy, &sch);
+        sch.sched_priority = 20;
+        if (pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &sch)) {
+            std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Priority increased successfully (mixer)" << std::endl;
+        }
     }
 
     void stop() {

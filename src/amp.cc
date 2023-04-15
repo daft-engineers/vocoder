@@ -1,5 +1,8 @@
 #include "../include/amp/amp.hh"
 #include <cmath>
+#include <iostream>
+#include <pthread.h>
+#include <cstring>
 
 Audio Amplifier::amplify(Audio &sample, double amount) {
     Audio processed;
@@ -45,10 +48,21 @@ void Amplifier::run() {
             scaling_lk.unlock();
 
             {
+                //std::cerr << audio_out[0] << std::endl;
                 std::lock_guard<std::mutex> out_lk(output.cond_m);
                 output.queue.push(audio_out);
             }
+            //std::cerr << "Amp queue size: " << output.queue.size() << std::endl;
             output.cond.notify_all();
         }
     });
+    sched_param sch;
+    int policy;
+    pthread_getschedparam(amplifier_thread.native_handle(), &policy, &sch);
+    sch.sched_priority = 20;
+    if (pthread_setschedparam(amplifier_thread.native_handle(), SCHED_FIFO, &sch)) {
+        std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+    } else {
+        std::cerr << "Priority increased successfully (amp)" << std::endl;
+    }
 }

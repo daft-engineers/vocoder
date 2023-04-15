@@ -4,6 +4,8 @@
 #include <cstdint>
 #include <sys/types.h>
 #include <vector>
+#include <pthread.h>
+#include <cstring>
 
 alsa_callback::acb::acb(const std::string &device_name) {
     int errorcode = snd_pcm_open(&handle, device_name.c_str(), SND_PCM_STREAM_CAPTURE, 0);
@@ -67,7 +69,7 @@ alsa_callback::acb::acb(const std::string &device_name) {
     }
 }
 
-void alsa_callback::acb::listen(const std::function<void(std::vector<int16_t>, std::vector<int16_t>)> &callback) {
+void alsa_callback::acb::listen(const std::function<void(const std::vector<int16_t> &, const std::vector<int16_t> &)> &callback) {
     keep_listening = true;
     cb_thread = std::thread([this, &callback]() {
         while (this->keep_listening) {
@@ -101,6 +103,15 @@ void alsa_callback::acb::listen(const std::function<void(std::vector<int16_t>, s
             callback(modulator, carrier);
         }
     });
+    sched_param sch;
+    int policy;
+    pthread_getschedparam(cb_thread.native_handle(), &policy, &sch);
+    sch.sched_priority = 20;
+    if (pthread_setschedparam(cb_thread.native_handle(), SCHED_FIFO, &sch)) {
+        std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+    } else {
+        std::cerr << "Priority increased successfully (alsa_in)" << std::endl;
+    }
 }
 
 unsigned int alsa_callback::acb::getSR() {

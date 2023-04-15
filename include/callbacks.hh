@@ -42,7 +42,7 @@ namespace alsa_callback {
 class acb {
   public:
     acb(const std::string &device_name);
-    void listen(const std::function<void(std::vector<int16_t>, std::vector<int16_t>)> &callback);
+    void listen(const std::function<void(const std::vector<int16_t> &, const std::vector<int16_t> &)> &callback);
     void stop();
     unsigned int getSR();
 
@@ -52,7 +52,7 @@ class acb {
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};
     bool keep_listening{false};
-    snd_pcm_uframes_t frames = 32; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    snd_pcm_uframes_t frames = 128; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 
 } // namespace alsa_callback

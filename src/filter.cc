@@ -1,5 +1,7 @@
 #include "../include/filter/filter.hh"
+#include <bits/types/struct_sched_param.h>
 #include <iostream>
+#include <pthread.h>
 
 BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
                    Pipe<Audio> &output_, std::chrono::milliseconds timeout_)
@@ -25,7 +27,7 @@ void BPFilter::run() {
             }
 
             Audio audio_out = filter(input.queue.front());
-            std::cerr << audio_out[0] << std::endl;
+            //std::cerr << audio_out[0] << std::endl;
             input.queue.pop();
             lk.unlock();
 
@@ -37,6 +39,15 @@ void BPFilter::run() {
         }
         return true;
     });
+    sched_param sch;
+    int policy;
+    pthread_getschedparam(filter_thread.native_handle(), &policy, &sch);
+    sch.sched_priority = 20;
+    if (pthread_setschedparam(filter_thread.native_handle(), SCHED_FIFO, &sch)) {
+        std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+    } else {
+        std::cerr << "Priority increased successfully (filter)" << std::endl;
+    }
 }
 
 Audio BPFilter::filter(const Audio &in_audio) {

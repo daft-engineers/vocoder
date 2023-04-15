@@ -1,6 +1,9 @@
 #include "../include/alsa_out.hh"
+#include <chrono>
+#include <pthread.h>
+#include <cstring>
 
-AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_) : input(input_) {
+AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_, std::chrono::milliseconds timeout_) : input(input_), timeout(timeout_) {
     // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions) error comes from ALSA library
     int errorcode = snd_pcm_open(&handle, device_name.c_str(), SND_PCM_STREAM_PLAYBACK, 0);
     int dir = 0; // *_near() functions use this to say if the chosen value was above or below the requested value
@@ -99,16 +102,25 @@ void AlsaOut::run() {
                 new_audio.push_back(sample);
             }
             // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
-            int rc = snd_pcm_writei(handle, new_audio.data(), frames);
+            int rc = snd_pcm_writei(handle, new_audio.data(), frames * 2);
             if (rc == -EPIPE) {
                 /* EPIPE means underrun */
                 std::cerr << "underrun occurred\n";
                 snd_pcm_prepare(handle);
             } else if (rc < 0) {
                 std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
-            } else if (rc != (int)frames) {
+            } else if (rc != (int)frames * 2) {
                 std::cerr << "short write, write " << rc << "\n";
             }
         }
     });
+    sched_param sch;
+    int policy;
+    pthread_getschedparam(alsa_out_thread.native_handle(), &policy, &sch);
+    sch.sched_priority = 20;
+    if (pthread_setschedparam(alsa_out_thread.native_handle(), SCHED_FIFO, &sch)) {
+        std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+    } else {
+        std::cerr << "Priority increased successfully (alsa_out)" << std::endl;
+    }
 }

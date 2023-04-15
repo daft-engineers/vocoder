@@ -11,7 +11,10 @@
 #include <algorithm>
 #include <array>
 #include <cmath>
+#include <cstdint>
 #include <numeric>
+#include <iostream>
+#include <pthread.h>
 
 namespace rms {
 
@@ -42,8 +45,9 @@ template <std::size_t num_samples> class RMS {
 
     double calc() {
         uint64_t total = std::accumulate(std::begin(squared_sample_buffer), std::end(squared_sample_buffer), 0);
-        double output = std::sqrt(total / num_samples);
-        return output;
+        double output = (std::sqrt(total) / num_samples) / INT16_MAX;
+        std::cerr << output << std::endl;
+        return output ;
     }
 
     void run() {
@@ -61,6 +65,7 @@ template <std::size_t num_samples> class RMS {
                 }
 
                 double output_packet = calc();
+                //std::cerr << output_packet << std::endl;
                 {
                     std::lock_guard<std::mutex> lk(output_pipe.cond_m);
                     output_pipe.queue.push(output_packet);
@@ -69,6 +74,15 @@ template <std::size_t num_samples> class RMS {
             }
             return true;
         });
+        sched_param sch;
+        int policy;
+        pthread_getschedparam(thread.native_handle(), &policy, &sch);
+        sch.sched_priority = 20;
+        if (pthread_setschedparam(thread.native_handle(), SCHED_FIFO, &sch)) {
+            std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+        } else {
+            std::cerr << "Priority increased successfully (rms)" << std::endl;
+        }
     }
     void stop() {
         if (thread_alive) {
