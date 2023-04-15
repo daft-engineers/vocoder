@@ -28,7 +28,16 @@ jobs:
     steps:      
       - name: Build all
         working-directory: ${{env.path}}/build/unit_tests
-        run: make -j 4; ctest --timeout 1 --output-on-failure --repeat until-fail:1000 -j 2
+        run: make -j 4;
+
+      - name: Run tests
+        working-directory: ${{env.path}}/build/unit_tests
+        run: ctest --timeout 1 --output-on-failure --repeat until-fail:1000 -j 2 --output-log test.log
+      
+      - uses: actions/upload-artifact@v3
+        with:
+          name: logs
+          path: ${{env.path}}/build/unit_tests/output.log
 
   tidy-up:
     runs-on: self-hosted
