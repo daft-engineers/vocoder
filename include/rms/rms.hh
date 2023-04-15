@@ -28,7 +28,8 @@ template <std::size_t num_samples> class RMS {
     std::thread thread;
 
   public:
-    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout) : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
+    RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
+        : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     }
 
     void insert(Audio packet) {

@@ -13,7 +13,7 @@
  */
 class BPFilter {
   public:
-    /** 
+    /**
      * Bandpass constructor.
      * Sets up the filter just so.
      * @param order the integer order for the filter
@@ -22,92 +22,91 @@ class BPFilter {
      * @param freq_range_ the width of the pass band
      * @param input_ the input pipe for the module
      * @param the output pipe for the module
-    */
+     */
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
              Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
 
     /**
      * Bandpass deconstructor.
-    */
+     */
     ~BPFilter();
 
     /**
      * Overridden move constructor
      * Overridden as the destructor has been modified
-    */
+     */
     BPFilter(const BPFilter &) = delete;
     /**
      * Overridden move constructor
      * Overridden as the destructor has been modified
-    */
+     */
     BPFilter &operator=(const BPFilter &) = delete;
     /**
      * Overridden move constructor
      * Overridden as the destructor has been modified
-    */
+     */
     BPFilter(BPFilter &&) = delete;
     /**
      * Overridden move constructor
      * Overridden as the destructor has been modified
-    */
+     */
     BPFilter &operator=(BPFilter &&) = delete;
 
-    /** 
+    /**
      * Run thread function
      * Contains the main logic for the thread. Waits for input, filters the data, and then sends to the output.
      * Loops until stop() is called.
      * @see stop()
-    */
+     */
     void run();
 
-    /** 
+    /**
      * Filter function
      * Processes each of the samples in the audio stream.
-    */
+     */
     Audio filter(const Audio &in_audio);
 
   private:
     /**
      * Default order for the IIR filter used for contruction
-    */
+     */
     static const int default_order{12};
     /**
      * The IIR filter
-    */
+     */
     Iir::Butterworth::BandPass<default_order> f;
     /**
      * Centre frequency for the pass band for the filter
-    */
+     */
     double centre_freq{0};
     /**
      * Frequency range for the pass band of the filter
-    */
+     */
     double freq_range{UINT_MAX};
 
     /**
      * Input pipe for the module
-    */
+     */
     Pipe<Audio> &input;
     /**
      * Output pipe for the module
-    */
+     */
     Pipe<Audio> &output;
 
     /**
      * The thread for this instance of filter
-    */
+     */
     std::thread filter_thread;
 
     /**
      * Thread alive flag. Holdes state of thread so it is only joined if it is running.
-    */
+     */
     bool thread_alive{false};
 
     /**
      * Timeout for the thread wait()
-    */
+     */
     const std::chrono::milliseconds timeout;
-
 };
 
 #endif
