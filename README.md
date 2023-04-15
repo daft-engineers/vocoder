@@ -12,7 +12,7 @@ To build just the vocoder itself you will need:
     - Debian
     - ALSA
 - Hardware
-    - Raspberry Pi 3 (or newer)
+    - Raspberry Pi 3 (or newer) running a 64bit OS
     - Codec Zero
 
 Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from [their website](https://apt.llvm.org/) can be used.
@@ -95,5 +95,8 @@ The project uses github's issue system for management. The project board is loca
 
 Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. 
 
-The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every commit and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. On a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/annotated.html) is updated. 
+# Continuous integration
 
+The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/annotated.html) is updated. The image below shows the workflow for a standard push.
+
+![Image](https://user-images.githubusercontent.com/56744932/232238323-5977fc16-2d5f-4533-b965-6143a109ffd9.png)
