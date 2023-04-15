@@ -1,4 +1,5 @@
 #include "../include/filter/filter.hh"
+#include <iostream>
 
 BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
                    Pipe<Audio> &output_, std::chrono::milliseconds timeout_)
@@ -24,6 +25,7 @@ void BPFilter::run() {
             }
 
             Audio audio_out = filter(input.queue.front());
+            std::cerr << audio_out[0] << std::endl;
             input.queue.pop();
             lk.unlock();
 
@@ -42,11 +44,7 @@ Audio BPFilter::filter(const Audio &in_audio) {
     Audio filtered_audio;
     for (auto sample : in_audio) {
         auto buf = static_cast<signed short>(f.filter(sample));
-        if (buf <= 0) {
-            filtered_audio.push_back(0);
-        } else {
-            filtered_audio.push_back(buf);
-        }
+        filtered_audio.push_back(buf);
     }
 
     return filtered_audio;

@@ -11,8 +11,8 @@ AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_) : input(in
         std::quick_exit(1);
     }
 
-    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast) don't lint problems caused by external libraries
     /* Allocate a hardware parameters object. */
+    // NOLINTNEXTLINE(cppcoreguidelines-pro-type-cstyle-cast) don't lint problems caused by external libraries
     snd_pcm_hw_params_alloca(&params);
     /* Fill it in with default values. */
     snd_pcm_hw_params_any(handle, params);
@@ -90,10 +90,16 @@ void AlsaOut::run() {
 
             // Output audio
             Audio audio_out = input.queue.front();
+            // std::cerr << input.queue.size() << std::endl;
             input.queue.pop();
             lk.unlock();
+            Audio new_audio;
+            for (auto sample : audio_out) {
+                new_audio.push_back(sample);
+                new_audio.push_back(sample);
+            }
             // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
-            int rc = snd_pcm_writei(handle, static_cast<void *>(audio_out.data()), frames);
+            int rc = snd_pcm_writei(handle, new_audio.data(), frames);
             if (rc == -EPIPE) {
                 /* EPIPE means underrun */
                 std::cerr << "underrun occurred\n";

@@ -42,7 +42,7 @@ namespace alsa_callback {
 class acb {
   public:
     acb(const std::string &device_name);
-    void listen(const std::function<void(std::vector<uint16_t>, std::vector<uint16_t>)> &callback);
+    void listen(const std::function<void(std::vector<int16_t>, std::vector<int16_t>)> &callback);
     void stop();
     unsigned int getSR();
 
