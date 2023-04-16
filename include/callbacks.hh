@@ -44,6 +44,7 @@ class acb {
     acb(const std::string &device_name);
     void listen(const std::function<void(std::vector<uint16_t>, std::vector<uint16_t>)> &callback);
     void stop();
+    unsigned int get_sample_rate();
 
   private:
     std::thread cb_thread;
@@ -51,6 +52,7 @@ class acb {
     snd_pcm_t *handle{};
     bool keep_listening{false};
     snd_pcm_uframes_t frames = 32; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 
 } // namespace alsa_callback
