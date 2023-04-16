@@ -18,8 +18,9 @@
  */
 namespace rms {
 
-/*  RMS (Root Mean Square) Class.
- *  This class determins the average power of a signal.
+/** RMS (Root Mean Square) Class.
+ *  This class determines the average power of a signal.
+ *  @tparam num_samples The number of samples to include in the ring buffer.
  */
 template <std::size_t num_samples> class RMS {
   private:
@@ -42,14 +43,22 @@ template <std::size_t num_samples> class RMS {
     std::thread thread;
 
   public:
-    /** RMS Constructor
+    /** 
     *   Initialises the input and output pipes, and the timeout.
-    *   @param input_pipe The Pipe
+    *   @param input_pipe A Pipe<Audio> containing the signal to be measured
+    *   @param output_pipe A Pipe<double> which will contain the root mean square of the signal
+    *   @param timeout The number of milliseconds the thread should wait before exiting if no data is provided. 
     */
     RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
         : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     }
 
+    /** 
+    *   Takes a collection of samples from an Audio item, squares it, and inserts it into
+    *   the ring buffer.
+    *   
+    *   @param packet The samples to insert.
+    */
     void insert(Audio packet) {
         std::for_each(packet.begin(), packet.end(), [this](const int16_t item) {
             // this assumes that the 0 point for the signal is 0
@@ -59,6 +68,13 @@ template <std::size_t num_samples> class RMS {
         });
     }
 
+    /**
+    *   Determines the relative Root Mean Square of the ring buffer. Since the ring buffer already
+    *   contains the squares of the samples, this only needs to sum and then square root
+    *   the ring buffer.
+    *
+    *   @return The root mean square (between 0 and 1)
+    */
     double calc() {
         uint64_t total = 0;
         for (auto &n : squared_sample_buffer) {
@@ -68,6 +84,9 @@ template <std::size_t num_samples> class RMS {
         return output;
     }
 
+    /**
+    *   Creates the calculation thread and then returns.
+    */
     void run() {
         thread = std::thread([this]() {
             thread_alive = true;
@@ -92,15 +111,23 @@ template <std::size_t num_samples> class RMS {
             return true;
         });
     }
+
+    /**
+    *   Join the calculation thread when the destructor is called.
+    */
     ~RMS() {
         if (thread_alive) {
             thread.join();
         }
     }
 
+    // Explicitly delete the copy constructor
     RMS(const RMS &) = delete;
+    // Explicitly delete the copy assignment constructor
     RMS &operator=(const RMS &) = delete;
+    // Explicitly delete the move constructor
     RMS(RMS &&) = delete;
+    // Explicitly delete the move assignment constructor
     RMS &operator=(RMS &&) = delete;
 };
 } // namespace rms
