@@ -124,13 +124,24 @@ template <std::size_t num_samples> class RMS {
         }
     }
 
-    // Explicitly delete the copy constructor
+    /**
+    * Explicitly delete the copy constructor
+    */ 
     RMS(const RMS &) = delete;
-    // Explicitly delete the copy assignment constructor
+
+    /**
+    * Explicitly delete the copy assignment constructor
+    */ 
     RMS &operator=(const RMS &) = delete;
-    // Explicitly delete the move constructor
+
+    /**
+    * Explicitly delete the move constructor
+    */ 
     RMS(RMS &&) = delete;
-    // Explicitly delete the move assignment constructor
+
+    /**
+    * Explicitly delete the move assignment constructor
+    */ 
     RMS &operator=(RMS &&) = delete;
 };
 } // namespace rms
