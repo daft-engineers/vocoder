@@ -20,7 +20,10 @@ namespace rms {
 
 /** RMS (Root Mean Square) Class.
  *  This class determines the average power of a signal.
- *  @tparam num_samples The number of samples to include in the ring buffer.
+ *  @tparam num_samples The number of samples to store in history when calculating the root mean
+ *      square. This should be approximately 4x the period of the longest component you want to
+ *      include in the output.
+ *      
  */
 template <std::size_t num_samples> class RMS {
   private:
