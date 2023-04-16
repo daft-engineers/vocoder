@@ -99,7 +99,7 @@ The project uses github's issue system for management. The project board is loca
 
 # Contributions 
 
-Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. Any contrbutions must be licenceable under the 2.0.
+Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. Any contrbutions must be licenceable under the MPL 2.0.
 
 # Licence
 
