@@ -130,7 +130,7 @@ TEST(FilterTest, LowFrequencyResponse) {
 // Test filter returns values above and below 0
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
-TEST(FilterTest, PosativeNegative) {
+TEST(FilterTest, PositiveNegative) {
     const unsigned int centre = 75;
     const unsigned int width = 20;
     Pipe<Audio> in;
@@ -152,9 +152,9 @@ TEST(FilterTest, PosativeNegative) {
     bool below = false;
 
     for (int i = 0; i < sample_size; i++) {
-        if (filter_out[i] > 0) {
+        if (filter_out[i] > 45) {
             above = true;
-        } else if (filter_out[i] < 0) {
+        } else if (filter_out[i] < -45) {
             below = true;
         }
     }
