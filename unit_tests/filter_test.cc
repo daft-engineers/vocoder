@@ -127,6 +127,42 @@ TEST(FilterTest, LowFrequencyResponse) {
     }
 }
 
+// Test filter returns values above and below 0
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(FilterTest, PositiveNegative) {
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
+    Pipe<Audio> in;
+    Pipe<Audio> out;
+
+    BPFilter f(2, sampling_rate, centre, width, in, out, std::chrono::milliseconds(100));
+
+    // High freq sin
+    const unsigned int high_freq = 75;
+    Audio high_sin_audio;
+
+    for (int i = 0; i < sample_size; i++) {
+        high_sin_audio.push_back(100 * (std::sin(2. * i * pi * high_freq) + 1));
+    }
+
+    Audio filter_out = f.filter(high_sin_audio);
+
+    bool above = false;
+    bool below = false;
+
+    for (int i = 0; i < sample_size; i++) {
+        if (filter_out[i] > 45) {
+            above = true;
+        } else if (filter_out[i] < -45) {
+            below = true;
+        }
+    }
+
+    EXPECT_TRUE(above) << "Filter returned value above 0";
+    EXPECT_TRUE(below) << "Filter returned value below 0";
+}
+
 // Test filter function runs in less than 0.5ms
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
