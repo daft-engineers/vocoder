@@ -68,7 +68,12 @@ This will run static analysis and return any errors found. It will also reformat
 
 Documentation for main can be [found here](https://daft-engineers.github.io/vocoder/annotated.html).
 
-If you want to generate the documentation for yourself, from the root of the project, the command 
+If you want to generate the documentation for yourself, the `doxygen` and `graphviz` packages are required. These can be installed with the following command on ubuntu:
+
+```$
+sudo apt install doxygen graphviz
+```
+With all the required dependences, from the root of the project, the command 
 ```$
 doxygen Doxyfile
 ```
@@ -88,12 +93,17 @@ Sequence diagram generated with TikZ-UML library, source is available upon reque
 
 # Project management
 
-The project uses github's issue system for management. The project board is located [here.](https://github.com/orgs/daft-engineers/projects/1/views/3) ![Image](https://user-images.githubusercontent.com/56744932/232234904-d9e0ba0a-6532-460d-966f-4a65a5f11cc9.png)
+Regualar scrum meetings were held through the project, notes are available [here](https://github.com/daft-engineers/project/blob/main/README.md). 
 
+The project uses github's issue system for management. The project board is located [here.](https://github.com/orgs/daft-engineers/projects/1/views/3) ![Image](https://user-images.githubusercontent.com/56744932/232234904-d9e0ba0a-6532-460d-966f-4a65a5f11cc9.png)
 
 # Contributions 
 
-Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. 
+Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. Any contrbutions must be licenceable under the 2.0.
+
+# Licence
+
+The project is licenced under the Mozilla Public License Version 2.0. More details can be found in the licence file. 
 
 # Continuous integration
 
