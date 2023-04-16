@@ -27,7 +27,7 @@ void BPFilter::run() {
             }
 
             Audio audio_out = filter(input.queue.front());
-            //std::cerr << audio_out[0] << std::endl;
+            //std::cerr << input.queue.size() << std::endl;
             input.queue.pop();
             lk.unlock();
 

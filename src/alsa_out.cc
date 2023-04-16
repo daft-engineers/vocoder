@@ -93,7 +93,7 @@ void AlsaOut::run() {
 
             // Output audio
             Audio audio_out = input.queue.front();
-            // std::cerr << input.queue.size() << std::endl;
+            //std::cerr << input.queue.size() << std::endl;
             input.queue.pop();
             lk.unlock();
             Audio new_audio;
@@ -101,15 +101,16 @@ void AlsaOut::run() {
                 new_audio.push_back(sample);
                 new_audio.push_back(sample);
             }
+
             // NOLINTNEXTLINE(cppcoreguidelines-narrowing-conversions)
-            int rc = snd_pcm_writei(handle, new_audio.data(), frames * 2);
+            int rc = snd_pcm_writei(handle, new_audio.data(), frames);
             if (rc == -EPIPE) {
                 /* EPIPE means underrun */
                 std::cerr << "underrun occurred\n";
                 snd_pcm_prepare(handle);
             } else if (rc < 0) {
                 std::cerr << "error from writei: " << snd_strerror(rc) << "\n";
-            } else if (rc != (int)frames * 2) {
+            } else if (rc != (int)frames) {
                 std::cerr << "short write, write " << rc << "\n";
             }
         }
