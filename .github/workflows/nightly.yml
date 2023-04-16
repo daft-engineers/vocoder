@@ -32,7 +32,7 @@ jobs:
 
       - name: Run tests
         working-directory: ${{env.path}}/build/unit_tests
-        run: ctest --timeout 1 --output-on-failure --repeat until-fail:1000 -j 2 --output-log test.log --quiet
+        run: ctest --timeout 1 --output-on-failure --repeat-until-fail 1000 -j 2 --output-log test.log --quiet
       
       - uses: actions/upload-artifact@v3
         if: always()
