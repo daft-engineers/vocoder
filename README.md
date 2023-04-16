@@ -103,7 +103,7 @@ Contributions must be made in the form of a pull request and must pass the unit 
 
 # Licence
 
-The project is licenced under the Mozilla Public License Version 2.0. More details can be found in the licence file. 
+The project is licenced under the Mozilla Public License Version 2.0. More details can be found in the licence file, and [here](https://choosealicense.com/licenses/mpl-2.0/).
 
 # Continuous integration
 
