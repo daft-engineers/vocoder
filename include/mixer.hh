@@ -3,6 +3,7 @@
 
 #include "audio.hh"
 #include "pipe.hh"
+#include "scheduler_helper.hh"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -111,6 +112,7 @@ template <std::size_t num_banks> class Mixer {
             }
             return true;
         });
+        Scheduler_helper::set_thread_priority(thread.native_handle(), "mixer");
     }
     /**
      * Join the mixer thread when the destructor is called

@@ -1,4 +1,5 @@
 #include "../include/amp.hh"
+#include "../include/scheduler_helper.hh"
 #include <cmath>
 
 Audio Amplifier::amplify(Audio &sample, double amount) {
@@ -51,4 +52,5 @@ void Amplifier::run() {
             output.cond.notify_all();
         }
     });
+    Scheduler_helper::set_thread_priority(amplifier_thread.native_handle(), "amp");
 }

@@ -1,4 +1,5 @@
 #include "../include/callbacks.hh"
+#include "../include/scheduler_helper.hh"
 #include <algorithm>
 #include <cstddef>
 #include <cstdint>
@@ -102,6 +103,8 @@ void alsa_callback::acb::listen(
             callback(modulator, carrier);
         }
     });
+
+    Scheduler_helper::set_thread_priority(cb_thread.native_handle(), "callbacks");
 }
 
 unsigned int alsa_callback::acb::get_sample_rate() {

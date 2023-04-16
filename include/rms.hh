@@ -8,6 +8,7 @@
 
 #include "audio.hh"
 #include "pipe.hh"
+#include "scheduler_helper.hh"
 #include <algorithm>
 #include <array>
 #include <cmath>
