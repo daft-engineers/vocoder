@@ -26,17 +26,17 @@ TEST(RMSTests, buffer) {
 
     audio[0] = 16;
     rms.insert(audio);
-    // buffer should now be 256, 0, 0, 0 giving rms of 8
+    // buffer should now be 256, 0, 0, 0 giving rms of 8/IM
     ASSERT_EQ(rms.calc(), 8.0 / INT16_MAX);
 
     audio[0] = -16;
     rms.insert(audio);
-    // buffer should now be 256, 256, 0, 0 giving rms of 8r2
+    // buffer should now be 256, 256, 0, 0 giving rms of 8r2/IM
     ASSERT_EQ(rms.calc(), 8.0 * std::sqrt(2) / INT16_MAX);
 
     rms.insert(audio);
     rms.insert(audio);
-    // buffer should now be 256, 256, 256, 256 giving rms of 16
+    // buffer should now be 256, 256, 256, 256 giving rms of 16/IM
     ASSERT_EQ(rms.calc(), 16.0 / INT16_MAX);
 
     // insertions to the buffer from here should roll back to the front
@@ -54,7 +54,7 @@ TEST(RMSTests, buffer) {
 
     rms.insert(sample);
 
-    // buffer should now be 0, 0, 0, 0, giving rms of 0
+    // buffer should now be IM, IM, IM, IM, giving rms of 1
     ASSERT_EQ(rms.calc(), 1);
 }
 
