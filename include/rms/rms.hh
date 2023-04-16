@@ -13,21 +13,39 @@
 #include <cmath>
 #include <numeric>
 
+/** rms namespace
+ *  Contains the RMS class.
+ */
 namespace rms {
 
+/*  RMS (Root Mean Square) Class.
+ *  This class determins the average power of a signal.
+ */
 template <std::size_t num_samples> class RMS {
   private:
+    // Input pipe for the class
     Pipe<Audio> &input_pipe;
+    // Output pipe for the class
     Pipe<double> &output_pipe;
 
+    // Ring buffer which contains the recent history of the signal after it has been squared.
     std::array<uint32_t, num_samples> squared_sample_buffer = {0};
+    // Points to the current head of the buffer
     int sample_buffer_index = 0;
 
+    // Determines how the long the thread should wait before exiting if no data is received.
     const std::chrono::milliseconds timeout;
+    // Boolean variable to track if the thread is running
     bool thread_alive{false};
+
+    // Contains the thread carrying out the calculation
     std::thread thread;
 
   public:
+    /** RMS Constructor
+    *   Initialises the input and output pipes, and the timeout.
+    *   @param input_pipe The Pipe
+    */
     RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
         : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     }
