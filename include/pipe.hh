@@ -26,6 +26,8 @@
  *
 =======
  * 
+ * Data is placed into a pipe by placing it on the back of the pipe's queue. It can then be retrieved from the front of the pipe's queue. The mutex must be locked when interacting with the queue to prevent memory safety issues. With the use of the `wait()` and `notify_all()` functions, a thread can sleep while the queue is empty.
+ * 
  * The pipe can be used as followed, for example
  * ~~~~~~~~~~~~~~~{.cpp}
  * 
