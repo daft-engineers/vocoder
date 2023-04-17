@@ -1,0 +1,48 @@
+\hypertarget{classScheduler__helper}{}\doxysection{Scheduler\+\_\+helper Class Reference}
+\label{classScheduler__helper}\index{Scheduler\_helper@{Scheduler\_helper}}
+
+
+{\ttfamily \#include $<$scheduler\+\_\+helper.\+hh$>$}
+
+
+
+Collaboration diagram for Scheduler\+\_\+helper\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=208pt]{classScheduler__helper__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static void \mbox{\hyperlink{classScheduler__helper_a31ae93cbe61ec315645dd5f1502691a9}{set\+\_\+thread\+\_\+priority}} (pthread\+\_\+t handle, std\+::string const \&threadname)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Scheduler helper Class. Holds the helper function 
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classScheduler__helper_a31ae93cbe61ec315645dd5f1502691a9}\label{classScheduler__helper_a31ae93cbe61ec315645dd5f1502691a9}} 
+\index{Scheduler\_helper@{Scheduler\_helper}!set\_thread\_priority@{set\_thread\_priority}}
+\index{set\_thread\_priority@{set\_thread\_priority}!Scheduler\_helper@{Scheduler\_helper}}
+\doxysubsubsection{\texorpdfstring{set\_thread\_priority()}{set\_thread\_priority()}}
+{\footnotesize\ttfamily void Scheduler\+\_\+helper\+::set\+\_\+thread\+\_\+priority (\begin{DoxyParamCaption}\item[{pthread\+\_\+t}]{handle,  }\item[{std\+::string const \&}]{threadname }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Helper function to set the thread priority. Avoids repeated code.
+
+
+\begin{DoxyParams}{Parameters}
+{\em handle} & Thread handle of the thread that needs its priority increased. \\
+\hline
+{\em threadname} & String to pass to debug outputs to see which thread failed \\
+\hline
+\end{DoxyParams}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/scheduler\+\_\+helper.\+hh\item 
+src/scheduler\+\_\+helper.\+cc\end{DoxyCompactItemize}

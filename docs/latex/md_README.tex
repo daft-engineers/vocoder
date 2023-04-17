@@ -1,0 +1,110 @@
+
+
+We are building a vocoder, which is a vocal effect that combines your voice with a sound wave. The result is a unique sound used in popular songs like Daft Punk\textquotesingle{}s \char`\"{}\+Harder, Better, Faster, Stronger\char`\"{} (the inspiration for our name), or ELO\textquotesingle{}s \char`\"{}\+Mr. Blue Sky\char`\"{}.\hypertarget{md_README_autotoc_md0}{}\doxysection{Pre-\/requisites}\label{md_README_autotoc_md0}
+To build just the vocoder itself you will need\+:
+
+
+\begin{DoxyItemize}
+\item Software
+\begin{DoxyItemize}
+\item CMake 3.\+16+
+\item C++11 compiler
+\item Debian
+\item ALSA
+\end{DoxyItemize}
+\item Hardware
+\begin{DoxyItemize}
+\item Raspberry Pi 3 (or newer) running a 64bit OS
+\item Codec Zero
+\end{DoxyItemize}
+\end{DoxyItemize}
+
+Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from \href{https://apt.llvm.org/}{\texttt{ their website}} can be used.
+
+To build the doxygen documentation, the {\ttfamily doxygen} and {\ttfamily graphviz} packages are required.
+
+We recommend the following to get started from scratch (requires 1GB+ of storage)\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{sudo apt update}
+\DoxyCodeLine{sudo apt install wget gpg build-\/essential cmake libasound2-\/dev}
+\DoxyCodeLine{wget https://apt.llvm.org/llvm.sh}
+\DoxyCodeLine{chmod +x llvm.sh}
+\DoxyCodeLine{sudo ./llvm.sh 15 all}
+\DoxyCodeLine{sudo ln -\/s /usr/lib/llvm-\/15/bin/clang\{,++,-\/format,-\/tidy\} /usr/local/bin}
+
+\end{DoxyCode}
+
+
+Python 3 is required to automatically build and link unit tests. Python 3 comes preinstalled on most Linux distributions, and is available as a package on all others.\hypertarget{md_README_autotoc_md1}{}\doxysection{Getting started (using Clang)}\label{md_README_autotoc_md1}
+Once you have installed the prerequisites and configured your hardware you should clone the repository and run the setup script.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{git clone git@github.com:daft-\/engineers/vocoder.git}
+\DoxyCodeLine{cd vocoder}
+\DoxyCodeLine{chmod +x setup.sh}
+\DoxyCodeLine{./setup.sh}
+
+\end{DoxyCode}
+
+
+The project is now ready to be built.
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{cd build}
+\DoxyCodeLine{make}
+\DoxyCodeLine{cd unit\_tests  \# run unit tests}
+\DoxyCodeLine{ctest}
+\DoxyCodeLine{cd ../src      \# run vocoder}
+\DoxyCodeLine{./vocoder}
+
+\end{DoxyCode}
+\hypertarget{md_README_autotoc_md2}{}\doxysubsection{Running our validation suite}\label{md_README_autotoc_md2}
+As well as using the Google\+Test framework to provide unit and integration tests, we also use clang-\/tidy for static analysis and clang-\/format to ensure code meets style standards. To run the static analysis and style tests use\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{chmod +x checks.sh}
+\DoxyCodeLine{./checks.sh}
+
+\end{DoxyCode}
+
+
+This will run static analysis and return any errors found. It will also reformat the code in-\/place to meet our style guidelines, which are based on the LLVM guidelines. If you would like to check if the code meet style guideline {\itshape without} it being updated in place, then the flag {\ttfamily -\/-\/formatting} can be passed to the script.\hypertarget{md_README_autotoc_md3}{}\doxysection{Documentation}\label{md_README_autotoc_md3}
+Documentation for main can be \href{https://daft-engineers.github.io/vocoder/}{\texttt{ found here}}.
+
+If you want to generate the documentation for yourself, the {\ttfamily doxygen} and {\ttfamily graphviz} packages are required. These can be installed with the following command on ubuntu\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ \{\$\}}
+\DoxyCodeLine{sudo apt install doxygen graphviz}
+
+\end{DoxyCode}
+ With all the required dependences, from the root of the project, the command 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{ \{\$\}}
+\DoxyCodeLine{doxygen Doxyfile}
+
+\end{DoxyCode}
+ generates the documentation, and then the page can be opened by navigating to {\ttfamily docs/html/} and opening {\ttfamily index.\+html}\hypertarget{md_README_autotoc_md4}{}\doxysection{Social Media}\label{md_README_autotoc_md4}
+\href{https://www.instagram.com/daftengineers/}{\texttt{ }} \href{https://twitter.com/DaftEngineers}{\texttt{ }} \href{https://www.youtube.com/@daftengineers}{\texttt{ }} \href{https://www.tiktok.com/@daftengineers}{\texttt{ }}\hypertarget{md_README_autotoc_md5}{}\doxysection{Program Design}\label{md_README_autotoc_md5}
+\hypertarget{md_README_autotoc_md6}{}\doxysubsection{Sequence Diagram}\label{md_README_autotoc_md6}
+
+
+Sequence diagram generated with Tik\+Z-\/\+UML library, source is available upon request.\hypertarget{md_README_autotoc_md7}{}\doxysection{Project management}\label{md_README_autotoc_md7}
+Regualar scrum meetings were held through the project, notes are available \href{https://github.com/daft-engineers/project/blob/main/README.md}{\texttt{ here}}.
+
+The project uses github\textquotesingle{}s issue system for management. The project board is located \href{https://github.com/orgs/daft-engineers/projects/1/views/3}{\texttt{ here.}} \hypertarget{md_README_autotoc_md8}{}\doxysection{Contributions}\label{md_README_autotoc_md8}
+Contributions must be made in the form of a pull request and must pass the unit tests and validation suite. Any contrbutions must be licenceable under the MPL 2.\+0.\hypertarget{md_README_autotoc_md9}{}\doxysection{Licence}\label{md_README_autotoc_md9}
+The project is licenced under the Mozilla Public License Version 2.\+0. More details can be found in the licence file, and \href{https://choosealicense.com/licenses/mpl-2.0/}{\texttt{ here}}.\hypertarget{md_README_autotoc_md10}{}\doxysection{Continuous integration}\label{md_README_autotoc_md10}
+The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the \href{https://daft-engineers.github.io/vocoder/}{\texttt{ hosted documentation}} is updated. The image below shows the workflow for a standard push.
+
+
+
+Nightly, a more extensive test suite is run. This suite takes too long to run on every commit, but is valuable for finding threading bugs in particular.
+
+ 

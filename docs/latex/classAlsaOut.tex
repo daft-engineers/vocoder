@@ -1,0 +1,73 @@
+\hypertarget{classAlsaOut}{}\doxysection{Alsa\+Out Class Reference}
+\label{classAlsaOut}\index{AlsaOut@{AlsaOut}}
+
+
+{\ttfamily \#include $<$alsa\+\_\+out.\+hh$>$}
+
+
+
+Collaboration diagram for Alsa\+Out\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=154pt]{classAlsaOut__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classAlsaOut_a3377ad52380760d3a136b39fb8e76dbe}{Alsa\+Out}} (const std\+::string \&device\+\_\+name, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&input\+\_\+, std\+::chrono\+::milliseconds timeout\+\_\+)
+\item 
+void \mbox{\hyperlink{classAlsaOut_ad483e04f3bd1faed8bfb82a720a0af54}{run}} ()
+\item 
+void \mbox{\hyperlink{classAlsaOut_a5e330e365273140cfa6d71deeaaeabbe}{stop}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classAlsaOut}{Alsa\+Out}} Class. This takes an input pipe containing Audio and writes this to the devices audio output. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classAlsaOut_a3377ad52380760d3a136b39fb8e76dbe}\label{classAlsaOut_a3377ad52380760d3a136b39fb8e76dbe}} 
+\index{AlsaOut@{AlsaOut}!AlsaOut@{AlsaOut}}
+\index{AlsaOut@{AlsaOut}!AlsaOut@{AlsaOut}}
+\doxysubsubsection{\texorpdfstring{AlsaOut()}{AlsaOut()}}
+{\footnotesize\ttfamily Alsa\+Out\+::\+Alsa\+Out (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{device\+\_\+name,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{input\+\_\+,  }\item[{std\+::chrono\+::milliseconds}]{timeout\+\_\+ }\end{DoxyParamCaption})}
+
+Constructs a ALSA output. Initialises the device name, input pipe and timeout. 
+\begin{DoxyParams}{Parameters}
+{\em device\+\_\+name} & A string describing the ALSA device to be used (e.\+g. \char`\"{}hw\+:2,0,0\char`\"{}). \\
+\hline
+{\em input\+\_\+} & Input pipe. \\
+\hline
+{\em timeout\+\_\+} & Time in milliseconds the thread will wait before exiting if no data is provided. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classAlsaOut_ad483e04f3bd1faed8bfb82a720a0af54}\label{classAlsaOut_ad483e04f3bd1faed8bfb82a720a0af54}} 
+\index{AlsaOut@{AlsaOut}!run@{run}}
+\index{run@{run}!AlsaOut@{AlsaOut}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void Alsa\+Out\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Run function. Opens a thread and continuously writes to the output. Runs until \mbox{\hyperlink{classAlsaOut_a5e330e365273140cfa6d71deeaaeabbe}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classAlsaOut_a5e330e365273140cfa6d71deeaaeabbe}{stop()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classAlsaOut_a5e330e365273140cfa6d71deeaaeabbe}\label{classAlsaOut_a5e330e365273140cfa6d71deeaaeabbe}} 
+\index{AlsaOut@{AlsaOut}!stop@{stop}}
+\index{stop@{stop}!AlsaOut@{AlsaOut}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void Alsa\+Out\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stop function. Tells the thread to join. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classAlsaOut_ad483e04f3bd1faed8bfb82a720a0af54}{run()}} 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/alsa\+\_\+out.\+hh\item 
+src/alsa\+\_\+out.\+cc\end{DoxyCompactItemize}

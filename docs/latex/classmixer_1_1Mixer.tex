@@ -1,0 +1,100 @@
+\hypertarget{classmixer_1_1Mixer}{}\doxysection{mixer\+::Mixer$<$ num\+\_\+banks $>$ Class Template Reference}
+\label{classmixer_1_1Mixer}\index{mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}}
+
+
+{\ttfamily \#include $<$mixer.\+hh$>$}
+
+
+
+Collaboration diagram for mixer\+::Mixer$<$ num\+\_\+banks $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=236pt]{classmixer_1_1Mixer__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classmixer_1_1Mixer_adaa16ec16df8ba15021d62939fdda040}{Mixer}} (std\+::array$<$ \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$, num\+\_\+banks $>$ \&input\+\_\+pipes\+\_\+, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&output\+\_\+pipe\+\_\+, std\+::chrono\+::milliseconds timeout\+\_\+)
+\item 
+void \mbox{\hyperlink{classmixer_1_1Mixer_ae82a95ba9848efec421f051495c81098}{run}} ()
+\item 
+void \mbox{\hyperlink{classmixer_1_1Mixer_aa89e2c833e831403e63e0b837150fd27}{stop}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static Audio \mbox{\hyperlink{classmixer_1_1Mixer_a7fab3aa6f8bfdba13e9acba0e75ac332}{sum}} (std\+::array$<$ Audio, num\+\_\+banks $>$ audio\+\_\+packets)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$std\+::size\+\_\+t num\+\_\+banks$>$\newline
+class mixer\+::\+Mixer$<$ num\+\_\+banks $>$}
+
+\mbox{\hyperlink{classmixer_1_1Mixer}{Mixer}} class Takes in a list of input pipes, extracts the audio packet from each of them. It then produces a new audio packet which is the sum of the previous audio packets. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classmixer_1_1Mixer_adaa16ec16df8ba15021d62939fdda040}\label{classmixer_1_1Mixer_adaa16ec16df8ba15021d62939fdda040}} 
+\index{mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}!Mixer@{Mixer}}
+\index{Mixer@{Mixer}!mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}}
+\doxysubsubsection{\texorpdfstring{Mixer()}{Mixer()}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t num\+\_\+banks$>$ \\
+\mbox{\hyperlink{classmixer_1_1Mixer}{mixer\+::\+Mixer}}$<$ num\+\_\+banks $>$\+::\mbox{\hyperlink{classmixer_1_1Mixer}{Mixer}} (\begin{DoxyParamCaption}\item[{std\+::array$<$ \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$, num\+\_\+banks $>$ \&}]{input\+\_\+pipes\+\_\+,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{output\+\_\+pipe\+\_\+,  }\item[{std\+::chrono\+::milliseconds}]{timeout\+\_\+ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Constructs a new mixer. Initialises the input and output pipes and timeout. 
+\begin{DoxyParams}{Parameters}
+{\em input\+\_\+pipes\+\_\+} & Input pipe array. \\
+\hline
+{\em output\+\_\+pipe\+\_\+} & Output pipe. \\
+\hline
+{\em timeout\+\_\+} & Time in milliseconds the thread will wait before exiting if no data provided. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classmixer_1_1Mixer_ae82a95ba9848efec421f051495c81098}\label{classmixer_1_1Mixer_ae82a95ba9848efec421f051495c81098}} 
+\index{mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}!run@{run}}
+\index{run@{run}!mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t num\+\_\+banks$>$ \\
+void \mbox{\hyperlink{classmixer_1_1Mixer}{mixer\+::\+Mixer}}$<$ num\+\_\+banks $>$\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Creates the summing thread then returns. Runs until \mbox{\hyperlink{classmixer_1_1Mixer_aa89e2c833e831403e63e0b837150fd27}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classmixer_1_1Mixer_aa89e2c833e831403e63e0b837150fd27}{stop()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classmixer_1_1Mixer_aa89e2c833e831403e63e0b837150fd27}\label{classmixer_1_1Mixer_aa89e2c833e831403e63e0b837150fd27}} 
+\index{mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}!stop@{stop}}
+\index{stop@{stop}!mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t num\+\_\+banks$>$ \\
+void \mbox{\hyperlink{classmixer_1_1Mixer}{mixer\+::\+Mixer}}$<$ num\+\_\+banks $>$\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Join the mixer thread. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classmixer_1_1Mixer_ae82a95ba9848efec421f051495c81098}{run()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classmixer_1_1Mixer_a7fab3aa6f8bfdba13e9acba0e75ac332}\label{classmixer_1_1Mixer_a7fab3aa6f8bfdba13e9acba0e75ac332}} 
+\index{mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}!sum@{sum}}
+\index{sum@{sum}!mixer::Mixer$<$ num\_banks $>$@{mixer::Mixer$<$ num\_banks $>$}}
+\doxysubsubsection{\texorpdfstring{sum()}{sum()}}
+{\footnotesize\ttfamily template$<$std\+::size\+\_\+t num\+\_\+banks$>$ \\
+static Audio \mbox{\hyperlink{classmixer_1_1Mixer}{mixer\+::\+Mixer}}$<$ num\+\_\+banks $>$\+::sum (\begin{DoxyParamCaption}\item[{std\+::array$<$ Audio, num\+\_\+banks $>$}]{audio\+\_\+packets }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}, {\ttfamily [static]}}
+
+Sums the samples at matching points on each sub array and combines it in to a single array of samples
+
+
+\begin{DoxyParams}{Parameters}
+{\em audio\+\_\+packets} & Array of arrays of samples. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Summed array of samples. 
+\end{DoxyReturn}
+
+
+The documentation for this class was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/mixer.\+hh\end{DoxyCompactItemize}

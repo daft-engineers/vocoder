@@ -1,0 +1,96 @@
+\hypertarget{classAmplifier}{}\doxysection{Amplifier Class Reference}
+\label{classAmplifier}\index{Amplifier@{Amplifier}}
+
+
+{\ttfamily \#include $<$amp.\+hh$>$}
+
+
+
+Collaboration diagram for Amplifier\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=160pt]{classAmplifier__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classAmplifier_ac5cabd02a7e282ca2131aac77e55434f}{Amplifier}} (\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&input\+\_\+, \mbox{\hyperlink{structPipe}{Pipe}}$<$ double $>$ \&scaling\+\_\+, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&output\+\_\+, std\+::chrono\+::milliseconds timeout\+\_\+)
+\item 
+void \mbox{\hyperlink{classAmplifier_a78a9a234b2ac26b5cbf8c625425e7bba}{stop}} ()
+\item 
+void \mbox{\hyperlink{classAmplifier_a11857062a3bdc3e4d4cd65392471348f}{run}} ()
+\end{DoxyCompactItemize}
+\doxysubsection*{Static Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+static Audio \mbox{\hyperlink{classAmplifier_a85ac16d1b9af6590f3142817f6e78ae5}{amplify}} (Audio \&sample, double amount)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classAmplifier}{Amplifier}} Class. This takes two input pipes, one containing Audio and one containing a double scaling value. This will output to a pipe containing Audio which is the input audio scaled by the scaling value. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classAmplifier_ac5cabd02a7e282ca2131aac77e55434f}\label{classAmplifier_ac5cabd02a7e282ca2131aac77e55434f}} 
+\index{Amplifier@{Amplifier}!Amplifier@{Amplifier}}
+\index{Amplifier@{Amplifier}!Amplifier@{Amplifier}}
+\doxysubsubsection{\texorpdfstring{Amplifier()}{Amplifier()}}
+{\footnotesize\ttfamily Amplifier\+::\+Amplifier (\begin{DoxyParamCaption}\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{input\+\_\+,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ double $>$ \&}]{scaling\+\_\+,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{output\+\_\+,  }\item[{std\+::chrono\+::milliseconds}]{timeout\+\_\+ }\end{DoxyParamCaption})}
+
+Constructs an \mbox{\hyperlink{classAmplifier}{Amplifier}}. Initialises the input Audio pipe, input scaling pipe, output Audio pipe and timeout. 
+\begin{DoxyParams}{Parameters}
+{\em input\+\_\+} & Input Audio pipe. \\
+\hline
+{\em scaling\+\_\+} & Input Scaling pipe. \\
+\hline
+{\em output\+\_\+} & Output Audio pipe. \\
+\hline
+{\em timeout\+\_\+} & Time in milliseconds the thread will wait before exiting if no data is provided. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classAmplifier_a85ac16d1b9af6590f3142817f6e78ae5}\label{classAmplifier_a85ac16d1b9af6590f3142817f6e78ae5}} 
+\index{Amplifier@{Amplifier}!amplify@{amplify}}
+\index{amplify@{amplify}!Amplifier@{Amplifier}}
+\doxysubsubsection{\texorpdfstring{amplify()}{amplify()}}
+{\footnotesize\ttfamily Audio Amplifier\+::amplify (\begin{DoxyParamCaption}\item[{Audio \&}]{sample,  }\item[{double}]{amount }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [static]}}
+
+Amplify helper function. Scales a sample by scale value. 
+\begin{DoxyParams}{Parameters}
+{\em sample} & The audio sample which is being scaled. \\
+\hline
+{\em amount} & The scale value to multiply the sample by. \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+Audio object containg amplified audio. 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classAmplifier_a11857062a3bdc3e4d4cd65392471348f}\label{classAmplifier_a11857062a3bdc3e4d4cd65392471348f}} 
+\index{Amplifier@{Amplifier}!run@{run}}
+\index{run@{run}!Amplifier@{Amplifier}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void Amplifier\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Run function. Opens a thread and continuously scales input audio by scaling, outputting the scaled audio. Runs until \mbox{\hyperlink{classAmplifier_a78a9a234b2ac26b5cbf8c625425e7bba}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classAmplifier_a78a9a234b2ac26b5cbf8c625425e7bba}{stop()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classAmplifier_a78a9a234b2ac26b5cbf8c625425e7bba}\label{classAmplifier_a78a9a234b2ac26b5cbf8c625425e7bba}} 
+\index{Amplifier@{Amplifier}!stop@{stop}}
+\index{stop@{stop}!Amplifier@{Amplifier}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void Amplifier\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Requests for the calculation thread to join. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classAmplifier_a11857062a3bdc3e4d4cd65392471348f}{run()}} 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/amp.\+hh\item 
+src/amp.\+cc\end{DoxyCompactItemize}

@@ -1,0 +1,105 @@
+\hypertarget{classRMS}{}\doxysection{RMS Class Reference}
+\label{classRMS}\index{RMS@{RMS}}
+
+
+{\ttfamily \#include $<$rms.\+hh$>$}
+
+
+
+Collaboration diagram for RMS\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=143pt]{classRMS__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classRMS_a1799aaada5468c75c82d202dc09e9ee5}{RMS}} (int num\+\_\+samples, double gain, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&input\+\_\+pipe, \mbox{\hyperlink{structPipe}{Pipe}}$<$ double $>$ \&output\+\_\+pipe, std\+::chrono\+::milliseconds timeout)
+\item 
+void \mbox{\hyperlink{classRMS_a8b94cae7e97cbed3be8688c134d35255}{insert}} (Audio packet)
+\item 
+double \mbox{\hyperlink{classRMS_ab25b923e0a5a49dc04203d0f9457d934}{calc}} ()
+\item 
+void \mbox{\hyperlink{classRMS_a7fad0a845f6eb2afb13fa2509ecc646b}{run}} ()
+\item 
+void \mbox{\hyperlink{classRMS_a192549aea062bd5290a09e75724dca78}{stop}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\mbox{\hyperlink{classRMS}{RMS}} (Root Mean Square) Class. This class determines the average power of a signal. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classRMS_a1799aaada5468c75c82d202dc09e9ee5}\label{classRMS_a1799aaada5468c75c82d202dc09e9ee5}} 
+\index{RMS@{RMS}!RMS@{RMS}}
+\index{RMS@{RMS}!RMS@{RMS}}
+\doxysubsubsection{\texorpdfstring{RMS()}{RMS()}}
+{\footnotesize\ttfamily RMS\+::\+RMS (\begin{DoxyParamCaption}\item[{int}]{num\+\_\+samples,  }\item[{double}]{gain,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{input\+\_\+pipe,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ double $>$ \&}]{output\+\_\+pipe,  }\item[{std\+::chrono\+::milliseconds}]{timeout }\end{DoxyParamCaption})}
+
+Initialises the input and output pipes, and the timeout. 
+\begin{DoxyParams}{Parameters}
+{\em num\+\_\+samples} & The number of samples to store in history when calculating the root mean square. This should be approximately 4x the period of the longest component you want to include in the output. \\
+\hline
+{\em gain} & The gain to be applied \\
+\hline
+{\em input\+\_\+pipe} & A \mbox{\hyperlink{structPipe}{Pipe$<$\+Audio$>$}} containing the signal to be measured \\
+\hline
+{\em output\+\_\+pipe} & A \mbox{\hyperlink{structPipe}{Pipe$<$double$>$}} which will contain the root mean square of the signal \\
+\hline
+{\em timeout} & The number of milliseconds the thread should wait before exiting if no data is provided. \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classRMS_ab25b923e0a5a49dc04203d0f9457d934}\label{classRMS_ab25b923e0a5a49dc04203d0f9457d934}} 
+\index{RMS@{RMS}!calc@{calc}}
+\index{calc@{calc}!RMS@{RMS}}
+\doxysubsubsection{\texorpdfstring{calc()}{calc()}}
+{\footnotesize\ttfamily double RMS\+::calc (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Determines the relative Root Mean Square of the ring buffer. Since the ring buffer already contains the squares of the samples, this only needs to sum and then square root the ring buffer.
+
+\begin{DoxyReturn}{Returns}
+The root mean square (between 0 and 1) 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classRMS_a8b94cae7e97cbed3be8688c134d35255}\label{classRMS_a8b94cae7e97cbed3be8688c134d35255}} 
+\index{RMS@{RMS}!insert@{insert}}
+\index{insert@{insert}!RMS@{RMS}}
+\doxysubsubsection{\texorpdfstring{insert()}{insert()}}
+{\footnotesize\ttfamily void RMS\+::insert (\begin{DoxyParamCaption}\item[{Audio}]{packet }\end{DoxyParamCaption})}
+
+Takes a collection of samples from an Audio item, squares it, and inserts it into the ring buffer.
+
+
+\begin{DoxyParams}{Parameters}
+{\em packet} & The samples to insert. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classRMS_a7fad0a845f6eb2afb13fa2509ecc646b}\label{classRMS_a7fad0a845f6eb2afb13fa2509ecc646b}} 
+\index{RMS@{RMS}!run@{run}}
+\index{run@{run}!RMS@{RMS}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void RMS\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Creates the calculation thread and then returns. Runs until \mbox{\hyperlink{classRMS_a192549aea062bd5290a09e75724dca78}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classRMS_a192549aea062bd5290a09e75724dca78}{stop()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classRMS_a192549aea062bd5290a09e75724dca78}\label{classRMS_a192549aea062bd5290a09e75724dca78}} 
+\index{RMS@{RMS}!stop@{stop}}
+\index{stop@{stop}!RMS@{RMS}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void RMS\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})\hspace{0.3cm}{\ttfamily [inline]}}
+
+Stops the thread. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classRMS_a7fad0a845f6eb2afb13fa2509ecc646b}{run()}} 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/rms.\+hh\item 
+src/rms.\+cc\end{DoxyCompactItemize}

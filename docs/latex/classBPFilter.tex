@@ -1,0 +1,97 @@
+\hypertarget{classBPFilter}{}\doxysection{BPFilter Class Reference}
+\label{classBPFilter}\index{BPFilter@{BPFilter}}
+
+
+{\ttfamily \#include $<$filter.\+hh$>$}
+
+
+
+Collaboration diagram for BPFilter\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=153pt]{classBPFilter__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classBPFilter_af764a130181fed7b133ffc1bdc14cdb8}{BPFilter}} (int order, double sampling\+\_\+rate, double centre\+\_\+freq\+\_\+, double freq\+\_\+range\+\_\+, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&input\+\_\+, \mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&output\+\_\+, std\+::chrono\+::milliseconds timeout\+\_\+)
+\item 
+void \mbox{\hyperlink{classBPFilter_ace612637defb96d2a5bda8887446991f}{stop}} ()
+\item 
+void \mbox{\hyperlink{classBPFilter_a901c27e46ba5224a2575e39c3752f781}{run}} ()
+\item 
+Audio \mbox{\hyperlink{classBPFilter_a99103ac6f1bd6472b00a3e49d98eaac3}{filter}} (const Audio \&in\+\_\+audio)
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Band\+Pass Filter Class. The class for the Band Pass IIR filter, based on \href{https://github.com/berndporr/iir1}{\texttt{ Bernd Porr\textquotesingle{}s IIR implementation}}. 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classBPFilter_af764a130181fed7b133ffc1bdc14cdb8}\label{classBPFilter_af764a130181fed7b133ffc1bdc14cdb8}} 
+\index{BPFilter@{BPFilter}!BPFilter@{BPFilter}}
+\index{BPFilter@{BPFilter}!BPFilter@{BPFilter}}
+\doxysubsubsection{\texorpdfstring{BPFilter()}{BPFilter()}}
+{\footnotesize\ttfamily BPFilter\+::\+BPFilter (\begin{DoxyParamCaption}\item[{int}]{order,  }\item[{double}]{sampling\+\_\+rate,  }\item[{double}]{centre\+\_\+freq\+\_\+,  }\item[{double}]{freq\+\_\+range\+\_\+,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{input\+\_\+,  }\item[{\mbox{\hyperlink{structPipe}{Pipe}}$<$ Audio $>$ \&}]{output\+\_\+,  }\item[{std\+::chrono\+::milliseconds}]{timeout\+\_\+ }\end{DoxyParamCaption})}
+
+Bandpass constructor. Sets up the filter just so. 
+\begin{DoxyParams}{Parameters}
+{\em order} & the integer order for the filter \\
+\hline
+{\em sampling\+\_\+rate} & the sampling rate for the filter \\
+\hline
+{\em centre\+\_\+freq\+\_\+} & the centre freqency for the pass band \\
+\hline
+{\em freq\+\_\+range\+\_\+} & the width of the pass band \\
+\hline
+{\em input\+\_\+} & the input pipe for the module \\
+\hline
+{\em output\+\_\+} & the output pipe for the module \\
+\hline
+{\em timeout\+\_\+} & the timeout for the thread wait \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classBPFilter_a99103ac6f1bd6472b00a3e49d98eaac3}\label{classBPFilter_a99103ac6f1bd6472b00a3e49d98eaac3}} 
+\index{BPFilter@{BPFilter}!filter@{filter}}
+\index{filter@{filter}!BPFilter@{BPFilter}}
+\doxysubsubsection{\texorpdfstring{filter()}{filter()}}
+{\footnotesize\ttfamily Audio BPFilter\+::filter (\begin{DoxyParamCaption}\item[{const Audio \&}]{in\+\_\+audio }\end{DoxyParamCaption})}
+
+Filter function Processes each of the samples in the audio stream. 
+\begin{DoxyParams}{Parameters}
+{\em in\+\_\+audio} & The audio packet to filter \\
+\hline
+\end{DoxyParams}
+\begin{DoxyReturn}{Returns}
+A filtered audio packet 
+\end{DoxyReturn}
+\mbox{\Hypertarget{classBPFilter_a901c27e46ba5224a2575e39c3752f781}\label{classBPFilter_a901c27e46ba5224a2575e39c3752f781}} 
+\index{BPFilter@{BPFilter}!run@{run}}
+\index{run@{run}!BPFilter@{BPFilter}}
+\doxysubsubsection{\texorpdfstring{run()}{run()}}
+{\footnotesize\ttfamily void BPFilter\+::run (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Run thread function Contains the main logic for the thread. Waits for input, filters the data, and then sends to the output. Runs until \mbox{\hyperlink{classBPFilter_ace612637defb96d2a5bda8887446991f}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classBPFilter_ace612637defb96d2a5bda8887446991f}{stop()}} 
+\end{DoxySeeAlso}
+\mbox{\Hypertarget{classBPFilter_ace612637defb96d2a5bda8887446991f}\label{classBPFilter_ace612637defb96d2a5bda8887446991f}} 
+\index{BPFilter@{BPFilter}!stop@{stop}}
+\index{stop@{stop}!BPFilter@{BPFilter}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void BPFilter\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stop thread Requests the thread to join. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classBPFilter_a901c27e46ba5224a2575e39c3752f781}{run()}} 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/filter.\+hh\item 
+src/filter.\+cc\end{DoxyCompactItemize}

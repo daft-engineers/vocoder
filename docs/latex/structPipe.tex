@@ -1,0 +1,91 @@
+\hypertarget{structPipe}{}\doxysection{Pipe$<$ T $>$ Struct Template Reference}
+\label{structPipe}\index{Pipe$<$ T $>$@{Pipe$<$ T $>$}}
+
+
+{\ttfamily \#include $<$pipe.\+hh$>$}
+
+
+
+Collaboration diagram for Pipe$<$ T $>$\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=146pt]{structPipe__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Attributes}
+\begin{DoxyCompactItemize}
+\item 
+std\+::condition\+\_\+variable \mbox{\hyperlink{structPipe_a43a2c8d55615adc571b8a9e7bfd86b97}{cond}}
+\item 
+std\+::mutex \mbox{\hyperlink{structPipe_aefa2dd596aa44671efc10b9a29c59de3}{cond\+\_\+m}}
+\item 
+std\+::queue$<$ T $>$ \mbox{\hyperlink{structPipe_a7609b528927ede7a24bbab176d32f8fd}{queue}} \{\}
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+\subsubsection*{template$<$typename T$>$\newline
+struct Pipe$<$ T $>$}
+
+\mbox{\hyperlink{structPipe}{Pipe}} struct to allow data to flow between modules in a thread safe way.
+
+Data is placed into a pipe by placing it on the back of the pipe\textquotesingle{}s queue. It can then be retrieved from the front of the pipe\textquotesingle{}s queue. The mutex must be locked when interacting with the queue to prevent memory safety issues. With the use of the {\ttfamily wait()} and {\ttfamily notify\+\_\+all()} functions, a thread can sleep while the queue is empty.
+
+The pipe can be used as followed, for example 
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{comment}{// declarations}}
+\DoxyCodeLine{\mbox{\hyperlink{structPipe}{Pipe<type>}} input;}
+\DoxyCodeLine{\mbox{\hyperlink{structPipe}{Pipe<type>}} output;}
+\DoxyCodeLine{}
+\DoxyCodeLine{}
+\DoxyCodeLine{std::unique\_lock<std::mutex> input\_lk(input.\mbox{\hyperlink{structPipe_aefa2dd596aa44671efc10b9a29c59de3}{cond\_m}});}
+\DoxyCodeLine{input\_lk.unlock();}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordflow}{while}(loop) \{}
+\DoxyCodeLine{  input\_lk.lock();}
+\DoxyCodeLine{  wait(input\_lk, [\textcolor{keyword}{this}] \{\textcolor{keywordflow}{return} input.\mbox{\hyperlink{structPipe_a7609b528927ede7a24bbab176d32f8fd}{queue}}.empty() == \textcolor{keyword}{false};\})}
+\DoxyCodeLine{  type data = input.\mbox{\hyperlink{structPipe_a7609b528927ede7a24bbab176d32f8fd}{queue}}.front();}
+\DoxyCodeLine{  input.\mbox{\hyperlink{structPipe_a7609b528927ede7a24bbab176d32f8fd}{queue}}.pop();}
+\DoxyCodeLine{  input\_lkk.unlock();}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \textcolor{comment}{// do logic here}}
+\DoxyCodeLine{}
+\DoxyCodeLine{  \{}
+\DoxyCodeLine{    std::lock\_guard<std::mutex> out\_lk(output.\mbox{\hyperlink{structPipe_aefa2dd596aa44671efc10b9a29c59de3}{cond\_m}});}
+\DoxyCodeLine{    output.\mbox{\hyperlink{structPipe_a7609b528927ede7a24bbab176d32f8fd}{queue}}.push(audio\_out);}
+\DoxyCodeLine{  \}}
+\DoxyCodeLine{  output.\mbox{\hyperlink{structPipe_a43a2c8d55615adc571b8a9e7bfd86b97}{cond}}.notify\_all();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+\doxysubsection{Member Data Documentation}
+\mbox{\Hypertarget{structPipe_a43a2c8d55615adc571b8a9e7bfd86b97}\label{structPipe_a43a2c8d55615adc571b8a9e7bfd86b97}} 
+\index{Pipe$<$ T $>$@{Pipe$<$ T $>$}!cond@{cond}}
+\index{cond@{cond}!Pipe$<$ T $>$@{Pipe$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{cond}{cond}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::condition\+\_\+variable \mbox{\hyperlink{structPipe}{Pipe}}$<$ T $>$\+::cond}
+
+Condition variable for the pipe, used to wait/notify. \mbox{\Hypertarget{structPipe_aefa2dd596aa44671efc10b9a29c59de3}\label{structPipe_aefa2dd596aa44671efc10b9a29c59de3}} 
+\index{Pipe$<$ T $>$@{Pipe$<$ T $>$}!cond\_m@{cond\_m}}
+\index{cond\_m@{cond\_m}!Pipe$<$ T $>$@{Pipe$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{cond\_m}{cond\_m}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::mutex \mbox{\hyperlink{structPipe}{Pipe}}$<$ T $>$\+::cond\+\_\+m}
+
+Mutex for the condition variable. \mbox{\Hypertarget{structPipe_a7609b528927ede7a24bbab176d32f8fd}\label{structPipe_a7609b528927ede7a24bbab176d32f8fd}} 
+\index{Pipe$<$ T $>$@{Pipe$<$ T $>$}!queue@{queue}}
+\index{queue@{queue}!Pipe$<$ T $>$@{Pipe$<$ T $>$}}
+\doxysubsubsection{\texorpdfstring{queue}{queue}}
+{\footnotesize\ttfamily template$<$typename T $>$ \\
+std\+::queue$<$T$>$ \mbox{\hyperlink{structPipe}{Pipe}}$<$ T $>$\+::queue \{\}}
+
+Queue to hold the data. 
+
+The documentation for this struct was generated from the following file\+:\begin{DoxyCompactItemize}
+\item 
+include/pipe.\+hh\end{DoxyCompactItemize}

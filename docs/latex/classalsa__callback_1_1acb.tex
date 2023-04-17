@@ -1,0 +1,107 @@
+\hypertarget{classalsa__callback_1_1acb}{}\doxysection{alsa\+\_\+callback\+::acb Class Reference}
+\label{classalsa__callback_1_1acb}\index{alsa\_callback::acb@{alsa\_callback::acb}}
+
+
+{\ttfamily \#include $<$callbacks.\+hh$>$}
+
+
+
+Collaboration diagram for alsa\+\_\+callback\+::acb\+:
+\nopagebreak
+\begin{figure}[H]
+\begin{center}
+\leavevmode
+\includegraphics[width=197pt]{classalsa__callback_1_1acb__coll__graph}
+\end{center}
+\end{figure}
+\doxysubsection*{Public Member Functions}
+\begin{DoxyCompactItemize}
+\item 
+\mbox{\hyperlink{classalsa__callback_1_1acb_a9f89ceb71c68dcd126d008fb316667e6}{acb}} (const std\+::string \&device\+\_\+name)
+\item 
+void \mbox{\hyperlink{classalsa__callback_1_1acb_a64e0a6233b3e38087fe8f9c1486e933f}{listen}} (const std\+::function$<$ void(const std\+::vector$<$ int16\+\_\+t $>$ \&, const std\+::vector$<$ int16\+\_\+t $>$ \&)$>$ \&callback)
+\item 
+void \mbox{\hyperlink{classalsa__callback_1_1acb_a173a51169e77668f636395af100def83}{stop}} ()
+\item 
+unsigned int \mbox{\hyperlink{classalsa__callback_1_1acb_ae5f570f55bcb90e557582e3852b0e9cd}{get\+\_\+sample\+\_\+rate}} ()
+\end{DoxyCompactItemize}
+
+
+\doxysubsection{Detailed Description}
+Alsa Callback Class. This reads Audio from the input hardware device and, using a callback, will write these to the correct pipes.
+
+Example usage of this functionality\+:
+
+
+\begin{DoxyCode}{0}
+\DoxyCodeLine{\textcolor{preprocessor}{\#include "{}../include/callbacks.hh"{}}}
+\DoxyCodeLine{}
+\DoxyCodeLine{\textcolor{keywordtype}{int} main () \{}
+\DoxyCodeLine{   \mbox{\hyperlink{classalsa__callback_1_1acb}{alsa\_callback::acb}} test (\textcolor{stringliteral}{"{}hw:2,0,0"{}});}
+\DoxyCodeLine{}
+\DoxyCodeLine{   \textcolor{keyword}{auto} cb =}
+\DoxyCodeLine{       [](\textcolor{keyword}{const} std::vector<int16\_t>\& left, \textcolor{keyword}{const} std::vector<int16\_t>\& right) \{}
+\DoxyCodeLine{           std::cout << left[0] << \textcolor{stringliteral}{"{} : "{}} << right[0] << \textcolor{stringliteral}{"{}\(\backslash\)n"{}};}
+\DoxyCodeLine{       \};}
+\DoxyCodeLine{}
+\DoxyCodeLine{   std::cerr << \textcolor{stringliteral}{"{}created class"{}} << std::endl;}
+\DoxyCodeLine{   test.listen(cb);}
+\DoxyCodeLine{   std::cerr << \textcolor{stringliteral}{"{}sleeping for 1 sec\(\backslash\)n"{}};}
+\DoxyCodeLine{   std::this\_thread::sleep\_for(std::chrono::seconds(1));}
+\DoxyCodeLine{   std::cerr << \textcolor{stringliteral}{"{}sleeping finished\(\backslash\)n"{}};}
+\DoxyCodeLine{   test.stop();}
+\DoxyCodeLine{\}}
+
+\end{DoxyCode}
+ 
+
+\doxysubsection{Constructor \& Destructor Documentation}
+\mbox{\Hypertarget{classalsa__callback_1_1acb_a9f89ceb71c68dcd126d008fb316667e6}\label{classalsa__callback_1_1acb_a9f89ceb71c68dcd126d008fb316667e6}} 
+\index{alsa\_callback::acb@{alsa\_callback::acb}!acb@{acb}}
+\index{acb@{acb}!alsa\_callback::acb@{alsa\_callback::acb}}
+\doxysubsubsection{\texorpdfstring{acb()}{acb()}}
+{\footnotesize\ttfamily alsa\+\_\+callback\+::acb\+::acb (\begin{DoxyParamCaption}\item[{const std\+::string \&}]{device\+\_\+name }\end{DoxyParamCaption})}
+
+Constructs an ALSA Callback. Initialises the device name. 
+\begin{DoxyParams}{Parameters}
+{\em device\+\_\+name} & A string describing the ALSA device to be used (e.\+g. \char`\"{}hw\+:2,0,0\char`\"{}). \\
+\hline
+\end{DoxyParams}
+
+
+\doxysubsection{Member Function Documentation}
+\mbox{\Hypertarget{classalsa__callback_1_1acb_ae5f570f55bcb90e557582e3852b0e9cd}\label{classalsa__callback_1_1acb_ae5f570f55bcb90e557582e3852b0e9cd}} 
+\index{alsa\_callback::acb@{alsa\_callback::acb}!get\_sample\_rate@{get\_sample\_rate}}
+\index{get\_sample\_rate@{get\_sample\_rate}!alsa\_callback::acb@{alsa\_callback::acb}}
+\doxysubsubsection{\texorpdfstring{get\_sample\_rate()}{get\_sample\_rate()}}
+{\footnotesize\ttfamily unsigned int alsa\+\_\+callback\+::acb\+::get\+\_\+sample\+\_\+rate (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Helper function to tell other objects what the sample rate is. \mbox{\Hypertarget{classalsa__callback_1_1acb_a64e0a6233b3e38087fe8f9c1486e933f}\label{classalsa__callback_1_1acb_a64e0a6233b3e38087fe8f9c1486e933f}} 
+\index{alsa\_callback::acb@{alsa\_callback::acb}!listen@{listen}}
+\index{listen@{listen}!alsa\_callback::acb@{alsa\_callback::acb}}
+\doxysubsubsection{\texorpdfstring{listen()}{listen()}}
+{\footnotesize\ttfamily void alsa\+\_\+callback\+::acb\+::listen (\begin{DoxyParamCaption}\item[{const std\+::function$<$ void(const std\+::vector$<$ int16\+\_\+t $>$ \&, const std\+::vector$<$ int16\+\_\+t $>$ \&)$>$ \&}]{callback }\end{DoxyParamCaption})}
+
+Run function. Opens a thread and continuously reads the hardware device input and triggers a callback. Runs until \mbox{\hyperlink{classalsa__callback_1_1acb_a173a51169e77668f636395af100def83}{stop()}} is called. \begin{DoxySeeAlso}{See also}
+\mbox{\hyperlink{classalsa__callback_1_1acb_a173a51169e77668f636395af100def83}{stop()}} 
+\end{DoxySeeAlso}
+
+\begin{DoxyParams}{Parameters}
+{\em callback} & the callback to be triggered. \\
+\hline
+\end{DoxyParams}
+\mbox{\Hypertarget{classalsa__callback_1_1acb_a173a51169e77668f636395af100def83}\label{classalsa__callback_1_1acb_a173a51169e77668f636395af100def83}} 
+\index{alsa\_callback::acb@{alsa\_callback::acb}!stop@{stop}}
+\index{stop@{stop}!alsa\_callback::acb@{alsa\_callback::acb}}
+\doxysubsubsection{\texorpdfstring{stop()}{stop()}}
+{\footnotesize\ttfamily void alsa\+\_\+callback\+::acb\+::stop (\begin{DoxyParamCaption}{ }\end{DoxyParamCaption})}
+
+Stop function. Tells the thread to join. \begin{DoxySeeAlso}{See also}
+run() 
+\end{DoxySeeAlso}
+
+
+The documentation for this class was generated from the following files\+:\begin{DoxyCompactItemize}
+\item 
+include/callbacks.\+hh\item 
+src/callbacks.\+cc\end{DoxyCompactItemize}
