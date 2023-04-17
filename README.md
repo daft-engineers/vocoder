@@ -18,7 +18,7 @@ To build just the vocoder itself you will need:
 Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from [their website](https://apt.llvm.org/) can be used.
 
 To build the doxygen documentation, the `doxygen` and `graphviz` packages are required.
-
+# Getting started:
 We recommend the following to get started from scratch (requires 1GB+ of storage):
 
 ```
@@ -32,7 +32,12 @@ sudo ln -s /usr/lib/llvm-15/bin/clang{,++,-format,-tidy} /usr/local/bin
 
 Python 3 is required to automatically build and link unit tests. Python 3 comes preinstalled on most Linux distributions, and is available as a package on all others.
 
-# Getting started:
+Although not essential, to aid performance, we recommend running the OS in the non GUI mode. This can be achieved by running:
+```
+sudo raspi-config
+```
+Selecting 1 System Options, S5 Boot / Auto Login, B2 Console Autologin. Reboot and enjoy the resource saving.
+
 ## Hardware setup:
 The Codec Zero should be wired up with the microphone on the left input channel and the synth on the right input channel of the auxilliary input. The Headphones or speaker shoudld be wired to either or both channels of the auxilliary output.
 
