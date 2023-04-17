@@ -22,7 +22,7 @@ int main() {
     int width = 10000 / num_filters; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
     int centre = width / 2;
 
-    std::vector<RMS> power_meter_bank; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+    std::vector<RMS> power_meter_bank;
     power_meter_bank.reserve(num_filters);
 
     std::vector<Amplifier> amp_bank;
