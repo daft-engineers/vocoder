@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "../include/rms/rms.hh"
+#include "../include/rms.hh"
 
 RMS::RMS(int num_samples, Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
     : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
