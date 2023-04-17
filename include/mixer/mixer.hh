@@ -48,14 +48,22 @@ template <std::size_t num_banks> class Mixer {
 
     // explicitly disable copy and move constructors since that will mess
     // with threading logic. if these are needed it can be reviewed later
-
-    // explicitly delete the copy constructor
+    /**
+    * Explicitly delete the copy constructor.
+    */
     Mixer(const Mixer &) = delete;
-    // explicitly delete copy assignment constructor
+    /**
+     * Explicitly delete the copy assignment constructor.
+     */
     Mixer &operator=(const Mixer &) = delete;
-    // explicitly delete move constructor
+    /**
+     * Explicitly delete move assignment constructor.
+     * 
+     */
     Mixer(Mixer &&) = delete;
-    // explicitly delete move assignment constructor
+    /**
+     * Explicitly delete move assignment constructor.
+     */
     Mixer &operator=(Mixer &&) = delete;
 
     /**
@@ -106,7 +114,9 @@ template <std::size_t num_banks> class Mixer {
             return true;
         });
     }
-    // Join the mixer thread when the destructor is called
+    /**
+     * Join the mixer thread when the destructor is called
+     */
     ~Mixer() {
         thread.join();
     }
