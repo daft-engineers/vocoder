@@ -1,5 +1,6 @@
 #include "../include/mixer.hh"
 #include <array>
+#include <chrono>
 #include <condition_variable>
 #include <gtest/gtest.h>
 #include <mutex>
@@ -31,6 +32,21 @@ TEST(MixerTests, Timeout) {
     } // mixer goes out of scope so destructor is called
 
     ASSERT_TRUE(true); // when run with a timeout this will fail if it doesn't reach this point
+}
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(MixerTests, Vectorable) {
+    // This test will fail to compile if the class has no copy/move construtors
+    const int num_mixers = 3;
+    std::vector<mixer::Mixer<4>> mixer_vector;
+    Pipe<Audio> output;
+    std::array<Pipe<Audio>, num_mixers> inputs{};
+
+    mixer_vector.reserve(num_mixers);
+    for (int i = 0; i < num_mixers; i++) {
+        mixer_vector.emplace_back(inputs, output, std::chrono::milliseconds(100));
+    }
 }
 
 // TEST macro violates guidelines
