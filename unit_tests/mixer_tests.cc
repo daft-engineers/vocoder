@@ -24,12 +24,12 @@ TEST(MixerTests, Timeout) {
     // set up mixer with 2 inputs
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
-    {
-        mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
 
-        // start mixer
-        mixer.run();
-    } // mixer goes out of scope so destructor is called
+    mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
+
+    // start mixer
+    mixer.run();
+    mixer.stop();
 
     ASSERT_TRUE(true); // when run with a timeout this will fail if it doesn't reach this point
 }
