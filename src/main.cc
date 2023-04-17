@@ -1,13 +1,12 @@
 #include "../include/alsa_out.hh"
-#include "../include/amp/amp.hh"
-#include "../include/audio/audio.hh"
+#include "../include/amp.hh"
+#include "../include/audio.hh"
 #include "../include/callbacks.hh"
-#include "../include/filter/filter.hh"
-#include "../include/mixer/mixer.hh"
+#include "../include/filter.hh"
+#include "../include/mixer.hh"
 #include "../include/pipe.hh"
-#include "../include/rms/rms.hh"
+#include "../include/rms.hh"
 #include <mutex>
-#include <sys/resource.h>
 
 int main() {
 
