@@ -66,7 +66,7 @@ This will run static analysis and return any errors found. It will also reformat
 
 # Documentation
 
-Documentation for main can be [found here](https://daft-engineers.github.io/vocoder/annotated.html).
+Documentation for main can be [found here](https://daft-engineers.github.io/vocoder/).
 
 If you want to generate the documentation for yourself, the `doxygen` and `graphviz` packages are required. These can be installed with the following command on ubuntu:
 
@@ -107,6 +107,10 @@ The project is licenced under the Mozilla Public License Version 2.0. More detai
 
 # Continuous integration
 
-The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/annotated.html) is updated. The image below shows the workflow for a standard push.
+The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/) is updated. The image below shows the workflow for a standard push.
 
 ![Image](https://user-images.githubusercontent.com/56744932/232238323-5977fc16-2d5f-4533-b965-6143a109ffd9.png)
+
+Nightly, a more extensive test suite is run. This suite takes too long to run on every commit, but is valuable for finding threading bugs in particular.
+
+![Image](https://user-images.githubusercontent.com/56744932/232495456-cb85b482-2e24-48c8-92cf-c3656f83ca41.png)

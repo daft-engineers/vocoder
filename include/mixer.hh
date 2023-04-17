@@ -49,7 +49,7 @@ template <std::size_t num_banks> class Mixer {
      * Sums the samples at matching points on each sub array and combines it in to a single array of samples
      *
      * @param audio_packets Array of arrays of samples.
-     * @return  Summed rray of samples .
+     * @return Summed array of samples.
      */
     static Audio sum(std::array<Audio, num_banks> audio_packets) {
         Audio output_packet;
@@ -66,6 +66,8 @@ template <std::size_t num_banks> class Mixer {
     }
     /**
      * Creates the summing thread then returns.
+     * Runs until stop() is called.
+     * @see stop()
      */
     void run() {
         thread = std::thread([this]() {
@@ -95,7 +97,8 @@ template <std::size_t num_banks> class Mixer {
         Scheduler_helper::set_thread_priority(thread.native_handle(), "mixer");
     }
     /**
-     * Join the mixer thread when the destructor is called
+     * Join the mixer thread.
+     * @see run()
      */
     void stop() {
         thread.join();

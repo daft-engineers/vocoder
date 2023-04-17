@@ -9,7 +9,8 @@
 #include <thread>
 
 /** BandPass Filter Class.
- *  The class for the Band Pass IIR filter, based on Bernd Porr's IIR implementation.
+ *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR
+ * implementation](https://github.com/berndporr/iir1).
  */
 class BPFilter {
   public:
@@ -21,7 +22,8 @@ class BPFilter {
      * @param centre_freq_ the centre freqency for the pass band
      * @param freq_range_ the width of the pass band
      * @param input_ the input pipe for the module
-     * @param the output pipe for the module
+     * @param output_ the output pipe for the module
+     * @param timeout_ the timeout for the thread wait
      */
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
              Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
@@ -29,13 +31,14 @@ class BPFilter {
     /**
      * Stop thread
      * Requests the thread to join.
+     * @see run()
      */
     void stop();
 
     /**
      * Run thread function
      * Contains the main logic for the thread. Waits for input, filters the data, and then sends to the output.
-     * Loops until stop() is called.
+     * Runs until stop() is called.
      * @see stop()
      */
     void run();
@@ -43,6 +46,8 @@ class BPFilter {
     /**
      * Filter function
      * Processes each of the samples in the audio stream.
+     * @param in_audio The audio packet to filter
+     * @returns A filtered audio packet
      */
     Audio filter(const Audio &in_audio);
 

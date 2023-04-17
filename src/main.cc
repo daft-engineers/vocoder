@@ -8,6 +8,13 @@
 #include "../include/rms.hh"
 #include <mutex>
 
+// Doxygen mainpage
+/**
+ * \mainpage
+ * \section aaa Daft vocoder. 
+ * See navigation bar for classes and other documentation.
+*/
+
 int main() {
 
     alsa_callback::acb alsa_in("hw:2,0,0");
@@ -53,6 +60,7 @@ int main() {
         modulator_bank.at(i).run();
 
         // Power Meter
+        // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
         power_meter_bank.emplace_back(num_samples, 10, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
         power_meter_bank.at(i).run();
 
@@ -83,6 +91,6 @@ int main() {
     mix.run();
     alsa_in.listen(cb);
     alsa_out.run();
-    
+
     alsa_out.stop();
 }
