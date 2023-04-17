@@ -18,10 +18,11 @@
 */
 
 static void show_usage(const std::string &prog_name) {
-    std::cerr << "Usage: " << prog_name << " [-h] [-i input device] [-o output device]\n"
+    std::cerr << "Usage: " << prog_name << " [-h] [-i input device] [-o output device] [-g gain]\n"
               << "\nOptional arguments:\n"
               << "    -i : The name of the ALSA capture device to use. Defaults to \"hw:2,0,0\"\n"
               << "    -o : The name of the ALSA playback device to use. Defaults to \"hw:2,0,0\"\n"
+              << "    -g : Gain applied to measured modulator power. Defaults to 10\n"
               << "    -h : Print this usage message\n";
 }
 
@@ -34,10 +35,12 @@ int main(int argc, char *argv[]) {
 
     std::string input_device_name = "hw:2,0,0";
     std::string output_device_name = "hw:2,0,0";
+    int rms_gain = 10; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
 
     auto help_flag = std::find(args.begin(), args.end(), "-h");
     if (help_flag != args.end()) {
         show_usage(args.at(0));
+        std::quick_exit(0);
     }
 
     auto input_flag = std::find(args.begin(), args.end(), "-i");
@@ -49,6 +52,13 @@ int main(int argc, char *argv[]) {
     if (output_flag != args.end()) {
         output_device_name = *std::next(output_flag);
     }
+
+    auto gain_flag = std::find(args.begin(), args.end(), "-g");
+    if (gain_flag != args.end()) {
+        rms_gain = std::stoi(*std::next(gain_flag));
+    }
+
+    std::cout << "gain " << rms_gain << std::endl;
 
     alsa_callback::acb alsa_in(input_device_name);
 
@@ -93,8 +103,7 @@ int main(int argc, char *argv[]) {
         modulator_bank.at(i).run();
 
         // Power Meter
-        // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-        power_meter_bank.emplace_back(num_samples, 10, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
+        power_meter_bank.emplace_back(num_samples, rms_gain, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
         power_meter_bank.at(i).run();
 
         // Amp
