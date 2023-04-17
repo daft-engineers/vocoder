@@ -1,4 +1,8 @@
-#ifndef AUDIO_HH
+/* daft engineers vocoder project
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */#ifndef AUDIO_HH
 #define AUDIO_HH
 
 #include <cstdint>

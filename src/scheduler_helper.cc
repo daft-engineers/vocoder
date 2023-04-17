@@ -1,3 +1,8 @@
+/* daft engineers vocoder project
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 #include "../include/scheduler_helper.hh"
 
 void Scheduler_helper::set_thread_priority(pthread_t handle, std::string const &threadname) {
