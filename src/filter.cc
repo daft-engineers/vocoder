@@ -22,7 +22,9 @@ void BPFilter::run() {
         thread_alive = true;
         while (true) {
             lk.lock();
-            if (!input.cond.wait_for(lk, timeout, [this] { return input.queue.empty() == false; })) {
+            if (!input.cond.wait_for(lk, timeout, [this] {
+                //std::cerr << " and " << centre_freq << std::endl;
+                return input.queue.empty() == false; })) {
                 return false;
             }
 
@@ -55,6 +57,12 @@ Audio BPFilter::filter(const Audio &in_audio) {
     Audio filtered_audio;
     for (auto sample : in_audio) {
         auto buf = static_cast<signed short>(f.filter(sample));
+        if (centre_freq > 1000) {
+            buf *= 2;
+        }
+        if (centre_freq > 2000) {
+            buf *= 4;
+        }
         filtered_audio.push_back(buf);
     }
 

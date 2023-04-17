@@ -37,8 +37,7 @@ template <std::size_t num_samples> class RMS {
     void insert(Audio packet) {
         std::for_each(packet.begin(), packet.end(), [this](const int16_t item) {
             // this assumes that the 0 point for the signal is 0
-            uint32_t squared = item * item;
-            squared_sample_buffer[sample_buffer_index] = squared;
+            squared_sample_buffer[sample_buffer_index] = item * item;
             sample_buffer_index = (sample_buffer_index + 1) % num_samples;
         });
     }
@@ -50,6 +49,14 @@ template <std::size_t num_samples> class RMS {
         }
         double output = (std::sqrt(total / num_samples) / INT16_MAX) * 10;
         return output;
+        // uint64_t total = 0;
+        // for (auto &n : squared_sample_buffer) {
+        //     total += n;
+        // }
+        // double output = (total / num_samples) / 1000;
+        // std::cout << output <<std::endl;
+        // return output;
+
     }
 
     void run() {

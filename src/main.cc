@@ -13,16 +13,20 @@ int main() {
 
     alsa_callback::acb alsa_in("hw:2,0,0");
 
-    const int num_filters = 1;
-    const std::chrono::milliseconds timeout(300);
+    const int num_filters = 10;
+    const std::chrono::milliseconds timeout(2000);
     std::vector<BPFilter> carrier_bank;
+    carrier_bank.reserve(num_filters);
     std::vector<BPFilter> modulator_bank;
+    modulator_bank.reserve(num_filters);
     int width = 10000 / num_filters; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
     int centre = width / 2;
 
     std::vector<rms::RMS<10000>> power_meter_bank; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+    power_meter_bank.reserve(num_filters);
 
     std::vector<Amplifier> amp_bank;
+    amp_bank.reserve(num_filters);
 
     std::array<Pipe<Audio>, num_filters> carrier_in_pipes;
     std::array<Pipe<Audio>, num_filters> modulator_in_pipes;
@@ -64,6 +68,7 @@ int main() {
                 std::lock_guard<std::mutex> lk(carr_in.cond_m);
                 carr_in.queue.push(carrier);
             }
+            // std::cerr << carr_in.queue.empty() << " and " << i << std::endl;
             carr_in.cond.notify_all();
 
             Pipe<Audio> &mod_in = modulator_in_pipes.at(i);

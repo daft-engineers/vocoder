@@ -52,6 +52,7 @@ template <std::size_t num_banks> class Mixer {
             while (true) {
                 //std::cerr << "Starting while loop" << std::endl;
                 std::array<Audio, num_banks> audio_packets;
+                //std::cout << "mixer";
                 for (int bank = 0; bank < num_banks; bank++) {
                     //std::cerr << "Starting for loop" << std::endl;
                     auto &pipe = input_pipes[bank];
@@ -66,10 +67,12 @@ template <std::size_t num_banks> class Mixer {
                         //std::cerr << "Past wait" << std::endl;
 
                         audio_packets[bank] = pipe.queue.front();
+                        //std::cout << " -\t" << pipe.queue.front()[0];
                         //std::cerr << "Hello" << audio_packets[0][0] << std::endl;
                         pipe.queue.pop();
                     }
                 }
+                //std::cout << std::endl;
 
                 Audio output_packet = sum(audio_packets);
                 {
