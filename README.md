@@ -78,7 +78,6 @@ chmod +x setup.sh
 ```
 
 The project is now ready to be built.
-<!-- need to add codec zero setup instructions  -->
 
 ```
 cd build
