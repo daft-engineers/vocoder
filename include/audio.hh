@@ -6,7 +6,7 @@
 
 /**
  * Vector wrapper to hold audio data as it transitions between modules.
-*/
+ */
 using Audio = std::vector<int16_t>;
 
 #endif // AUDIO_HH

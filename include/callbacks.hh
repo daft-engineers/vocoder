@@ -1,31 +1,6 @@
 #ifndef CALLBACKS_HH
 #define CALLBACKS_HH
 
-/*
-Example usage of this functionality:
-
-===================================================
-
-#include "../include/callbacks.hh"
-
-int main () {
-    alsa_callback::acb test ("hw:2,0,0");
-
-    auto cb =
-        [](const std::vector<int16_t>& left, const std::vector<int16_t>& right) {
-            std::cout << left[0] << " : " << right[0] << "\n";
-        };
-
-    std::cerr << "created class" << std::endl;
-    test.listen(cb);
-    std::cerr << "sleeping for 1 sec\n";
-    std::this_thread::sleep_for(std::chrono::seconds(1));
-    std::cerr << "sleeping finished\n";
-    test.stop();
-}
-
-*/
-
 #include <alsa/asoundlib.h>
 #include <alsa/error.h>
 #include <alsa/pcm.h>
@@ -37,10 +12,36 @@ int main () {
 #include <thread>
 #include <vector>
 
+/**
+ * alsa callback namespace
+ */
 namespace alsa_callback {
 /**
  * Alsa Callback Class. This reads Audio from the input hardware device and, using a callback will write these
  * to the correct pipes.
+ * 
+ *  Example usage of this functionality:
+ *
+ * ===================================================
+ * ```cpp
+ * #include "../include/callbacks.hh"
+ *
+ * int main () {
+ *    alsa_callback::acb test ("hw:2,0,0");
+ *
+ *    auto cb =
+ *        [](const std::vector<int16_t>& left, const std::vector<int16_t>& right) {
+ *            std::cout << left[0] << " : " << right[0] << "\n";
+ *        };
+ *
+ *    std::cerr << "created class" << std::endl;
+ *    test.listen(cb);
+ *    std::cerr << "sleeping for 1 sec\n";
+ *    std::this_thread::sleep_for(std::chrono::seconds(1));
+ *    std::cerr << "sleeping finished\n";
+ *    test.stop();
+ * }
+ * ```
  */
     class acb {
     public:
