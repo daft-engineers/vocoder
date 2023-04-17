@@ -1,8 +1,8 @@
-#ifndef FILTER_FILTER_HH
-#define FILTER_FILTER_HH
+#ifndef FILTER_HH
+#define FILTER_HH
 
-#include "../audio/audio.hh"
-#include "../pipe.hh"
+#include "audio.hh"
+#include "pipe.hh"
 #include <Iir.h>
 #include <climits>
 #include <condition_variable>

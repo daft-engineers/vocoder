@@ -1,4 +1,4 @@
-#include "../include/amp/amp.hh"
+#include "../include/amp.hh"
 #include <cmath>
 
 Audio Amplifier::amplify(Audio &sample, double amount) {

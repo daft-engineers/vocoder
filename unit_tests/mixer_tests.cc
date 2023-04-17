@@ -1,4 +1,4 @@
-#include "../include/mixer/mixer.hh"
+#include "../include/mixer.hh"
 #include <array>
 #include <condition_variable>
 #include <gtest/gtest.h>

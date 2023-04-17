@@ -4,7 +4,7 @@
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
 
-#include "../include/rms/rms.hh"
+#include "../include/rms.hh"
 #include <cmath>
 #include <gtest/gtest.h>
 #include <mutex>
