@@ -262,6 +262,7 @@ TEST(FilterTest, ThreadAndMessaging) {
     std::cerr << "Input stopped" << std::endl;
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
+    f.stop();
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

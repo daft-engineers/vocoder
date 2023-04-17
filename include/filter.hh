@@ -27,30 +27,10 @@ class BPFilter {
              Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
 
     /**
-     * Bandpass deconstructor.
+     * Stop thread
+     * Requests the thread to join.
      */
-    ~BPFilter();
-
-    /**
-     * Overridden move constructor
-     * Overridden as the destructor has been modified
-     */
-    BPFilter(const BPFilter &) = delete;
-    /**
-     * Overridden move constructor
-     * Overridden as the destructor has been modified
-     */
-    BPFilter &operator=(const BPFilter &) = delete;
-    /**
-     * Overridden move constructor
-     * Overridden as the destructor has been modified
-     */
-    BPFilter(BPFilter &&) = delete;
-    /**
-     * Overridden move constructor
-     * Overridden as the destructor has been modified
-     */
-    BPFilter &operator=(BPFilter &&) = delete;
+    void stop();
 
     /**
      * Run thread function

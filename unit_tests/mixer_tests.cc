@@ -41,7 +41,7 @@ TEST(MixerTests, Vectorable) {
     const int num_mixers = 3;
     std::vector<mixer::Mixer<4>> mixer_vector;
     Pipe<Audio> output;
-    std::array<Pipe<Audio>, num_mixers> inputs{};
+    std::array<Pipe<Audio>, 4> inputs{};
 
     mixer_vector.reserve(num_mixers);
     for (int i = 0; i < num_mixers; i++) {
@@ -94,6 +94,7 @@ TEST(MixerTests, Integration) {
     input_thread1.join();
     input_thread2.join();
     output_thread.join();
+    mixer.stop();
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

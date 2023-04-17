@@ -121,5 +121,6 @@ TEST(AmpTest, ThreadAndMessaging) {
     std::cerr << "Scale stopped" << std::endl;
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
+    a.stop();
 }
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)
