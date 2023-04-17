@@ -44,7 +44,7 @@ Audio BPFilter::filter(const Audio &in_audio) {
 
     Audio filtered_audio;
     for (auto sample : in_audio) {
-        auto buf = static_cast<signed short>(f.filter(sample));
+        auto buf = static_cast<int16_t>(f.filter(sample));
         filtered_audio.push_back(buf);
     }
 

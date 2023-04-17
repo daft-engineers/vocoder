@@ -1,5 +1,6 @@
 #include "../include/filter.hh"
 #include <chrono>
+#include <cstdint>
 #include <gtest/gtest.h>
 #include <vector>
 
@@ -248,7 +249,7 @@ TEST(FilterTest, ThreadAndMessaging) {
         out_pipe.cond.wait(lk, [&out_pipe] { return out_pipe.queue.empty() == false; });
 
         Audio pass_out = out_pipe.queue.front();
-        unsigned short max = 0;
+        int16_t max = 0;
         for (int i = 0; i < sample_size; i++) {
             if (pass_out[i] > max) {
                 max = pass_out[i];
