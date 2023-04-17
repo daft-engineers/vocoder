@@ -93,7 +93,13 @@ void AlsaOut::run() {
             input.queue.pop();
             lk.unlock();
 
-            int rc = snd_pcm_writei(handle, static_cast<void*>(audio_out.data()), frames);
+            Audio new_audio;
+            for (auto sample : audio_out) {
+                new_audio.push_back(sample);
+                new_audio.push_back(sample);
+            }
+
+            int rc = snd_pcm_writei(handle, new_audio.data(), frames);
             if (rc == -EPIPE) {
             /* EPIPE means underrun */
             std::cerr << "underrun occurred\n";
@@ -106,4 +112,13 @@ void AlsaOut::run() {
 
         }
     });
+    sched_param sch;
+    int policy;
+    pthread_getschedparam(alsa_out_thread.native_handle(), &policy, &sch);
+    sch.sched_priority = 20;
+    if (pthread_setschedparam(alsa_out_thread.native_handle(), SCHED_FIFO, &sch)) {
+        std::cerr << "Failed to set sched param: " << std::strerror(errno) << std::endl;
+    } else {
+        std::cerr << "Priority increased successfully (alsa_out)" << std::endl;
+    }
 }
