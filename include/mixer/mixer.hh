@@ -27,8 +27,6 @@ template <std::size_t num_banks> class Mixer {
     // Single pipe as output for the class
     Pipe<Audio> &output_pipe;
 
-    // Not sure what this does, can't find any other reference to it
-    bool run_thread{};
     // The thread carrying out the calculations
     std::thread thread;
     // Determines how the long the thread should wait before exiting if no data is received.
@@ -67,7 +65,7 @@ template <std::size_t num_banks> class Mixer {
     Mixer &operator=(Mixer &&) = delete;
 
     /**
-     * Sums the samples at maching points on each sub array and combines it in to a single array of samples
+     * Sums the samples at matching points on each sub array and combines it in to a single array of samples
      *
      * @param audio_packets Array of arrays of samples.
      * @return  Summed rray of samples .
