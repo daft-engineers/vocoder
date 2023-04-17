@@ -50,7 +50,7 @@ To allow the connected devices to be changed easily, standardised connectors sho
 ![Hardware](./hardware.jpg)
 
 ## Configuring the Codec Zero:
-The Codec zero must be set up to be used with alsa. The easiest way is to use the scripts provided on the iquadio github.
+The Codec zero must be set up to be used with alsa. The easiest way is to use the scripts provided on the [IQAudio github](https://github.com/iqaudio/Pi-Codec).
 
 To find which sound card the Codec Zero is showing up as, run the following command and look for the IQAudio device, and note its card number.
 ```
