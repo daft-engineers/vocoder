@@ -58,8 +58,6 @@ int main(int argc, char *argv[]) {
         rms_gain = std::stoi(*std::next(gain_flag));
     }
 
-    std::cout << "gain " << rms_gain << std::endl;
-
     alsa_callback::acb alsa_in(input_device_name);
 
     const int num_filters = 10;
