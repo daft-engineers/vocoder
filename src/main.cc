@@ -65,12 +65,10 @@ int main() {
                                                        const std::vector<int16_t> &carrier) {
         for (int i = 0; i < num_filters; i++) {
             Pipe<Audio> &carr_in = carrier_in_pipes.at(i);
-            // std::cerr << carrier[0] << std::endl;
             {
                 std::lock_guard<std::mutex> lk(carr_in.cond_m);
                 carr_in.queue.push(carrier);
             }
-            // std::cerr << carr_in.queue.empty() << " and " << i << std::endl;
             carr_in.cond.notify_all();
 
             Pipe<Audio> &mod_in = modulator_in_pipes.at(i);
