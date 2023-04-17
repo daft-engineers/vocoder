@@ -18,9 +18,9 @@
 // Doxygen mainpage
 /**
  * \mainpage
- * \section aaa Daft vocoder. 
+ * \section aaa Daft vocoder.
  * See navigation bar for classes and other documentation.
-*/
+ */
 
 static void show_usage(const std::string &prog_name) {
     std::cerr << "Usage: " << prog_name << " [-h] [-i input device] [-o output device] [-g gain]\n"

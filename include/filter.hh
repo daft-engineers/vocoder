@@ -15,7 +15,7 @@
 
 /** BandPass Filter Class.
  *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR
- * implementation](https://github.com/berndporr/iir1).
+ * implementation](https://github.com/berndporr/iir1) (MIT Licence).
  */
 class BPFilter {
   public:
