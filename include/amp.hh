@@ -18,7 +18,7 @@ class Amplifier {
      * @param timeout_ Time in milliseconds the thread will wait before exiting if no data provided.
      */
     Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
-    
+
     /**
      *  Requests for the calculation thread to join.
      */
