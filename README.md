@@ -90,11 +90,16 @@ The vocoder can be run with:
 <!-- Add arguments things, I mention microphone gain higher up-->
 ```
 cd build/src 
-./vocoder "hw:x,0,0" "hw:x,0,0" # Where 'x' is the Input and Output audio device respectively
+./vocoder 
 ```
+If you need to change the input and ouput devices (default "hw:2,0,0") they can be changed with the -i and -o command respectively.
+```
+./vocoder -i "hw:x,0,0" -o "hw:x,0,0" # where 'x' is the card number of the device
+```
+
 If a microphone gain adjustment is required, a gain argument can be added to the command (default 10)
 ```
-./vocoder "hw:x,0,0" "hw:x,0,0" 10
+./vocoder -g 10
 ```
 
 ## Running our validation suite:
