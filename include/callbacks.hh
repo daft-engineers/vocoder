@@ -51,7 +51,7 @@ class acb {
     snd_pcm_hw_params_t *params{};
     snd_pcm_t *handle{};
     bool keep_listening{false};
-    snd_pcm_uframes_t frames = 128;    // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    snd_pcm_uframes_t frames = 128;   // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
     unsigned int sample_rate = 44100; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 

@@ -13,6 +13,7 @@ int main() {
     alsa_callback::acb alsa_in("hw:2,0,0");
 
     const int num_filters = 10;
+    const int num_samples = 300;
     const std::chrono::milliseconds timeout(2000);
     std::vector<BPFilter> carrier_bank;
     carrier_bank.reserve(num_filters);
@@ -43,7 +44,8 @@ int main() {
     // Wire stuff together here
     for (int i = 0; i < num_filters; i++) {
         // Filters
-        carrier_bank.emplace_back(2, alsa_in.get_sample_rate(), centre, width, carrier_in_pipes.at(i), carrier_out_pipes.at(i), timeout);
+        carrier_bank.emplace_back(2, alsa_in.get_sample_rate(), centre, width, carrier_in_pipes.at(i),
+                                  carrier_out_pipes.at(i), timeout);
         modulator_bank.emplace_back(2, alsa_in.get_sample_rate(), centre, width, modulator_in_pipes.at(i),
                                     modulator_out_pipes.at(i), timeout);
         centre += width;
@@ -51,7 +53,7 @@ int main() {
         modulator_bank.at(i).run();
 
         // Power Meter
-        power_meter_bank.emplace_back(300, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
+        power_meter_bank.emplace_back(num_samples, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
         power_meter_bank.at(i).run();
 
         // Amp
@@ -59,10 +61,11 @@ int main() {
         amp_bank.at(i).run();
     }
 
-    auto cb = [&carrier_in_pipes, &modulator_in_pipes](const std::vector<int16_t>& modulator, const std::vector<int16_t>& carrier) {
+    auto cb = [&carrier_in_pipes, &modulator_in_pipes](const std::vector<int16_t> &modulator,
+                                                       const std::vector<int16_t> &carrier) {
         for (int i = 0; i < num_filters; i++) {
             Pipe<Audio> &carr_in = carrier_in_pipes.at(i);
-            //std::cerr << carrier[0] << std::endl;
+            // std::cerr << carrier[0] << std::endl;
             {
                 std::lock_guard<std::mutex> lk(carr_in.cond_m);
                 carr_in.queue.push(carrier);
@@ -83,5 +86,6 @@ int main() {
     alsa_in.listen(cb);
     alsa_out.run();
 
-    while (true) {};
+    while (true) {
+    };
 }
