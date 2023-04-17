@@ -6,7 +6,9 @@
 #include "../include/mixer.hh"
 #include "../include/pipe.hh"
 #include "../include/rms.hh"
+#include <cstdlib>
 #include <mutex>
+#include <ostream>
 
 // Doxygen mainpage
 /**
@@ -15,9 +17,48 @@
  * See navigation bar for classes and other documentation.
 */
 
-int main() {
+static void show_usage(const std::string &prog_name) {
+    std::cerr << "Usage: " << prog_name << " [-h] [-i input device] [-o output device] [-g gain]\n"
+              << "\nOptional arguments:\n"
+              << "    -i : The name of the ALSA capture device to use. Defaults to \"hw:2,0,0\"\n"
+              << "    -o : The name of the ALSA playback device to use. Defaults to \"hw:2,0,0\"\n"
+              << "    -g : Gain applied to measured modulator power. Defaults to 10\n"
+              << "    -h : Print this usage message\n";
+}
 
-    alsa_callback::acb alsa_in("hw:2,0,0");
+int main(int argc, char *argv[]) {
+    std::vector<std::string> args{};
+    args.reserve(argc);
+    for (int i = 0; i < argc; i++) {
+        args.emplace_back(argv[i]); // NOLINT(cppcoreguidelines-pro-bounds-pointer-arithmetic) it comes from C :(
+    }
+
+    std::string input_device_name = "hw:2,0,0";
+    std::string output_device_name = "hw:2,0,0";
+    int rms_gain = 10; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+
+    auto help_flag = std::find(args.begin(), args.end(), "-h");
+    if (help_flag != args.end()) {
+        show_usage(args.at(0));
+        std::quick_exit(0);
+    }
+
+    auto input_flag = std::find(args.begin(), args.end(), "-i");
+    if (input_flag != args.end()) {
+        input_device_name = *std::next(input_flag);
+    }
+
+    auto output_flag = std::find(args.begin(), args.end(), "-o");
+    if (output_flag != args.end()) {
+        output_device_name = *std::next(output_flag);
+    }
+
+    auto gain_flag = std::find(args.begin(), args.end(), "-g");
+    if (gain_flag != args.end()) {
+        rms_gain = std::stoi(*std::next(gain_flag));
+    }
+
+    alsa_callback::acb alsa_in(input_device_name);
 
     const int num_filters = 10;
     const int num_samples = 300;
@@ -47,7 +88,7 @@ int main() {
     Pipe<Audio> mixer_out_pipe;
     mixer::Mixer<num_filters> mix(amp_out_pipes, mixer_out_pipe, timeout);
 
-    AlsaOut alsa_out("hw:2,0,0", mixer_out_pipe, timeout);
+    AlsaOut alsa_out(output_device_name, mixer_out_pipe, timeout);
     // Wire stuff together here
     for (int i = 0; i < num_filters; i++) {
         // Filters
@@ -60,8 +101,7 @@ int main() {
         modulator_bank.at(i).run();
 
         // Power Meter
-        // NOLINTNEXTLINE(cppcoreguidelines-avoid-magic-numbers)
-        power_meter_bank.emplace_back(num_samples, 10, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
+        power_meter_bank.emplace_back(num_samples, rms_gain, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
         power_meter_bank.at(i).run();
 
         // Amp
