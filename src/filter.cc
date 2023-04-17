@@ -43,8 +43,20 @@ void BPFilter::run() {
 Audio BPFilter::filter(const Audio &in_audio) {
 
     Audio filtered_audio;
+    // Recognisable human speech components exist above 1kHz
+    const unsigned int voice_low_freq = 1000;
+    const unsigned int voice_high_freq = 2000;
+
     for (auto sample : in_audio) {
-        auto buf = static_cast<signed short>(f.filter(sample));
+        auto buf = static_cast<int16_t>(f.filter(sample));
+
+        // Boost high frequency components to emphasise voice
+        if (centre_freq > voice_low_freq) {
+            buf *= 2;
+        }
+        if (centre_freq > voice_high_freq) {
+            buf *= 4;
+        }
         filtered_audio.push_back(buf);
     }
 
