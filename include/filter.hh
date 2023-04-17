@@ -46,6 +46,8 @@ class BPFilter {
     /**
      * Filter function
      * Processes each of the samples in the audio stream.
+     * @param in_audio The audio packet to filter
+     * @returns A filtered audio packet
      */
     Audio filter(const Audio &in_audio);
 
