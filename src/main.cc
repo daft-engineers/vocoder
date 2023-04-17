@@ -83,7 +83,6 @@ int main() {
     mix.run();
     alsa_in.listen(cb);
     alsa_out.run();
-
-    while (true) {
-    };
+    
+    alsa_out.stop();
 }
