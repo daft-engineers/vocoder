@@ -12,7 +12,7 @@ To build just the vocoder itself you will need:
     - Debian
     - ALSA
 - Hardware
-    - Raspberry Pi 3 (or newer) running a 64bit OS (we used Rasbian). For improved performance a Raspberry Pi 4 is recommended.
+    - Raspberry Pi 3 (or newer) running a 64bit OS (we used Rasbian).
     - Codec Zero
 
 Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from [their website](https://apt.llvm.org/) can be used.
@@ -36,16 +36,16 @@ Although not essential, to aid performance, we recommend running the OS in the n
 ```
 sudo raspi-config
 ```
-Selecting 1 System Options, S5 Boot / Auto Login, B2 Console Autologin. Reboot and enjoy the resource saving.
+Selecting: 1 System Options >> S5 Boot / Auto Login >> B2 Console Autologin. Reboot and enjoy the resource saving.
 
 ## Hardware setup:
 The Codec Zero should be wired up with the microphone on the left input channel and the synth on the right input channel of the auxilliary input. The Headphones or speaker shoudld be wired to either or both channels of the auxilliary output.
 
 ![Circuit diagram](./Circuit.png)
 
-For testing, a Sure SM58 was chosen as the microphone (using pin 2 and 3 on the XLR connector) and a software synthesizer on a pc was used as the synthesizer. A portable speaker was used as the output device. If a low sensitivity microphone is used it may need to be amplified with an external amplifier. The volume of the microphone can balanced with the synthesizer by changing the microphone gain argument when running the program.
+For testing, a Shure SM58 was chosen as the microphone (using pin 2 and 3 on the XLR connector) and a software synthesizer on a PC was used as the synthesizer. A portable speaker was used as the output device. If a low sensitivity microphone is used it may need to be amplified with an external amplifier. The volume of the microphone can balanced with the synthesizer by changing the microphone gain argument when running the program.
 
-To allow the connected devices to be changed easily, standardised connectors should be used for the inputs and outputs. Following standard convention, an XLR connector should be used for the microphone and a 1/4 TRS jack should be used for the synthesizer in and audio output.
+To allow the connected devices to be changed easily, standardised connectors should be used for the inputs and outputs. Following standard convention, an XLR connector should be used for the microphone and a 1/4" TRS jack should be used for the synthesizer in and audio output.
 
 ![Hardware](./hardware.jpg)
 
@@ -56,7 +56,7 @@ To find which sound card the Codec Zero is showing up as, run the following comm
 ```
 aplay --list-devices 
 ```
-Using your newly found number run the following where x is the card number (probably 2 or 3)
+Using your newly found number run the following where 'x' is the card number (probably 2 or 3)
 ```
 git clone https://github.com/iqaudio/Pi-Codec.git
 sudo alsactl restore -f Pi-Codec/IQaudIO_Codec_AUXIN_record_and_HP_playback.state x 
@@ -66,7 +66,7 @@ If you would like to test if the Codec Zero is working correctly, a pre recorded
 ```
 aplay -D "hw:x,0,0" test.wav # where x is the card number
 ``` 
-More information, including setting up the Codec Zero including setting it as defualt device or setting it up automatically on boot available on [their website](https://www.raspberrypi.com/documentation/accessories/audio.html#codec-zero-configuration).
+For more advanced setup information (including automatic setup and default device) see the guidance on the [Raspberry Pi website.](https://www.raspberrypi.com/documentation/accessories/audio.html#codec-zero-configuration).
 ## Software setup:
 Once you have installed the prerequisites and configured your hardware you should clone the repository and run the setup script.
 
@@ -80,9 +80,8 @@ chmod +x setup.sh
 The project is now ready to be built.
 
 ```
-cd build
+cd build/unit_tests
 make
-cd unit_tests  # run unit tests
 ctest
 ```
 
