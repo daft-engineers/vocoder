@@ -21,7 +21,7 @@ int main() {
     int width = 10000 / num_filters; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
     int centre = width / 2;
 
-    std::vector<rms::RMS<300>> power_meter_bank; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
+    std::vector<RMS> power_meter_bank; // NOLINT(cppcoreguidelines-avoid-magic-numbers)
     power_meter_bank.reserve(num_filters);
 
     std::vector<Amplifier> amp_bank;
@@ -43,15 +43,15 @@ int main() {
     // Wire stuff together here
     for (int i = 0; i < num_filters; i++) {
         // Filters
-        carrier_bank.emplace_back(2, alsa_in.getSR(), centre, width, carrier_in_pipes.at(i), carrier_out_pipes.at(i), timeout);
-        modulator_bank.emplace_back(2, alsa_in.getSR(), centre, width, modulator_in_pipes.at(i),
+        carrier_bank.emplace_back(2, alsa_in.get_sample_rate(), centre, width, carrier_in_pipes.at(i), carrier_out_pipes.at(i), timeout);
+        modulator_bank.emplace_back(2, alsa_in.get_sample_rate(), centre, width, modulator_in_pipes.at(i),
                                     modulator_out_pipes.at(i), timeout);
         centre += width;
         carrier_bank.at(i).run();
         modulator_bank.at(i).run();
 
         // Power Meter
-        power_meter_bank.emplace_back(modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
+        power_meter_bank.emplace_back(300, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
         power_meter_bank.at(i).run();
 
         // Amp
