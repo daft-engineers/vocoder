@@ -1,4 +1,4 @@
-#include "../include/filter/filter.hh"
+#include "../include/filter.hh"
 #include <chrono>
 #include <gtest/gtest.h>
 #include <vector>

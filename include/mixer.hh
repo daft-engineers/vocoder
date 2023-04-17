@@ -1,8 +1,8 @@
-#ifndef MIXER_MIXER_HH
-#define MIXER_MIXER_HH
+#ifndef MIXER_HH
+#define MIXER_HH
 
-#include "../audio/audio.hh"
-#include "../pipe.hh"
+#include "audio.hh"
+#include "pipe.hh"
 #include <algorithm>
 #include <array>
 #include <chrono>
@@ -122,4 +122,4 @@ template <std::size_t num_banks> class Mixer {
 
 } // namespace mixer
 
-#endif // MIXER_MIXER_HH
+#endif // MIXER_HH

@@ -1,4 +1,4 @@
-#include "../include/amp/amp.hh"
+#include "../include/amp.hh"
 #include <gtest/gtest.h>
 
 // This is a unit test, magic numbers are called test data here

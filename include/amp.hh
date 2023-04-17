@@ -1,8 +1,8 @@
-#ifndef AMP_AMP_HH
-#define AMP_AMP_HH
+#ifndef AMP_HH
+#define AMP_HH
 
-#include "../audio/audio.hh"
-#include "../pipe.hh"
+#include "audio.hh"
+#include "pipe.hh"
 
 class Amplifier {
   public:
@@ -26,4 +26,4 @@ class Amplifier {
     const std::chrono::milliseconds timeout;
 };
 
-#endif // AMP_AMP_HH
+#endif // AMP_HH

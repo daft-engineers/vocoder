@@ -3,11 +3,11 @@
  * License, v. 2.0. If a copy of the MPL was not distributed with this
  * file, You can obtain one at https://mozilla.org/MPL/2.0/.
  */
-#ifndef RMS_RMS_HH
-#define RMS_RMS_HH
+#ifndef RMS_HH
+#define RMS_HH
 
-#include "../audio/audio.hh"
-#include "../pipe.hh"
+#include "audio.hh"
+#include "pipe.hh"
 #include <algorithm>
 #include <array>
 #include <cmath>
@@ -23,7 +23,7 @@ namespace rms {
  *  @tparam num_samples The number of samples to store in history when calculating the root mean
  *      square. This should be approximately 4x the period of the longest component you want to
  *      include in the output.
- *      
+ *
  */
 template <std::size_t num_samples> class RMS {
   private:
@@ -46,22 +46,22 @@ template <std::size_t num_samples> class RMS {
     std::thread thread;
 
   public:
-    /** 
-    *   Initialises the input and output pipes, and the timeout.
-    *   @param input_pipe A Pipe<Audio> containing the signal to be measured
-    *   @param output_pipe A Pipe<double> which will contain the root mean square of the signal
-    *   @param timeout The number of milliseconds the thread should wait before exiting if no data is provided. 
-    */
+    /**
+     *   Initialises the input and output pipes, and the timeout.
+     *   @param input_pipe A Pipe<Audio> containing the signal to be measured
+     *   @param output_pipe A Pipe<double> which will contain the root mean square of the signal
+     *   @param timeout The number of milliseconds the thread should wait before exiting if no data is provided.
+     */
     RMS(Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
         : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     }
 
-    /** 
-    *   Takes a collection of samples from an Audio item, squares it, and inserts it into
-    *   the ring buffer.
-    *   
-    *   @param packet The samples to insert.
-    */
+    /**
+     *   Takes a collection of samples from an Audio item, squares it, and inserts it into
+     *   the ring buffer.
+     *
+     *   @param packet The samples to insert.
+     */
     void insert(Audio packet) {
         std::for_each(packet.begin(), packet.end(), [this](const int16_t item) {
             // this assumes that the 0 point for the signal is 0
@@ -72,12 +72,12 @@ template <std::size_t num_samples> class RMS {
     }
 
     /**
-    *   Determines the relative Root Mean Square of the ring buffer. Since the ring buffer already
-    *   contains the squares of the samples, this only needs to sum and then square root
-    *   the ring buffer.
-    *
-    *   @return The root mean square (between 0 and 1)
-    */
+     *   Determines the relative Root Mean Square of the ring buffer. Since the ring buffer already
+     *   contains the squares of the samples, this only needs to sum and then square root
+     *   the ring buffer.
+     *
+     *   @return The root mean square (between 0 and 1)
+     */
     double calc() {
         uint64_t total = 0;
         for (auto &n : squared_sample_buffer) {
@@ -88,8 +88,8 @@ template <std::size_t num_samples> class RMS {
     }
 
     /**
-    *   Creates the calculation thread and then returns.
-    */
+     *   Creates the calculation thread and then returns.
+     */
     void run() {
         thread = std::thread([this]() {
             thread_alive = true;
@@ -116,8 +116,8 @@ template <std::size_t num_samples> class RMS {
     }
 
     /**
-    *   Join the calculation thread when the destructor is called.
-    */
+     *   Join the calculation thread when the destructor is called.
+     */
     ~RMS() {
         if (thread_alive) {
             thread.join();
@@ -125,25 +125,25 @@ template <std::size_t num_samples> class RMS {
     }
 
     /**
-    * Explicitly delete the copy constructor
-    */ 
+     * Explicitly delete the copy constructor
+     */
     RMS(const RMS &) = delete;
 
     /**
-    * Explicitly delete the copy assignment constructor
-    */ 
+     * Explicitly delete the copy assignment constructor
+     */
     RMS &operator=(const RMS &) = delete;
 
     /**
-    * Explicitly delete the move constructor
-    */ 
+     * Explicitly delete the move constructor
+     */
     RMS(RMS &&) = delete;
 
     /**
-    * Explicitly delete the move assignment constructor
-    */ 
+     * Explicitly delete the move assignment constructor
+     */
     RMS &operator=(RMS &&) = delete;
 };
 } // namespace rms
 
-#endif // RMS_RMS_HH
+#endif // RMS_HH
