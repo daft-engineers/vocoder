@@ -21,7 +21,8 @@ class BPFilter {
      * @param centre_freq_ the centre freqency for the pass band
      * @param freq_range_ the width of the pass band
      * @param input_ the input pipe for the module
-     * @param the output pipe for the module
+     * @param output_ the output pipe for the module
+     * @param timeout_ the timeout for the thread wait
      */
     BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
              Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
