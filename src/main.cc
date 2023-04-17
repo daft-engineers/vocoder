@@ -1,3 +1,8 @@
+/* daft engineers vocoder project
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 #include "../include/alsa_out.hh"
 #include "../include/amp.hh"
 #include "../include/audio.hh"
@@ -13,9 +18,9 @@
 // Doxygen mainpage
 /**
  * \mainpage
- * \section aaa Daft vocoder. 
+ * \section aaa Daft vocoder.
  * See navigation bar for classes and other documentation.
-*/
+ */
 
 static void show_usage(const std::string &prog_name) {
     std::cerr << "Usage: " << prog_name << " [-h] [-i input device] [-o output device] [-g gain]\n"

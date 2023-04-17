@@ -1,3 +1,8 @@
+/* daft engineers vocoder project
+ * This Source Code Form is subject to the terms of the Mozilla Public
+ * License, v. 2.0. If a copy of the MPL was not distributed with this
+ * file, You can obtain one at https://mozilla.org/MPL/2.0/.
+ */
 #ifndef FILTER_HH
 #define FILTER_HH
 
@@ -10,7 +15,7 @@
 
 /** BandPass Filter Class.
  *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR
- * implementation](https://github.com/berndporr/iir1).
+ * implementation](https://github.com/berndporr/iir1) (MIT Licence).
  */
 class BPFilter {
   public:

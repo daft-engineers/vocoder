@@ -162,3 +162,7 @@ The project has a fleshed out continuous integration pipeline run on a Raspberry
 Nightly, a more extensive test suite is run. This suite takes too long to run on every commit, but is valuable for finding threading bugs in particular.
 
 ![Image](https://user-images.githubusercontent.com/56744932/232495456-cb85b482-2e24-48c8-92cf-c3656f83ca41.png)
+
+# Filter
+
+The project uses [Bernd Porr's IIR filter implementation](https://github.com/berndporr/iir1).
