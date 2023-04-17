@@ -17,12 +17,11 @@
  */
 namespace alsa_callback {
 /**
- * Alsa Callback Class. This reads Audio from the input hardware device and, using a callback will write these
+ * Alsa Callback Class. This reads Audio from the input hardware device and, using a callback, will write these
  * to the correct pipes.
  *
  *  Example usage of this functionality:
  *
- * ===================================================
  * ```cpp
  * #include "../include/callbacks.hh"
  *
@@ -52,10 +51,14 @@ class acb {
     acb(const std::string &device_name);
     /**
      * Run function. Opens a thread and continuously reads the hardware device input and triggers a callback.
+     * Runs until stop() is called.
+     * @see stop()
+     * @param callback the callback to be triggered.
      */
     void listen(const std::function<void(const std::vector<int16_t> &, const std::vector<int16_t> &)> &callback);
     /**
      * Stop function. Tells the thread to join.
+     * @see run()
      */
     void stop();
     /**

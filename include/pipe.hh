@@ -42,9 +42,9 @@
  * ~~~~~~~~~~~~~~~
  */
 template <typename T> struct Pipe {
-    std::condition_variable cond; /**< condition variable for the pipe*/
-    std::mutex cond_m;            /**< mutex for the condition variable*/
-    std::queue<T> queue{};        /**< queue to hold the data*/
+    std::condition_variable cond; /**< Condition variable for the pipe, used to wait/notify.*/
+    std::mutex cond_m;            /**< Mutex for the condition variable.*/
+    std::queue<T> queue{};        /**< Queue to hold the data.*/
 };
 
 #endif // PIPE_HH

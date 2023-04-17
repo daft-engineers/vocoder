@@ -9,7 +9,7 @@
 #include <thread>
 
 /** BandPass Filter Class.
- *  The class for the Band Pass IIR filter, based on Bernd Porr's IIR implementation.
+ *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR implementation](https://github.com/berndporr/iir1). 
  */
 class BPFilter {
   public:
@@ -30,13 +30,14 @@ class BPFilter {
     /**
      * Stop thread
      * Requests the thread to join.
+     * @see run()
      */
     void stop();
 
     /**
      * Run thread function
      * Contains the main logic for the thread. Waits for input, filters the data, and then sends to the output.
-     * Loops until stop() is called.
+     * Runs until stop() is called.
      * @see stop()
      */
     void run();

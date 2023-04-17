@@ -19,15 +19,18 @@ class AlsaOut {
      * Constructs a ALSA output. Initialises the device name, input pipe and timeout.
      * @param device_name A string describing the ALSA device to be used (e.g. "hw:2,0,0").
      * @param input_ Input pipe.
-     * @param timeout_ Time in milliseconds the thread will wait before exiting if no data provided.
+     * @param timeout_ Time in milliseconds the thread will wait before exiting if no data is provided.
      */
     AlsaOut(const std::string &device_name, Pipe<Audio> &input_, std::chrono::milliseconds timeout_);
     /**
      * Run function. Opens a thread and continuously writes to the output.
+     * Runs until stop() is called.
+     * @see stop()
      */
     void run();
     /**
      * Stop function. Tells the thread to join.
+     * @see run()
      */
     void stop();
 

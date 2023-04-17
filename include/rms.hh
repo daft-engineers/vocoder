@@ -43,7 +43,7 @@ class RMS {
   public:
     /**
      *   Initialises the input and output pipes, and the timeout.
-     *   @param num_samples num_samples The number of samples to store in history when calculating the root mean
+     *   @param num_samples The number of samples to store in history when calculating the root mean
      *      square. This should be approximately 4x the period of the longest component you want to
      *      include in the output.
      *   @param gain The gain to be applied
@@ -72,11 +72,14 @@ class RMS {
 
     /**
      *   Creates the calculation thread and then returns.
+     * Runs until stop() is called.
+     * @see stop()
      */
     void run();
 
     /**
-     *   Stop the thread.
+     *   Stops the thread.
+     * @see run()
      */
     void stop() {
         if (thread_alive) {
