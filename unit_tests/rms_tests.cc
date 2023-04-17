@@ -18,7 +18,7 @@
 TEST(RMSTests, buffer) {
     Pipe<Audio> input{};
     Pipe<double> output{};
-    RMS rms(4, input, output, std::chrono::milliseconds(100));
+    RMS rms(4, 1, input, output, std::chrono::milliseconds(100));
     Audio audio{0};
 
     // check that rms is 0 at the beginning
@@ -66,7 +66,7 @@ TEST(RMSTests, multiple) {
     std::vector<RMS> rmsarr;
     for (int i = 0; i < 4; i++) {
 
-        rmsarr.emplace_back(4 * (i + 1), input, output, std::chrono::milliseconds(100));
+        rmsarr.emplace_back(4 * (i + 1), 1, input, output, std::chrono::milliseconds(100));
     }
 
     Audio audio{16};
@@ -90,10 +90,43 @@ TEST(RMSTests, multiple) {
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(RMSTests, gains) {
+    Pipe<Audio> input{};
+    Pipe<double> output{};
+    std::vector<RMS> rmsarr;
+    for (int i = 0; i < 4; i++) {
+
+        rmsarr.emplace_back(4, i / 2.0, input, output, std::chrono::milliseconds(100));
+    }
+
+    Audio audio{16};
+
+    // check that rms is 0 at the beginning
+    ASSERT_EQ(rmsarr[0].calc(), 0);
+
+    audio[0] = 16;
+    for (int i = 0; i < 4; i++) {
+        rmsarr[i].insert(audio);
+    }
+    // buffer should now be 256, 0, 0, 0 with gain 0 giving rms of 0
+    ASSERT_EQ(rmsarr[0].calc(), 0);
+
+    // buffer should now be 256, 0, 0, 0 with gain 0.5 giving rms of 4/IM
+    ASSERT_EQ(rmsarr[1].calc(), 4.0 / INT16_MAX);
+
+    // buffer should now be 256, 0, 0, 0 with gain 1 giving rms of 8/IM
+    ASSERT_EQ(rmsarr[2].calc(), 8.0 / INT16_MAX);
+
+    // buffer should now be 256, 0, 0, 0 with gain 1.5 giving rms of 12/IM
+    ASSERT_EQ(rmsarr[3].calc(), 12.0 / INT16_MAX);
+}
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(RMSTests, Integration) {
     Pipe<Audio> input{};
     Pipe<double> output{};
-    RMS rms(4, input, output, std::chrono::milliseconds(100));
+    RMS rms(4, 1, input, output, std::chrono::milliseconds(100));
 
     rms.run();
 
