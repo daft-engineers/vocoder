@@ -5,10 +5,42 @@
 #include <queue>
 #include <thread>
 
+/**
+ * Pipe struct to allow data to flow between modules in a thread safe way.
+ * 
+ * The pipe can be used as followed, for example
+ * ~~~~~~~~~~~~~~~{.cpp}
+ * 
+ * // declarations
+ * Pipe<type> input;
+ * Pipe<type> output;
+ * 
+ * 
+ * std::unique_lock<std::mutex> input_lk(input.cond_m);
+ * input_lk.unlock();
+ * 
+ * while(loop) {
+ *   input_lk.lock();
+ *   wait(input_lk, [this] {return input.queue.empty() == false;})
+ *   type data = input.queue.front();
+ *   input.queue.pop();
+ *   input_lkk.unlock();
+ *  
+ *   // do logic here
+ * 
+ *   {
+ *     std::lock_guard<std::mutex> out_lk(output.cond_m);
+ *     output.queue.push(audio_out);
+ *   }
+ *   output.cond.notify_all();
+ * }
+ * 
+ * ~~~~~~~~~~~~~~~
+*/
 template <typename T> struct Pipe {
-    std::condition_variable cond;
-    std::mutex cond_m;
-    std::queue<T> queue{};
+    std::condition_variable cond;   /**< condition variable for the pipe*/
+    std::mutex cond_m;              /**< mutex for the condition variable*/
+    std::queue<T> queue{};          /**< queue to hold the data*/
 };
 
 #endif // PIPE_HH
