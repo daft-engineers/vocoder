@@ -67,7 +67,7 @@ alsa_callback::acb::acb(const std::string &device_name) {
     }
 }
 
-void alsa_callback::acb::listen(const std::function<void(std::vector<int16_t>, std::vector<int16_t>)> &callback) {
+void alsa_callback::acb::listen(const std::function<void(const std::vector<int16_t> &, const std::vector<int16_t> &)> &callback) {
     keep_listening = true;
     cb_thread = std::thread([this, &callback]() {
         while (this->keep_listening) {

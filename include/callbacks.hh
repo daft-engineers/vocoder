@@ -12,7 +12,7 @@ int main () {
     alsa_callback::acb test ("hw:2,0,0");
 
     auto cb =
-        [](std::vector<int16_t> left, std::vector<int16_t> right) {
+        [](const std::vector<int16_t>& left, const std::vector<int16_t>& right) {
             std::cout << left[0] << " : " << right[0] << "\n";
         };
 
@@ -42,7 +42,7 @@ namespace alsa_callback {
 class acb {
   public:
     acb(const std::string &device_name);
-    void listen(const std::function<void(std::vector<int16_t>, std::vector<int16_t>)> &callback);
+    void listen(const std::function<void(const std::vector<int16_t> &, const std::vector<int16_t> &)> &callback);
     void stop();
     unsigned int get_sample_rate();
 
