@@ -12,7 +12,7 @@ To build just the vocoder itself you will need:
     - Debian
     - ALSA
 - Hardware
-    - Raspberry Pi 3 (or newer) running a 64bit OS
+    - Raspberry Pi 3 (or newer) running a 64bit OS (we used Rasbian). For improved performance a Raspberry Pi 4 is recommended.
     - Codec Zero
 
 Additionally, to run the unit tests and static analysis suite, LLVM 15 + Tools is required. To install this on debian the automatic script from [their website](https://apt.llvm.org/) can be used.
@@ -23,7 +23,7 @@ We recommend the following to get started from scratch (requires 1GB+ of storage
 
 ```
 sudo apt update
-sudo apt install wget gpg build-essential cmake libasound2-dev
+sudo apt install wget gpg build-essential cmake libasound2-dev software-properties-common lsb-release gnupg
 wget https://apt.llvm.org/llvm.sh
 chmod +x llvm.sh
 sudo ./llvm.sh 15 all
@@ -37,7 +37,7 @@ Python 3 is required to automatically build and link unit tests. Python 3 comes 
 Once you have installed the prerequisites and configured your hardware you should clone the repository and run the setup script.
 
 ```
-git clone git@github.com:daft-engineers/vocoder.git
+git clone https://github.com/daft-engineers/vocoder.git
 cd vocoder
 chmod +x setup.sh
 ./setup.sh
