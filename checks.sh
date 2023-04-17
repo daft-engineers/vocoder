@@ -19,6 +19,7 @@ WRONG_LOCATION=$(find src -name "*.hh" && find include -name "*.cc")
 if [[ $1 == "--static-analysis" ]]; then
     clang-tidy -p build $INC $SRC 
 elif [[ $1 == "--formatting" ]]; then
+    echo "running clang format on $INC $SRC $UNIT"
     clang-format -n -Werror -style=file $INC $SRC $UNIT
     if [[ -n $WRONG_EXT ]]; then 
         echo "Files found ending in .cpp: $WRONG_EXT"
