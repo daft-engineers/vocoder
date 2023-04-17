@@ -1,7 +1,7 @@
 #ifndef ALSA_OUT_HH
 #define ALSA_OUT_HH
 
-#include "audio/audio.hh"
+#include "audio.hh"
 #include "pipe.hh"
 #include <alsa/asoundlib.h>
 #include <alsa/error.h>
