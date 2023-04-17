@@ -19,6 +19,9 @@
  */
 class RMS {
   private:
+    // Gain, allows for gain control at different frequencies
+    double gain;
+
     // Input pipe for the class
     Pipe<Audio> &input_pipe;
     // Output pipe for the class
@@ -43,11 +46,13 @@ class RMS {
      *   @param num_samples num_samples The number of samples to store in history when calculating the root mean
      *      square. This should be approximately 4x the period of the longest component you want to
      *      include in the output.
+     *   @param gain The gain to be applied
      *   @param input_pipe A Pipe<Audio> containing the signal to be measured
      *   @param output_pipe A Pipe<double> which will contain the root mean square of the signal
      *   @param timeout The number of milliseconds the thread should wait before exiting if no data is provided.
      */
-    RMS(int num_samples, Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout);
+    RMS(int num_samples, double gain, Pipe<Audio> &input_pipe, Pipe<double> &output_pipe,
+        std::chrono::milliseconds timeout);
 
     /**
      *   Takes a collection of samples from an Audio item, squares it, and inserts it into

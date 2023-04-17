@@ -6,8 +6,9 @@
 
 #include "../include/rms.hh"
 
-RMS::RMS(int num_samples, Pipe<Audio> &input_pipe, Pipe<double> &output_pipe, std::chrono::milliseconds timeout)
-    : input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
+RMS::RMS(int num_samples, double gain, Pipe<Audio> &input_pipe, Pipe<double> &output_pipe,
+         std::chrono::milliseconds timeout)
+    : gain(gain), input_pipe(input_pipe), output_pipe(output_pipe), timeout(timeout) {
     squared_sample_buffer.resize(num_samples);
 }
 
@@ -25,7 +26,8 @@ double RMS::calc() {
     for (auto &n : squared_sample_buffer) {
         total += n;
     }
-    double output = std::sqrt(total / squared_sample_buffer.size()) / INT16_MAX;
+    double mean = std::sqrt(total / squared_sample_buffer.size()) / INT16_MAX;
+    double output = mean * gain;
     return output;
 }
 
