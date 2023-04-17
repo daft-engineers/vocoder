@@ -89,8 +89,14 @@ ctest
 The vocoder can be run with: 
 <!-- Add arguments things, I mention microphone gain higher up-->
 ```
-cd build/src    
+cd build/src 
+./vocoder "hw:x,0,0" "hw:x,0,0" # Where 'x' is the Input and Output audio device respectively
 ```
+If a microphone gain adjustment is required, a gain argument can be added to the command (default 10)
+```
+./vocoder "hw:x,0,0" "hw:x,0,0" 10
+```
+
 ## Running our validation suite:
 As well as using the GoogleTest framework to provide unit and integration tests, we also use clang-tidy for static analysis and clang-format to ensure code meets style standards. To run the static analysis and style tests use:
 
