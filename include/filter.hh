@@ -9,7 +9,8 @@
 #include <thread>
 
 /** BandPass Filter Class.
- *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR implementation](https://github.com/berndporr/iir1). 
+ *  The class for the Band Pass IIR filter, based on [Bernd Porr's IIR
+ * implementation](https://github.com/berndporr/iir1).
  */
 class BPFilter {
   public:
