@@ -43,8 +43,8 @@ class AlsaOut {
     snd_pcm_hw_params_t *params{};
     // ALSA handle, modified in place by ALSA.
     snd_pcm_t *handle{};
-    // Number of frames which ALSA reads/ writes at a time.
-    snd_pcm_uframes_t frames = 64; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
+    // Number of frames which ALSA reads/ writes at a time. This is modified in place later by ALSA to close value.
+    snd_pcm_uframes_t frames = 128; // NOLINT(cppcoreguidelines-avoid-magic-numbers) this is modified in place later
 };
 
 /* Use the newer ALSA API */
