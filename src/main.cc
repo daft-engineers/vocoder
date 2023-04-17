@@ -64,12 +64,14 @@ int main() {
                 std::lock_guard<std::mutex> lk(carr_in.cond_m);
                 carr_in.queue.push(carrier);
             }
+            carr_in.cond.notify_all();
 
             Pipe<Audio> &mod_in = modulator_in_pipes.at(i);
             {
                 std::lock_guard<std::mutex> lk(mod_in.cond_m);
                 mod_in.queue.push(modulator);
             }
+            mod_in.cond.notify_all();
         }
     };
 
