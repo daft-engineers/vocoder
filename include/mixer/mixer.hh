@@ -11,21 +11,34 @@
 #include <memory>
 #include <mutex>
 
+/** mixer namespace
+ *  Contains the mixer class.
+ */
 namespace mixer {
-
-//  Mixer class takes in a list of input pipes, extracts the audio packet from
-//  each of them. It then produces a new audio packet which is the sum of the
-//  previous audio packets.
+/** Mixer class
+ *  Takes in a list of input pipes, extracts the audio packet from
+ *  each of them. It then produces a new audio packet which is the sum of the
+ *  previous audio packets.
+ */
 template <std::size_t num_banks> class Mixer {
   private:
+    // Array of pipes for the input to the class
     std::array<Pipe<Audio>, num_banks> &input_pipes;
+    // Single pipe as output for the class
     Pipe<Audio> &output_pipe;
 
-    bool run_thread{};
+    // The thread carrying out the calculations
     std::thread thread;
+    // Determines how the long the thread should wait before exiting if no data is received.
     const std::chrono::milliseconds timeout;
 
   public:
+    /**
+     * Constructs a new mixer. Initialises the input and output pipes and timeout.
+     * @param input_pipes_ Input pipe array.
+     * @param output_pipe_ Output pipe.
+     * @param timeout_ Time in milliseconds the thread will wait before exiting if no data provided.
+     */
     Mixer(std::array<Pipe<Audio>, num_banks> &input_pipes_, Pipe<Audio> &output_pipe_,
           std::chrono::milliseconds timeout_)
         : input_pipes(input_pipes_), output_pipe(output_pipe_), timeout(timeout_) {
@@ -33,11 +46,30 @@ template <std::size_t num_banks> class Mixer {
 
     // explicitly disable copy and move constructors since that will mess
     // with threading logic. if these are needed it can be reviewed later
+    /**
+     * Explicitly delete the copy constructor.
+     */
     Mixer(const Mixer &) = delete;
+    /**
+     * Explicitly delete the copy assignment constructor.
+     */
     Mixer &operator=(const Mixer &) = delete;
+    /**
+     * Explicitly delete move assignment constructor.
+     *
+     */
     Mixer(Mixer &&) = delete;
+    /**
+     * Explicitly delete move assignment constructor.
+     */
     Mixer &operator=(Mixer &&) = delete;
 
+    /**
+     * Sums the samples at matching points on each sub array and combines it in to a single array of samples
+     *
+     * @param audio_packets Array of arrays of samples.
+     * @return  Summed rray of samples .
+     */
     static Audio sum(std::array<Audio, num_banks> audio_packets) {
         Audio output_packet;
 
@@ -51,7 +83,9 @@ template <std::size_t num_banks> class Mixer {
         }
         return output_packet;
     }
-
+    /**
+     * Creates the summing thread then returns.
+     */
     void run() {
         thread = std::thread([this]() {
             while (true) {
@@ -78,7 +112,9 @@ template <std::size_t num_banks> class Mixer {
             return true;
         });
     }
-
+    /**
+     * Join the mixer thread when the destructor is called
+     */
     ~Mixer() {
         thread.join();
     }
