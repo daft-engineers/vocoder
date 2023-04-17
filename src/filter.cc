@@ -1,4 +1,5 @@
 #include "../include/filter.hh"
+#include "../include/scheduler_helper.hh"
 
 BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double freq_range_, Pipe<Audio> &input_,
                    Pipe<Audio> &output_, std::chrono::milliseconds timeout_)
@@ -35,6 +36,7 @@ void BPFilter::run() {
         }
         return true;
     });
+    Scheduler_helper::set_thread_priority(filter_thread.native_handle(), "filter");
 }
 
 Audio BPFilter::filter(const Audio &in_audio) {

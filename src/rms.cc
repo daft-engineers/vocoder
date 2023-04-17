@@ -52,4 +52,5 @@ void RMS::run() {
         }
         return true;
     });
+    Scheduler_helper::set_thread_priority(thread.native_handle(), "rms");
 }
