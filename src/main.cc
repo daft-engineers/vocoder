@@ -53,7 +53,8 @@ int main() {
         modulator_bank.at(i).run();
 
         // Power Meter
-        power_meter_bank.emplace_back(num_samples, 10, modulator_out_pipes.at(i), power_out_pipes.at(i), timeout);
+        power_meter_bank.emplace_back(num_samples, 10, modulator_out_pipes.at(i), power_out_pipes.at(i),
+                                      timeout); // NOLINT(cppcoreguidelines-avoid-magic-numbers)
         power_meter_bank.at(i).run();
 
         // Amp
