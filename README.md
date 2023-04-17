@@ -2,7 +2,7 @@
 
 We are building a vocoder, which is a vocal effect that combines your voice with a sound wave. The result is a unique sound used in popular songs like Daft Punk's "Harder, Better, Faster, Stronger" (the inspiration for our name), or ELO's "Mr. Blue Sky".
 
-# Pre-requisites
+# Pre-requisites:
 
 To build just the vocoder itself you will need:
 
@@ -32,8 +32,37 @@ sudo ln -s /usr/lib/llvm-15/bin/clang{,++,-format,-tidy} /usr/local/bin
 
 Python 3 is required to automatically build and link unit tests. Python 3 comes preinstalled on most Linux distributions, and is available as a package on all others.
 
-# Getting started (using Clang)
+# Getting started:
+## Hardware setup:
+The Codec Zero should be wired up with the microphone on the left input channel and the synth on the right input channel of the auxilliary input. The Headphones or speaker shoudld be wired to either or both channels of the auxilliary output.
 
+![Circuit diagram](./Circuit.png)
+
+For testing, a Sure SM58 was chosen as the microphone (using pin 2 and 3 on the XLR connector) and a software synthesizer on a pc was used as the synthesizer. A portable speaker was used as the output device. If a low sensitivity microphone is used it may need to be amplified with an external amplifier. The volume of the microphone can balanced with the synthesizer by changing the microphone gain argument when running the program.
+
+To allow the connected devices to be changed easily, standardised connectors should be used for the inputs and outputs. Following standard convention, an XLR connector should be used for the microphone and a 1/4 TRS jack should be used for the synthesizer in and audio output.
+
+![Hardware](./hardware.jpg)
+
+## Configuring the Codec Zero:
+The Codec zero must be set up to be used with alsa. The easiest way is to use the scripts provided on the iquadio github.
+
+To find which sound card the Codec Zero is showing up as, run the following command and look for the IQAudio device, and note its card number.
+```
+aplay --list-devices 
+```
+Using your newly found number run the following where x is the card number (probably 2 or 3)
+```
+git clone https://github.com/iqaudio/Pi-Codec.git
+sudo alsactl restore -f Pi-Codec/IQaudIO_Codec_AUXIN_record_and_HP_playback.state x 
+```
+
+If you would like to test if the Codec Zero is working correctly, a pre recorded test sound can be played using:
+```
+aplay -D "hw:x,0,0" test.wav # where x is the card number
+``` 
+More information, including setting up the Codec Zero including setting it as defualt device or setting it up automatically on boot available on [their website](https://www.raspberrypi.com/documentation/accessories/audio.html#codec-zero-configuration).
+## Software setup:
 Once you have installed the prerequisites and configured your hardware you should clone the repository and run the setup script.
 
 ```
@@ -44,17 +73,22 @@ chmod +x setup.sh
 ```
 
 The project is now ready to be built.
+<!-- need to add codec zero setup instructions  -->
 
 ```
 cd build
 make
 cd unit_tests  # run unit tests
 ctest
-cd ../src      # run vocoder
-./vocoder
 ```
 
-## Running our validation suite
+## Running the Vocoder:
+The vocoder can be run with: 
+<!-- Add arguments things, I mention microphone gain higher up-->
+```
+cd build/src    
+```
+## Running our validation suite:
 As well as using the GoogleTest framework to provide unit and integration tests, we also use clang-tidy for static analysis and clang-format to ensure code meets style standards. To run the static analysis and style tests use:
 
 ```
@@ -64,7 +98,7 @@ chmod +x checks.sh
 
 This will run static analysis and return any errors found. It will also reformat the code in-place to meet our style guidelines, which are based on the LLVM guidelines. If you would like to check if the code meet style guideline _without_ it being updated in place, then the flag `--formatting` can be passed to the script.
 
-# Documentation
+# Documentation:
 
 Documentation for main can be [found here](https://daft-engineers.github.io/vocoder/).
 
@@ -79,13 +113,13 @@ doxygen Doxyfile
 ```
 generates the documentation, and then the page can be opened by navigating to `docs/html/` and opening `index.html`
 
-# Social Media
+# Social Media:
 <a href="https://www.instagram.com/daftengineers/"><img src="https://user-images.githubusercontent.com/10051310/219481632-10430e66-73dc-400e-a046-dc9d7dd9f3a9.svg" height=80px></a>
 <a href="https://twitter.com/DaftEngineers"><img src="https://user-images.githubusercontent.com/10051310/219482103-8422c45f-ca60-4918-b5b8-6de79d0add22.png" height=80px></a>
 <a href="https://www.youtube.com/@daftengineers"><img src="https://user-images.githubusercontent.com/10051310/219484585-2eb87c95-5951-428b-b3a1-7ac846e40f65.png" height=80px></a>
 <a href="https://www.tiktok.com/@daftengineers"><img src="https://user-images.githubusercontent.com/10051310/220791551-141ee0cc-34ef-47b8-bbcb-701461f88851.png" height=80px></a>
 
-# Program Design
+# Program Design:
 ## Sequence Diagram
 ![sequence diagram for vocoder](https://user-images.githubusercontent.com/10051310/220790624-48ad3c57-34fe-4f8b-b89b-a98e7c718f88.png)
 
