@@ -1,5 +1,6 @@
 #include "../include/mixer.hh"
 #include <array>
+#include <chrono>
 #include <condition_variable>
 #include <gtest/gtest.h>
 #include <mutex>
@@ -23,14 +24,29 @@ TEST(MixerTests, Timeout) {
     // set up mixer with 2 inputs
     Pipe<Audio> output{};
     std::array<Pipe<Audio>, 2> inputs{};
-    {
-        mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
 
-        // start mixer
-        mixer.run();
-    } // mixer goes out of scope so destructor is called
+    mixer::Mixer<2> mixer(inputs, output, std::chrono::milliseconds(100));
+
+    // start mixer
+    mixer.run();
+    mixer.stop();
 
     ASSERT_TRUE(true); // when run with a timeout this will fail if it doesn't reach this point
+}
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(MixerTests, Vectorable) {
+    // This test will fail to compile if the class has no copy/move construtors
+    const int num_mixers = 3;
+    std::vector<mixer::Mixer<4>> mixer_vector;
+    Pipe<Audio> output;
+    std::array<Pipe<Audio>, 4> inputs{};
+
+    mixer_vector.reserve(num_mixers);
+    for (int i = 0; i < num_mixers; i++) {
+        mixer_vector.emplace_back(inputs, output, std::chrono::milliseconds(100));
+    }
 }
 
 // TEST macro violates guidelines
@@ -78,6 +94,7 @@ TEST(MixerTests, Integration) {
     input_thread1.join();
     input_thread2.join();
     output_thread.join();
+    mixer.stop();
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

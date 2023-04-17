@@ -45,26 +45,6 @@ template <std::size_t num_banks> class Mixer {
         : input_pipes(input_pipes_), output_pipe(output_pipe_), timeout(timeout_) {
     }
 
-    // explicitly disable copy and move constructors since that will mess
-    // with threading logic. if these are needed it can be reviewed later
-    /**
-     * Explicitly delete the copy constructor.
-     */
-    Mixer(const Mixer &) = delete;
-    /**
-     * Explicitly delete the copy assignment constructor.
-     */
-    Mixer &operator=(const Mixer &) = delete;
-    /**
-     * Explicitly delete move assignment constructor.
-     *
-     */
-    Mixer(Mixer &&) = delete;
-    /**
-     * Explicitly delete move assignment constructor.
-     */
-    Mixer &operator=(Mixer &&) = delete;
-
     /**
      * Sums the samples at matching points on each sub array and combines it in to a single array of samples
      *
@@ -117,7 +97,7 @@ template <std::size_t num_banks> class Mixer {
     /**
      * Join the mixer thread when the destructor is called
      */
-    ~Mixer() {
+    void stop() {
         thread.join();
     }
 };

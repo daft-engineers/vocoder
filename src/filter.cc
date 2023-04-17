@@ -7,7 +7,8 @@ BPFilter::BPFilter(int order, double sampling_rate, double centre_freq_, double 
 
     f.setup(order, sampling_rate, centre_freq, freq_range);
 }
-BPFilter::~BPFilter() {
+
+void BPFilter::stop() {
     if (thread_alive) {
         filter_thread.join();
     }

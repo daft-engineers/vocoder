@@ -42,6 +42,26 @@ TEST(FilterTest, EmptyReturn) {
     EXPECT_TRUE(flag) << "Filter returned all zeros";
 }
 
+// Test that filters can be initialised in an array
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(FilterTest, Vectorable) {
+    int num_filters = 8;
+    std::vector<BPFilter> filter_array;
+    filter_array.reserve(num_filters);
+
+    const unsigned int centre = 75;
+    const unsigned int width = 20;
+    Pipe<Audio> in_pipe;
+    Pipe<Audio> out_pipe;
+
+    for (int i = 0; i < num_filters; i++) {
+        filter_array.emplace_back(2, sampling_rate, centre, width, in_pipe, out_pipe, std::chrono::milliseconds(100));
+    }
+
+    ASSERT_TRUE(filter_array.size() == 8);
+}
+
 // Test filter function at a frequency above the pass band
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
@@ -242,6 +262,7 @@ TEST(FilterTest, ThreadAndMessaging) {
     std::cerr << "Input stopped" << std::endl;
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
+    f.stop();
 }
 
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

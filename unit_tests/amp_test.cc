@@ -42,6 +42,22 @@ TEST(AmpTest, Amplification) {
 
 // TEST macro violates guidelines
 // NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
+TEST(AmpTest, Vectorable) {
+    // This test will fail to compile if the class has no copy/move construtors
+    const int num_amps = 6;
+    std::vector<Amplifier> amp_vector;
+    Pipe<Audio> in_pipe;
+    Pipe<double> scale_pipe;
+    Pipe<Audio> out_pipe;
+
+    amp_vector.reserve(num_amps);
+    for (int i = 0; i < num_amps; i++) {
+        amp_vector.emplace_back(in_pipe, scale_pipe, out_pipe, std::chrono::milliseconds(100));
+    }
+}
+
+// TEST macro violates guidelines
+// NOLINTNEXTLINE(cppcoreguidelines-owning-memory, cppcoreguidelines-avoid-non-const-global-variables)
 TEST(AmpTest, ThreadAndMessaging) {
     Pipe<Audio> in_pipe;
     Pipe<double> scale_pipe;
@@ -105,5 +121,6 @@ TEST(AmpTest, ThreadAndMessaging) {
     std::cerr << "Scale stopped" << std::endl;
     output_thread.join();
     std::cerr << "Output stopped" << std::endl;
+    a.stop();
 }
 // NOLINTEND(cppcoreguidelines-avoid-magic-numbers)

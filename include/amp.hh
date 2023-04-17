@@ -18,11 +18,11 @@ class Amplifier {
      * @param timeout_ Time in milliseconds the thread will wait before exiting if no data provided.
      */
     Amplifier(Pipe<Audio> &input_, Pipe<double> &scaling_, Pipe<Audio> &output_, std::chrono::milliseconds timeout_);
-    ~Amplifier();
-    Amplifier(const Amplifier &) = delete;
-    Amplifier &operator=(const Amplifier &) = delete;
-    Amplifier(Amplifier &&) = delete;
-    Amplifier &operator=(Amplifier &&) = delete;
+
+    /**
+     *  Requests for the calculation thread to join.
+     */
+    void stop();
 
     /**
      * Run function. Opens a thread and continuously scales input audio by scaling, outputting the scaled audio.
