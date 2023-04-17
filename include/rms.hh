@@ -46,6 +46,7 @@ class RMS {
      *   @param num_samples num_samples The number of samples to store in history when calculating the root mean
      *      square. This should be approximately 4x the period of the longest component you want to
      *      include in the output.
+     *   @param gain The gain to be applied
      *   @param input_pipe A Pipe<Audio> containing the signal to be measured
      *   @param output_pipe A Pipe<double> which will contain the root mean square of the signal
      *   @param timeout The number of milliseconds the thread should wait before exiting if no data is provided.
