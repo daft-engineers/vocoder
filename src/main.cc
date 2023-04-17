@@ -8,6 +8,13 @@
 #include "../include/rms.hh"
 #include <mutex>
 
+// Doxygen mainpage
+/**
+ * \mainpage
+ * \section aaa Daft vocoder. 
+ * See navigation bar for classes and other documentation.
+*/
+
 int main() {
 
     alsa_callback::acb alsa_in("hw:2,0,0");
