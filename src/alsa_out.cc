@@ -1,4 +1,5 @@
 #include "../include/alsa_out.hh"
+#include "../include/scheduler_helper.hh"
 
 AlsaOut::AlsaOut(const std::string &device_name, Pipe<Audio> &input_, std::chrono::milliseconds timeout_)
     : input(input_), timeout(timeout_) {
@@ -111,4 +112,5 @@ void AlsaOut::run() {
             }
         }
     });
+    Scheduler_helper::set_thread_priority(alsa_out_thread.native_handle(), "alsa out");
 }
