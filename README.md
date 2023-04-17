@@ -107,11 +107,7 @@ The project is licenced under the Mozilla Public License Version 2.0. More detai
 
 # Continuous integration
 
-<<<<<<< HEAD
 The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/) is updated. The image below shows the workflow for a standard push.
-=======
-The project has a fleshed out continuous integration pipeline run on a Raspberry Pi. On every push and pull request, the project is built, the static analysis and formatting is run, and unit tests are run. Only on a successful merge to the main branch, the [hosted documentation](https://daft-engineers.github.io/vocoder/annotated.html) is updated. The image below shows the workflow for a standard push.
->>>>>>> added link to choosealicence
 
 ![Image](https://user-images.githubusercontent.com/56744932/232238323-5977fc16-2d5f-4533-b965-6143a109ffd9.png)
 
